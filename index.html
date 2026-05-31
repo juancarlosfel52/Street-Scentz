@@ -1513,7 +1513,86 @@ footer{
 
   /* FOOTER */
   footer{flex-direction:column!important;text-align:center!important;padding:2rem 1rem!important;}
+
+  /* HIDE MUSIC PLAYER TEXT ON TINY SCREENS */
+  #ss-track{display:none!important;}
+  #ss-player{gap:4px!important;padding:0 6px!important;}
+
+  /* CTA BAR — mobile only */
+  #ss-cta-bar{display:flex!important;}
 }
+
+/* ═══════════════════════════════════════════
+   MUSIC PLAYER + CTA BAR
+═══════════════════════════════════════════ */
+
+/* NAV PLAYER */
+#ss-player{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(4,6,14,.7);
+  border:1px solid rgba(74,144,226,.2);
+  border-radius:3px;
+  padding:0 10px;height:34px;
+  margin-right:10px;
+  flex-shrink:0;
+}
+#ss-note{
+  font-size:.85rem;color:var(--gold);opacity:.7;
+  animation:ssNoteFloat 2s ease-in-out infinite alternate;
+}
+@keyframes ssNoteFloat{from{opacity:.4;transform:translateY(0)}to{opacity:1;transform:translateY(-2px)}}
+.ss-btn{
+  background:none;border:none;cursor:pointer;
+  color:rgba(74,144,226,.7);font-size:.6rem;
+  padding:2px 4px;line-height:1;
+  transition:color .2s;
+}
+.ss-btn:hover{color:var(--gold);}
+#ss-play{
+  font-size:.75rem;
+  color:var(--gold);
+  border:1px solid rgba(74,144,226,.3);
+  border-radius:2px;
+  padding:3px 7px;
+}
+#ss-track{
+  font-family:'Cinzel',serif;
+  font-size:.42rem;letter-spacing:.18em;
+  color:var(--cream);opacity:.55;
+  text-transform:uppercase;
+  max-width:110px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+/* STICKY CTA BAR — hidden on desktop, shown on mobile via media query */
+#ss-cta-bar{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;
+  z-index:1500;
+  background:rgba(4,6,14,.92);
+  border-top:1px solid rgba(74,144,226,.3);
+  backdrop-filter:blur(12px);
+  padding:10px 16px 12px;
+}
+#ss-cta-bar button{
+  width:100%;
+  font-family:'Pirata One',cursive;
+  font-size:1.1rem;letter-spacing:.08em;
+  color:var(--cream);
+  background:linear-gradient(90deg,rgba(30,94,200,.5),rgba(74,144,226,.3));
+  border:1px solid rgba(74,144,226,.5);
+  border-radius:3px;
+  padding:12px 0;
+  cursor:pointer;
+  text-shadow:0 0 12px rgba(74,144,226,.6);
+  box-shadow:0 0 20px rgba(74,144,226,.15);
+  transition:background .3s,box-shadow .3s;
+}
+#ss-cta-bar button:active{
+  background:linear-gradient(90deg,rgba(30,94,200,.7),rgba(74,144,226,.5));
+  box-shadow:0 0 30px rgba(74,144,226,.3);
+}
+#ss-cta-bar.hidden{display:none!important;}
 
 /* ═══════════════════════════════════════════
    FEATURE 1 — SCENT PALETTE SWITCHER
@@ -2370,10 +2449,24 @@ body.day-mode {
     <li><a href="#" data-section="about" onclick="navClick(event,'about')">About</a></li>
     <li><a href="#" data-section="contact" onclick="navClick(event,'contact')">Contact</a></li>
   </ul>
+  <!-- ── MUSIC PLAYER ── -->
+  <div id="ss-player">
+    <span id="ss-note">♪</span>
+    <button class="ss-btn" id="ss-prev" onclick="ssPlayer.prev()" title="Previous">&#9664;&#9664;</button>
+    <button class="ss-btn" id="ss-play" onclick="ssPlayer.toggle()" title="Play/Pause">&#9654;</button>
+    <button class="ss-btn" id="ss-next" onclick="ssPlayer.next()" title="Next">&#9654;&#9654;</button>
+    <span id="ss-track">The Boulevard</span>
+  </div>
+
   <div class="hamburger" id="hamburger" onclick="toggleMenu()">
     <span></span><span></span><span></span>
   </div>
 </nav>
+
+<!-- STICKY MOBILE CTA -->
+<div id="ss-cta-bar">
+  <button onclick="navClick(event,'shop')">&#x1F6CD; Shop Street Scentz &nbsp;→</button>
+</div>
 
 <!-- mobile menu -->
 <div class="mobile-menu" id="mobile-menu">
@@ -4559,6 +4652,64 @@ function _initScentVideo_PLACEHOLDER(){
   document.body.classList.add(isDay ? 'day-mode' : 'night-mode');
   const badge = document.getElementById('timemode-badge');
   if (badge) badge.textContent = isDay ? '☀️ Day Mode' : '🌙 Night Mode';
+})();
+
+/* ── MUSIC PLAYER ── */
+const ssPlayer = (function(){
+  const tracks = [
+    { title:'The Boulevard', src:'assets/BACKGROUND MUSIC.mp3' }
+    // Add more: { title:'Track Name', src:'assets/SONG.mp3' }
+  ];
+  let idx = 0, playing = false;
+  const audio = new Audio();
+  audio.loop = false;
+  audio.volume = 0.5;
+
+  function load(i){
+    idx = ((i % tracks.length) + tracks.length) % tracks.length;
+    audio.src = tracks[idx].src;
+    document.getElementById('ss-track').textContent = tracks[idx].title;
+  }
+
+  function syncBtn(){
+    document.getElementById('ss-play').innerHTML = playing ? '&#9646;&#9646;' : '&#9654;';
+  }
+
+  function pauseIfPopup(){
+    const open = document.getElementById('scent-overlay').classList.contains('open');
+    if(open && playing){ audio.pause(); playing=false; syncBtn(); }
+  }
+
+  audio.addEventListener('ended', ()=>{ load(idx+1); audio.play(); });
+
+  load(0);
+
+  // Hide CTA bar when user scrolls to shop section
+  const shopSection = document.getElementById('section-shop');
+  const ctaBar = document.getElementById('ss-cta-bar');
+  if(shopSection && ctaBar){
+    const obs = new IntersectionObserver(entries=>{
+      entries.forEach(e => ctaBar.classList.toggle('hidden', e.isIntersecting));
+    }, {threshold:0.2});
+    obs.observe(shopSection);
+  }
+
+  // Pause music when popup opens
+  const origOpen = window.openScentPopup;
+  window.openScentPopup = function(){
+    origOpen && origOpen();
+    if(playing){ audio.pause(); playing=false; syncBtn(); }
+  };
+
+  return {
+    toggle(){
+      if(playing){ audio.pause(); playing=false; }
+      else { audio.play().catch(()=>{}); playing=true; }
+      syncBtn();
+    },
+    prev(){ load(idx-1); if(playing){ audio.play().catch(()=>{}); } },
+    next(){ load(idx+1); if(playing){ audio.play().catch(()=>{}); } }
+  };
 })();
 
 </script>
