@@ -1,0 +1,4566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Street Scentz — A Smell That Hits Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Bebas+Neue&family=Barlow:wght@300;400;500;600&family=Cinzel:wght@400;700;900&family=Pirata+One&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════
+   STREET SCENTZ — DESIGN SYSTEM
+═══════════════════════════════════════════ */
+:root {
+  --black:    #060810;
+  --charcoal: #0D1220;
+  --gold:     #4A90E2;
+  --bronze:   #1A3A8F;
+  --cream:    #B8D4F0;
+  --amber:    #1E5EC8;
+  --gold-rgb: 74,144,226;
+  --amber-rgb: 30,94,200;
+  --cream-rgb: 184,212,240;
+  --bronze-rgb: 26,58,143;
+
+  /* Typography */
+  --font-display: 'Pirata One', serif;
+  --font-serif: 'Cormorant Garamond', serif;
+  --font-body: 'Barlow', sans-serif;
+  --font-bold: 'Bebas Neue', sans-serif;
+
+}
+
+/* ═══ BANDANA PATTERN ═══ */
+.bandana-bg{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  /* left + right edge strips only */
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='none'/%3E%3C!-- diamond grid --%3E%3Cpath d='M30,0 L60,30 L30,60 L0,30 Z' fill='none' stroke='rgba(74,144,226,0.18)' stroke-width='0.8'/%3E%3Cpath d='M30,10 L50,30 L30,50 L10,30 Z' fill='none' stroke='rgba(74,144,226,0.10)' stroke-width='0.5'/%3E%3C!-- corner dots --%3E%3Ccircle cx='0'  cy='30' r='2' fill='rgba(74,144,226,0.2)'/%3E%3Ccircle cx='60' cy='30' r='2' fill='rgba(74,144,226,0.2)'/%3E%3Ccircle cx='30' cy='0'  r='2' fill='rgba(74,144,226,0.2)'/%3E%3Ccircle cx='30' cy='60' r='2' fill='rgba(74,144,226,0.2)'/%3E%3C!-- center paisley dot --%3E%3Ccircle cx='30' cy='30' r='3' fill='rgba(74,144,226,0.12)'/%3E%3Cellipse cx='30' cy='30' rx='7' ry='4' fill='none' stroke='rgba(74,144,226,0.10)' stroke-width='0.5'/%3E%3C/svg%3E");
+  background-size:60px 60px;
+  -webkit-mask-image:
+    linear-gradient(90deg,
+      black 0px,
+      black 90px,
+      transparent 180px,
+      transparent calc(100% - 180px),
+      black calc(100% - 90px),
+      black 100%);
+  mask-image:
+    linear-gradient(90deg,
+      black 0px,
+      black 90px,
+      transparent 180px,
+      transparent calc(100% - 180px),
+      black calc(100% - 90px),
+      black 100%);
+  opacity:.7;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  background:var(--black);
+  color:var(--cream);
+  font-family:'Barlow',sans-serif;
+  font-weight:300;
+  overflow-x:hidden;
+  cursor:default;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--black)}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+
+/* ═══════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════ */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  padding:0 2.5rem;
+  height:80px;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:background .4s ease,backdrop-filter .4s ease,box-shadow .4s ease;
+  overflow:visible;
+}
+#nav.scrolled{
+  background:rgba(11,10,10,.92);
+  backdrop-filter:blur(20px);
+  box-shadow:0 1px 0 rgba(var(--gold-rgb),.2);
+}
+.nav-logo{
+  font-family:'Cinzel',serif;
+  font-size:1.4rem;
+  letter-spacing:.25em;
+  font-weight:700;
+  color:var(--gold);
+  text-shadow:0 0 20px rgba(var(--gold-rgb),.4);
+  user-select:none;
+  cursor:pointer;
+}
+.nav-logo span{color:var(--cream)}
+.nav-links{
+  display:flex;gap:2rem;list-style:none;align-items:center;
+}
+.nav-links li a{
+  font-size:.7rem;font-weight:500;letter-spacing:.12em;
+  font-family:'Cinzel',serif;
+  text-transform:uppercase;color:var(--cream);text-decoration:none;
+  position:relative;padding-bottom:4px;opacity:.85;
+  transition:opacity .2s,color .2s;
+}
+.nav-links li a::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;
+  height:1.5px;background:var(--gold);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .3s ease;
+}
+.nav-links li a:hover,
+.nav-links li a.active{opacity:1;color:var(--gold)}
+.nav-links li a:hover::after,
+.nav-links li a.active::after{transform:scaleX(1)}
+
+/* hamburger */
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{
+  display:block;width:24px;height:2px;
+  background:var(--gold);transition:all .3s ease;
+}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-menu{
+  display:none;position:fixed;top:64px;left:0;right:0;
+  background:rgba(11,10,10,.97);backdrop-filter:blur(20px);
+  padding:2rem;flex-direction:column;gap:1.5rem;
+  border-bottom:1px solid rgba(var(--gold-rgb),.2);
+  z-index:999;
+}
+.mobile-menu.open{display:flex}
+.mobile-menu a{
+  font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.1em;
+  color:var(--cream);text-decoration:none;transition:color .2s;
+}
+.mobile-menu a:hover,
+.mobile-menu a.active{color:var(--gold)}
+
+/* ═══════════════════════════════════════════
+   SECTION ENGINE
+═══════════════════════════════════════════ */
+.section-wrap{
+  display:block;min-height:100vh;
+  position:relative;overflow:hidden;
+  z-index:1;
+}
+
+/* section background */
+.section-bg{
+  position:absolute;inset:0;z-index:0;
+  background-size:cover;background-position:center;
+}
+.section-bg::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(11,10,10,.65) 0%,rgba(11,10,10,.82) 100%);
+}
+.section-bg::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(var(--amber-rgb),.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.section-content{position:relative;z-index:1}
+
+/* ═══════════════════════════════════════════
+   HOME — HERO
+═══════════════════════════════════════════ */
+#section-home{
+  display:flex;align-items:center;justify-content:flex-start;
+  background:var(--black);
+  min-height:100vh;overflow:hidden;
+}
+
+/* Cinematic sunset sky gradient */
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 120% 80% at 50% 110%, rgba(30,94,200,.22) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 75% 60%, rgba(74,144,226,.1) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 40% at 20% 80%, rgba(142,90,34,.12) 0%, transparent 50%),
+    linear-gradient(180deg, #0B0A0A 0%, #120d07 40%, #1a0f05 70%, #0d0804 100%);
+}
+
+/* SVG palm tree silhouettes */
+.hero-palms{
+  position:absolute;bottom:0;left:0;right:0;
+  height:70%;z-index:1;pointer-events:none;
+  opacity:.55;
+}
+
+/* sunset horizon glow line */
+.hero-horizon{
+  position:absolute;
+  bottom:22%;left:0;right:0;height:1px;
+  background:linear-gradient(90deg, transparent 0%, rgba(30,94,200,.4) 20%, rgba(74,144,226,.6) 50%, rgba(30,94,200,.4) 80%, transparent 100%);
+  z-index:2;
+  box-shadow: 0 0 40px 8px rgba(30,94,200,.15), 0 0 80px 20px rgba(30,94,200,.06);
+}
+
+/* ambient ground fog */
+.hero-fog{
+  position:absolute;bottom:0;left:0;right:0;height:35%;z-index:2;pointer-events:none;
+  background:linear-gradient(0deg, rgba(11,10,10,.9) 0%, rgba(11,10,10,.4) 40%, transparent 100%);
+}
+
+#hero-particles{position:absolute;inset:0;z-index:0;opacity:.6}
+
+.hero-inner{
+  position:relative;z-index:8;
+  text-align:left;
+  padding:0 0 6vh 6vw;
+  max-width:480px;
+  margin-top:0;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  min-height:100vh;
+  pointer-events:none;
+}
+.hero-inner a, .hero-inner button, .hero-inner [onclick]{
+  pointer-events:auto;
+}
+.hero-eyebrow{
+  font-family:'Cinzel',serif;
+  font-size:.62rem;letter-spacing:.45em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:2rem;opacity:.7;
+  display:flex;align-items:center;gap:1rem;
+}
+.hero-eyebrow::before{
+  content:'';display:block;width:40px;height:1px;
+  background:linear-gradient(90deg, var(--gold), transparent);
+}
+
+.hero-title{
+  font-family:'Cinzel',serif;
+  font-size:clamp(3rem,8vw,7.5rem);
+  font-weight:900;
+  letter-spacing:.12em;line-height:.9;
+  color:var(--cream);
+  position:relative;display:block;
+  margin-bottom:.8rem;
+}
+.hero-title .shine{
+  display:block;font-family:'Pirata One','Cinzel',serif;
+  background:linear-gradient(135deg,
+    #B8D4F0 0%,
+    #4A90E2 25%,
+    #e0f0ff 40%,
+    #4A90E2 55%,
+    #1A3A8F 70%,
+    #4A90E2 85%,
+    #B8D4F0 100%);
+  background-size:300% 100%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:chromeShine 5s linear infinite;
+  text-shadow:none;
+}
+.hero-title .shine.gold-line{
+  color:var(--gold);-webkit-text-fill-color:var(--gold);
+  background:none;-webkit-background-clip:unset;background-clip:unset;
+  font-size:.65em;letter-spacing:.3em;
+  opacity:.9;margin-top:.3rem;
+}
+@keyframes chromeShine{
+  0%{background-position:300% 0}
+  100%{background-position:-300% 0}
+}
+@keyframes logoBreathe{
+  0%   { filter: drop-shadow(0 0 22px rgba(255,220,0,.7))   drop-shadow(0 0 50px rgba(255,200,0,.3)); }
+  16%  { filter: drop-shadow(0 0 22px rgba(255,80,0,.7))    drop-shadow(0 0 50px rgba(255,60,0,.3)); }
+  33%  { filter: drop-shadow(0 0 22px rgba(255,30,30,.7))   drop-shadow(0 0 50px rgba(200,0,0,.3)); }
+  50%  { filter: drop-shadow(0 0 22px rgba(255,255,255,.8)) drop-shadow(0 0 50px rgba(200,200,255,.3)); }
+  66%  { filter: drop-shadow(0 0 22px rgba(30,120,255,.7))  drop-shadow(0 0 50px rgba(0,80,255,.3)); }
+  83%  { filter: drop-shadow(0 0 22px rgba(255,140,0,.7))   drop-shadow(0 0 50px rgba(255,100,0,.3)); }
+  100% { filter: drop-shadow(0 0 22px rgba(255,220,0,.7))   drop-shadow(0 0 50px rgba(255,200,0,.3)); }
+}
+@keyframes pulseBar{
+  0%,100%{ box-shadow:0 4px 20px rgba(0,0,0,.6),0 0 16px rgba(212,162,76,.3); opacity:1; }
+  50%    { box-shadow:0 4px 28px rgba(0,0,0,.7),0 0 28px rgba(212,162,76,.6); opacity:.88; }
+}
+.deal-dot{
+  width:6px;height:6px;border-radius:50%;background:rgba(212,162,76,.3);
+  border:1px solid rgba(212,162,76,.4);cursor:pointer;transition:background .25s;display:inline-block;
+}
+.deal-dot.active{ background:var(--gold);box-shadow:0 0 6px rgba(212,162,76,.6); }
+
+.hero-sub{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.1rem,2.2vw,1.5rem);
+  color:var(--cream);opacity:.6;
+  letter-spacing:.06em;font-style:italic;
+  font-weight:300;
+  margin:1.5rem 0 3rem;
+  line-height:1.4;
+}
+
+/* Luxury bordered CTA button */
+.hero-cta{
+  display:inline-flex;align-items:center;gap:1rem;
+  padding:1rem 2.5rem;
+  font-family:'Cinzel',serif;font-weight:700;
+  font-size:.72rem;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--gold);
+  background:transparent;
+  border:1px solid rgba(74,144,226,.5);
+  cursor:pointer;text-decoration:none;
+  position:relative;overflow:hidden;
+  transition:border-color .3s, color .3s, box-shadow .3s;
+  clip-path:none;
+  align-self:flex-start;
+}
+.hero-cta::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(74,144,226,.08),transparent);
+  transform:translateX(-100%);transition:transform .6s ease;
+}
+.hero-cta::after{
+  content:'→';font-size:.9rem;
+  transition:transform .3s ease;
+}
+.hero-cta:hover{
+  border-color:var(--gold);
+  color:var(--cream);
+  box-shadow:0 0 30px rgba(74,144,226,.2), inset 0 0 30px rgba(74,144,226,.05);
+}
+.hero-cta:hover::before{transform:translateX(100%)}
+.hero-cta:hover::after{transform:translateX(4px)}
+
+.hero-scroll{
+  position:absolute;bottom:2.5rem;left:6vw;
+  display:flex;align-items:center;gap:.75rem;
+  opacity:.35;
+  z-index:4;
+}
+.hero-scroll span{
+  font-family:'Cinzel',serif;
+  font-size:.55rem;letter-spacing:.3em;text-transform:uppercase;
+}
+.hero-scroll-line{
+  width:40px;height:1px;
+  background:linear-gradient(90deg, var(--gold), transparent);
+  animation:scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse{
+  0%,100%{opacity:.35;transform:scaleX(1)}
+  50%{opacity:.8;transform:scaleX(1.3);transform-origin:left}
+}
+
+/* ═══════════════════════════════════════════
+   SHARED SECTION STYLES
+═══════════════════════════════════════════ */
+.sec-header{
+  text-align:center;padding:110px 2rem 70px;
+}
+.sec-eyebrow{
+  font-family:'Cinzel',serif;
+  font-size:.65rem;letter-spacing:.35em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:1rem;opacity:.8;
+}
+.sec-title{
+  font-family:'Pirata One','Cinzel',serif;
+  font-size:clamp(2rem,5vw,4rem);
+  font-weight:900;
+  letter-spacing:.15em;color:var(--cream);
+  line-height:1;
+}
+.sec-title span{color:var(--gold)}
+.sec-divider{
+  width:60px;height:2px;margin:1.2rem auto;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.sec-desc{
+  max-width:520px;margin:0 auto;
+  font-size:.95rem;line-height:1.8;color:var(--cream);opacity:.65;
+}
+
+/* electric border utility */
+.electric-border{
+  position:relative;
+}
+.electric-border::before{
+  content:'';position:absolute;inset:-1px;
+  background:linear-gradient(90deg,var(--gold),var(--amber),var(--bronze),var(--gold));
+  background-size:300% 100%;
+  animation:electricPulse 3s linear infinite;
+  z-index:-1;border-radius:inherit;
+}
+@keyframes electricPulse{
+  0%{background-position:0% 0}
+  100%{background-position:300% 0}
+}
+
+/* glass panel */
+.glass{
+  background:rgba(26,26,26,.65);
+  backdrop-filter:blur(16px);
+  border:1px solid rgba(var(--gold-rgb),.15);
+}
+
+/* ═══════════════════════════════════════════
+   SHOP
+═══════════════════════════════════════════ */
+#section-shop{
+  background:
+    radial-gradient(ellipse 100% 60% at 50% 0%, rgba(142,90,34,.06) 0%, transparent 60%),
+    linear-gradient(180deg, #111008 0%, #0e0d0b 40%, #121110 100%);
+}
+
+.products-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:2rem;padding:0 2.5rem 100px;
+  max-width:1300px;margin:0 auto;
+}
+
+.product-card{
+  position:relative;
+  background:linear-gradient(160deg, #161410 0%, #0f0d0a 60%, #1a1710 100%);
+  border:1px solid rgba(74,144,226,.15);
+  overflow:hidden;cursor:pointer;
+  transition:transform .4s ease,box-shadow .4s ease,border-color .4s;
+  animation:floatCard 5s ease-in-out infinite;
+  clip-path:polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0 calc(100% - 16px));
+}
+.product-card:nth-child(2){animation-delay:.4s}
+.product-card:nth-child(3){animation-delay:.8s}
+.product-card:nth-child(4){animation-delay:.2s}
+.product-card:nth-child(5){animation-delay:.6s}
+.product-card:nth-child(6){animation-delay:1s}
+
+@keyframes floatCard{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-5px)}
+}
+@keyframes fanFloat1{
+  0%,100%{transform:translateY(0px)}
+  50%{transform:translateY(-10px)}
+}
+@keyframes fanFloat2{
+  0%,100%{transform:translateY(-6px)}
+  50%{transform:translateY(4px)}
+}
+@keyframes fanFloat3{
+  0%,100%{transform:translateY(0px)}
+  33%{transform:translateY(-14px)}
+  66%{transform:translateY(-4px)}
+}
+.product-card:hover{
+  transform:translateY(-8px) !important;
+  box-shadow:0 24px 60px rgba(74,144,226,.18), 0 0 0 1px rgba(74,144,226,.3);
+  border-color:rgba(var(--gold-rgb),.5);
+}
+
+/* rarity glow on hover */
+.product-card:hover .card-img-wrap::after{
+  opacity:1;
+}
+.card-img-wrap{
+  position:relative;height:240px;overflow:hidden;
+  background:linear-gradient(160deg,#1a1710 0%,#0f0d0a 100%);
+}
+.card-img-wrap::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 80%,rgba(var(--gold-rgb),.25),transparent 70%);
+  opacity:0;transition:opacity .3s;pointer-events:none;
+}
+.card-img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .5s ease;
+}
+.product-card:hover .card-img{transform:scale(1.07)}
+
+/* ── ALL IMAGES — any size, always fill slot ── */
+.img-slot{
+  width:100%;height:100%;
+  object-fit:cover;
+  object-position:center;
+  display:block;
+}
+.img-slot-top{ object-position:center top; }
+.img-slot-bottom{ object-position:center bottom; }
+
+/* ── IMAGE PLACEHOLDERS ── */
+.img-ph{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;
+  background:repeating-linear-gradient(
+    45deg,
+    rgba(74,144,226,.04) 0px,
+    rgba(74,144,226,.04) 1px,
+    transparent 1px,
+    transparent 12px
+  );
+  border:2px dashed rgba(74,144,226,.35);
+  position:relative;box-sizing:border-box;
+}
+.img-ph-icon{font-size:2rem;opacity:.25;line-height:1}
+.img-ph-label{
+  font-family:'Barlow',sans-serif;font-size:.65rem;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(74,144,226,.6);text-align:center;padding:0 .5rem;
+}
+.img-ph-size{
+  font-size:.58rem;letter-spacing:.1em;color:rgba(184,212,240,.3);
+  font-family:'Barlow',sans-serif;
+}
+
+.rarity-badge{
+  position:absolute;top:12px;right:12px;
+  padding:3px 10px;font-size:.6rem;letter-spacing:.12em;
+  font-weight:600;text-transform:uppercase;
+  background:var(--bronze);color:var(--cream);
+  clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
+}
+.rarity-badge.legendary{background:var(--gold);color:var(--black)}
+.rarity-badge.rare{background:var(--bronze)}
+.rarity-badge.limited{background:#5a2d82}
+
+.card-body{padding:1.25rem 1.25rem 1.5rem}
+.card-scent{
+  font-family:'Cinzel',serif;
+  font-size:1rem;letter-spacing:.1em;font-weight:700;
+  color:var(--cream);margin-bottom:.4rem;
+}
+.card-desc{
+  font-size:.8rem;line-height:1.6;
+  color:var(--cream);opacity:.55;margin-bottom:1rem;
+}
+.card-footer{
+  display:flex;align-items:center;justify-content:space-between;
+}
+.card-price{
+  font-family:'Bebas Neue',sans-serif;font-size:1.4rem;
+  color:var(--gold);letter-spacing:.06em;
+}
+.btn-cart{
+  padding:.55rem 1.3rem;
+  font-family:'Cinzel',serif;
+  font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gold);background:transparent;
+  border:1px solid rgba(74,144,226,.4);
+  cursor:pointer;
+  transition:border-color .3s,color .3s,box-shadow .3s;
+}
+.btn-cart:hover{
+  border-color:var(--gold);color:var(--cream);
+  box-shadow:0 0 20px rgba(74,144,226,.2);
+  background:rgba(74,144,226,.06);
+}
+
+/* ═══════════════════════════════════════════
+   DISCOUNTS
+═══════════════════════════════════════════ */
+#section-discounts{
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 50%, rgba(30,94,200,.05) 0%, transparent 55%),
+    linear-gradient(160deg, #0d0c0a 0%, #0B0A0A 50%, #0f0d0a 100%);
+}
+
+.promo-area{
+  max-width:500px;margin:0 auto 4rem;
+  padding:0 2rem;
+}
+.promo-label{
+  font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:.75rem;opacity:.8;
+}
+.promo-row{display:flex;gap:0}
+.promo-input{
+  flex:1;padding:.85rem 1.2rem;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(var(--gold-rgb),.2);border-right:none;
+  color:var(--cream);font-family:'Barlow',sans-serif;font-size:.85rem;
+  outline:none;
+  transition:border-color .2s;
+}
+.promo-input::placeholder{color:rgba(184,212,240,.3)}
+.promo-input:focus{border-color:rgba(var(--gold-rgb),.5)}
+.btn-promo{
+  padding:.85rem 1.5rem;
+  background:transparent;color:var(--gold);
+  border:1px solid rgba(74,144,226,.4);border-left:none;
+  font-family:'Cinzel',serif;
+  font-weight:700;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;
+  cursor:pointer;white-space:nowrap;
+  transition:all .3s;
+}
+.btn-promo:hover{
+  background:rgba(74,144,226,.08);color:var(--cream);border-color:var(--gold);
+}
+
+.deals-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:1.5rem;padding:0 2.5rem 100px;
+  max-width:1300px;margin:0 auto;
+}
+.deal-card{
+  background:linear-gradient(160deg, #131109 0%, #0f0d0a 100%);
+  border:1px solid rgba(var(--gold-rgb),.15);
+  padding:2rem;position:relative;overflow:hidden;
+  transition:border-color .3s,box-shadow .3s;
+}
+.deal-card:hover{
+  border-color:rgba(var(--gold-rgb),.4);
+  box-shadow:0 8px 30px rgba(var(--gold-rgb),.1);
+}
+.deal-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;
+  height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.deal-tag{
+  font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--amber);margin-bottom:.75rem;opacity:.9;
+}
+.deal-title{
+  font-family:'Cinzel',serif;font-size:1.2rem;letter-spacing:.06em;
+  color:var(--cream);margin-bottom:.5rem;
+}
+.deal-desc{font-size:.82rem;line-height:1.6;color:var(--cream);opacity:.55;margin-bottom:1.25rem}
+.deal-price-row{display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem}
+.deal-orig{
+  font-size:.85rem;color:var(--cream);opacity:.35;
+  text-decoration:line-through;
+}
+.deal-new{
+  font-family:'Bebas Neue',sans-serif;font-size:1.6rem;
+  color:var(--gold);letter-spacing:.04em;
+}
+.deal-save{
+  font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--amber);opacity:.9;
+}
+.deal-timer{
+  font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--cream);opacity:.4;
+  display:flex;align-items:center;gap:.5rem;
+}
+.deal-timer::before{
+  content:'◉';color:var(--amber);animation:pulse 1.5s infinite;font-size:.6rem;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+
+.wholesale-banner{
+  max-width:1300px;margin:0 auto;padding:0 2.5rem 80px;
+}
+.wholesale-inner{
+  background:linear-gradient(90deg,var(--charcoal),rgba(142,90,34,.15));
+  border:1px solid rgba(var(--gold-rgb),.2);
+  padding:2.5rem 3rem;
+  display:flex;align-items:center;justify-content:space-between;gap:2rem;
+  flex-wrap:wrap;
+}
+.wholesale-text h3{
+  font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.08em;
+  color:var(--cream);margin-bottom:.35rem;
+}
+.wholesale-text p{font-size:.85rem;color:var(--cream);opacity:.55}
+.btn-outline{
+  padding:.8rem 2rem;
+  border:1px solid rgba(74,144,226,.4);color:var(--gold);
+  background:transparent;cursor:pointer;
+  font-family:'Cinzel',serif;font-weight:700;
+  font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;
+  transition:all .3s ease;
+  white-space:nowrap;
+  position:relative;overflow:hidden;
+}
+.btn-outline:hover{
+  border-color:var(--gold);color:var(--cream);
+  box-shadow:0 0 30px rgba(74,144,226,.18);
+  background:rgba(74,144,226,.06);
+}
+
+/* ═══════════════════════════════════════════
+   GIFTING
+═══════════════════════════════════════════ */
+#section-gifting{
+  background:
+    radial-gradient(ellipse 70% 60% at 80% 30%, rgba(74,144,226,.05) 0%, transparent 55%),
+    linear-gradient(180deg, #111008 0%, #0e0c09 100%);
+}
+
+.gift-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:2rem;padding:0 2.5rem 100px;
+  max-width:1300px;margin:0 auto;
+}
+.gift-card{
+  border:1px solid rgba(var(--gold-rgb),.2);
+  overflow:hidden;
+  background:linear-gradient(160deg, #131109 0%, #0f0d0a 60%, #181510 100%);
+  transition:transform .3s,box-shadow .3s,border-color .3s;
+}
+.gift-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 16px 40px rgba(var(--gold-rgb),.18);
+  border-color:rgba(var(--gold-rgb),.45);
+}
+.gift-card-header{
+  height:3px;
+  background:linear-gradient(90deg, #1A3A8F, #4A90E2, #B8D4F0, #4A90E2, #1A3A8F);
+}
+.gift-card-body{padding:2rem}
+.gift-icon{
+  font-size:2.2rem;margin-bottom:1rem;opacity:.7;
+}
+.gift-name{
+  font-family:'Cinzel',serif;font-size:1.05rem;letter-spacing:.08em;
+  color:var(--cream);margin-bottom:.5rem;
+}
+.gift-desc{
+  font-size:.82rem;line-height:1.6;color:var(--cream);opacity:.55;margin-bottom:1.5rem;
+}
+.gift-price{
+  font-family:'Bebas Neue',sans-serif;font-size:1.4rem;
+  color:var(--gold);letter-spacing:.06em;margin-bottom:1.2rem;
+}
+.btn-gift{
+  width:100%;padding:.75rem;
+  border:1px solid rgba(74,144,226,.3);
+  background:transparent;color:var(--gold);
+  font-family:'Cinzel',serif;font-weight:700;
+  font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;
+  cursor:pointer;transition:all .3s;
+}
+.btn-gift:hover{
+  background:rgba(74,144,226,.08);
+  border-color:var(--gold);color:var(--cream);
+  box-shadow:0 0 20px rgba(74,144,226,.15);
+}
+
+/* custom note row */
+.custom-note-banner{
+  max-width:1300px;margin:0 auto 80px;
+  padding:0 2.5rem;
+}
+.custom-note-inner{
+  background:var(--black);
+  border:1px solid rgba(var(--gold-rgb),.2);
+  padding:2.5rem;text-align:center;
+  position:relative;overflow:hidden;
+}
+.custom-note-inner::before{
+  content:'';position:absolute;top:0;left:0;right:0;
+  height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.custom-note-inner h3{
+  font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.08em;
+  color:var(--cream);margin-bottom:.5rem;
+}
+.custom-note-inner p{font-size:.88rem;opacity:.55;margin-bottom:1.5rem}
+.custom-note-input{
+  width:100%;max-width:600px;
+  padding:.85rem 1.2rem;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(var(--gold-rgb),.2);
+  color:var(--cream);font-family:'Barlow',sans-serif;font-size:.88rem;
+  outline:none;margin-bottom:1rem;resize:none;height:80px;
+  transition:border-color .2s;
+}
+.custom-note-input::placeholder{color:rgba(184,212,240,.3)}
+.custom-note-input:focus{border-color:rgba(var(--gold-rgb),.5)}
+
+/* ═══════════════════════════════════════════
+   ABOUT
+═══════════════════════════════════════════ */
+#section-about{
+  background:
+    radial-gradient(ellipse 60% 80% at 15% 50%, rgba(142,90,34,.07) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 85% 20%, rgba(30,94,200,.04) 0%, transparent 50%),
+    linear-gradient(180deg, #0B0A0A 0%, #0d0b08 100%);
+}
+
+/* ═══════════════════════════════════════════
+   ABOUT — LOWRIDER MAGAZINE REDESIGN
+═══════════════════════════════════════════ */
+#section-about{
+  background:
+    radial-gradient(ellipse 120% 50% at 50% 0%,   rgba(74,144,226,.08) 0%, transparent 55%),
+    radial-gradient(ellipse 100% 50% at 50% 100%,  rgba(30,94,200,.07) 0%, transparent 55%),
+    linear-gradient(180deg, #080706 0%, #0d0b08 50%, #080706 100%);
+  overflow:visible;
+  min-height:1000px !important;
+}
+#about-particles{position:absolute;inset:0;z-index:0;pointer-events:none;}
+
+/* TOP HEADER */
+.ab-top{
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;align-items:center;
+  padding:24px 0 12px;gap:4px;
+}
+.ab-crown-svg{opacity:.75;filter:drop-shadow(0 0 8px rgba(74,144,226,.5));}
+.ab-sparkle-row{display:flex;gap:14px;align-items:center;margin-bottom:-4px;}
+.ab-spark{
+  font-size:.7rem;color:var(--gold);
+  animation:abSparkPulse 2s ease-in-out infinite;
+}
+.ab-spark:nth-child(1){animation-delay:0s;}
+.ab-spark:nth-child(2){animation-delay:.5s;font-size:.5rem;opacity:.6;}
+.ab-spark:nth-child(3){animation-delay:1s;}
+@keyframes abSparkPulse{
+  0%,100%{opacity:.3;transform:scale(.8);}
+  50%{opacity:1;transform:scale(1.2);}
+}
+.ab-logo-img{
+  height:80px;width:auto;
+  filter:drop-shadow(0 0 18px rgba(74,144,226,.55)) drop-shadow(0 0 40px rgba(30,94,200,.3));
+  animation:abLogoGlow 4s ease-in-out infinite alternate;
+}
+@keyframes abLogoGlow{
+  from{filter:drop-shadow(0 0 12px rgba(74,144,226,.4)) drop-shadow(0 0 30px rgba(30,94,200,.2));}
+  to  {filter:drop-shadow(0 0 28px rgba(74,144,226,.8)) drop-shadow(0 0 60px rgba(30,94,200,.45));}
+}
+.ab-top-flourish{display:flex;align-items:center;gap:10px;width:min(560px,85vw);margin:2px 0;}
+.ab-flourish-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(74,144,226,.65),transparent);}
+.ab-flourish-diamond{width:7px;height:7px;background:var(--gold);transform:rotate(45deg);flex-shrink:0;box-shadow:0 0 6px rgba(74,144,226,.6);}
+.ab-top-eyebrow{
+  font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.28em;
+  color:var(--gold);text-transform:uppercase;opacity:.6;
+}
+
+/* 3-COLUMN BODY */
+.ab-body{
+  position:relative;z-index:2;
+  display:grid;grid-template-columns:300px 1fr 300px;
+  align-items:stretch;min-height:560px;
+}
+
+/* ROSE BED — full section background layer */
+.ab-rose-bed{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  overflow:hidden;
+}
+.ab-rose-bed img{
+  position:absolute;
+  pointer-events:none;
+  user-select:none;
+}
+
+/* BORDER COLUMNS — mural layout */
+.ab-left,.ab-right{
+  position:relative;
+  min-height:560px;
+  overflow:visible;
+}
+.ab-left{border-right:1px solid rgba(74,144,226,.08);}
+.ab-right{border-left:1px solid rgba(74,144,226,.08);}
+
+/* mural image pieces */
+.ab-mural-img{
+  position:absolute;
+  pointer-events:none;
+  user-select:none;
+}
+
+/* responsive collapse */
+@media(max-width:900px){
+  .ab-left,.ab-right{min-height:220px;overflow:hidden;}
+}
+
+/* CENTER TEXT PANEL */
+.ab-center{
+  padding:28px 32px 48px;
+  display:flex;align-items:flex-start;justify-content:center;
+}
+.ab-panel{
+  width:100%;background:rgba(7,6,4,.78);
+  border:1px solid rgba(74,144,226,.14);
+  padding:44px 40px;position:relative;
+  backdrop-filter:blur(8px);
+}
+.ab-panel::before,.ab-panel::after{
+  content:'✦';position:absolute;
+  font-size:.65rem;color:var(--gold);opacity:.55;
+}
+.ab-panel::before{top:11px;left:14px;}
+.ab-panel::after{bottom:11px;right:14px;}
+.ab-gold-divider{
+  display:flex;align-items:center;gap:8px;margin:14px 0;
+}
+.ab-gold-divider::before{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(74,144,226,.6));}
+.ab-gold-divider::after {content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(74,144,226,.6),transparent);}
+.ab-gold-divider span{
+  width:5px;height:5px;background:var(--gold);
+  transform:rotate(45deg);flex-shrink:0;
+  opacity:.8;box-shadow:0 0 5px rgba(74,144,226,.5);
+}
+.ab-founder-title{
+  font-family:'Pirata One',cursive;
+  font-size:clamp(2rem,3.5vw,3rem);
+  color:var(--gold);text-align:center;
+  line-height:1.1;margin:4px 0 2px;
+  animation:abShimmer 3.5s ease-in-out infinite alternate;
+  text-shadow:0 0 20px rgba(74,144,226,.35),0 2px 6px rgba(0,0,0,.9);
+}
+@keyframes abShimmer{
+  from{text-shadow:0 0 14px rgba(74,144,226,.25),0 2px 6px rgba(0,0,0,.9);}
+  to  {text-shadow:0 0 32px rgba(74,144,226,.75),0 0 65px rgba(30,94,200,.3),0 2px 6px rgba(0,0,0,.9);}
+}
+.ab-subtitle{
+  font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.22em;
+  color:var(--cream);opacity:.5;text-align:center;
+  text-transform:uppercase;margin-bottom:4px;
+}
+.ab-body-text{
+  font-family:'Montserrat','Barlow',sans-serif;
+  font-size:.875rem;line-height:1.9;
+  color:var(--cream);opacity:.72;margin-bottom:1rem;
+}
+.ab-quote{
+  border:1px solid rgba(74,144,226,.24);
+  background:rgba(74,144,226,.04);
+  padding:18px 22px;margin:20px 0;position:relative;
+}
+.ab-quote::before{
+  content:'"';font-family:'Cinzel',serif;font-size:3rem;
+  color:var(--gold);opacity:.18;
+  position:absolute;top:-8px;left:10px;line-height:1;
+}
+.ab-quote p{
+  font-family:'Cinzel',serif;font-size:.85rem;
+  line-height:1.75;color:var(--gold);
+  letter-spacing:.05em;font-style:italic;
+  text-align:center;margin:0;
+}
+
+/* BOTTOM TRIM */
+.ab-bottom{
+  position:relative;z-index:2;
+  padding:24px 32px 60px;
+  display:flex;flex-direction:column;align-items:center;gap:18px;
+}
+.ab-freshener-row{
+  display:flex;align-items:flex-end;justify-content:center;
+  gap:0;flex-wrap:wrap;width:100%;
+  padding:0 40px;box-sizing:border-box;
+  justify-content:space-evenly;
+}
+.ab-freshener-card{
+  background:none;border:none;outline:none;
+  display:flex;flex-direction:column;align-items:center;
+  gap:10px;position:relative;
+  cursor:pointer;
+  transform-style:preserve-3d;
+  will-change:transform;
+}
+.ab-freshener-card::before,.ab-freshener-card::after{display:none;}
+/* hanging string */
+.ab-hang-string{
+  width:2px;height:28px;
+  background:linear-gradient(180deg,rgba(74,144,226,.0),rgba(74,144,226,.55));
+  margin-bottom:-2px;
+}
+.ab-hang-knot{
+  width:8px;height:8px;border-radius:50%;
+  background:radial-gradient(circle,#B8D4F0 0%,#4A90E2 60%,#1A3A8F 100%);
+  margin-bottom:-4px;
+  box-shadow:0 0 6px rgba(74,144,226,.4);
+}
+.ab-freshener-img{
+  width:259px;height:auto;
+  object-fit:contain;
+  display:block;border:none;outline:none;
+  background:transparent;
+  filter:drop-shadow(0 0 0px transparent);
+  transition:filter .4s ease,transform .4s ease;
+}
+.ab-freshener-card:hover .ab-freshener-img,
+.ab-freshener-card.ab-selected .ab-freshener-img{
+  transform:scale(1.08);
+}
+/* idle sway */
+@keyframes abSway1{0%,100%{transform:rotate(-2.5deg);}50%{transform:rotate(2.5deg);}}
+@keyframes abSway2{0%,100%{transform:rotate(2deg);}50%{transform:rotate(-2deg);}}
+@keyframes abSway3{0%,100%{transform:rotate(-1.8deg);}50%{transform:rotate(2.8deg);}}
+@keyframes abSway4{0%,100%{transform:rotate(2.2deg);}50%{transform:rotate(-1.5deg);}}
+.ab-freshener-card:nth-child(1) .ab-freshener-img{animation:abSway1 4.2s ease-in-out infinite;}
+.ab-freshener-card:nth-child(2) .ab-freshener-img{animation:abSway2 3.8s ease-in-out infinite;}
+.ab-freshener-card:nth-child(3) .ab-freshener-img{animation:abSway3 4.6s ease-in-out infinite;}
+.ab-freshener-card:nth-child(4) .ab-freshener-img{animation:abSway4 4.0s ease-in-out infinite;}
+/* pause sway on hover/selected */
+.ab-freshener-card:hover .ab-freshener-img,
+.ab-freshener-card.ab-selected .ab-freshener-img{animation-play-state:paused;}
+
+/* glow under each card — default off */
+.ab-glow-pool{
+  width:160px;height:22px;border-radius:50%;
+  margin-top:-8px;
+  background:transparent;
+  filter:blur(10px);
+  transition:background .4s ease,transform .4s ease;
+  transform:scaleX(.7);
+}
+/* per-scent glow colors */
+.ab-freshener-card[data-scent="churro"].ab-selected .ab-glow-pool,
+.ab-freshener-card[data-scent="churro"]:hover   .ab-glow-pool{background:rgba(212,140,40,.65);}
+.ab-freshener-card[data-scent="horchata"].ab-selected .ab-glow-pool,
+.ab-freshener-card[data-scent="horchata"]:hover   .ab-glow-pool{background:rgba(184,212,240,.55);}
+.ab-freshener-card[data-scent="jamaica"].ab-selected .ab-glow-pool,
+.ab-freshener-card[data-scent="jamaica"]:hover   .ab-glow-pool{background:rgba(180,30,90,.65);}
+.ab-freshener-card[data-scent="pina"].ab-selected .ab-glow-pool,
+.ab-freshener-card[data-scent="pina"]:hover   .ab-glow-pool{background:rgba(80,200,120,.5);}
+
+/* glow drop-shadow on image */
+.ab-freshener-card[data-scent="churro"]:hover .ab-freshener-img,
+.ab-freshener-card[data-scent="churro"].ab-selected .ab-freshener-img{
+  filter:drop-shadow(0 0 22px rgba(212,140,40,.7)) drop-shadow(0 0 55px rgba(212,140,40,.3));
+}
+.ab-freshener-card[data-scent="horchata"]:hover .ab-freshener-img,
+.ab-freshener-card[data-scent="horchata"].ab-selected .ab-freshener-img{
+  filter:drop-shadow(0 0 22px rgba(184,212,240,.65)) drop-shadow(0 0 55px rgba(74,144,226,.35));
+}
+.ab-freshener-card[data-scent="jamaica"]:hover .ab-freshener-img,
+.ab-freshener-card[data-scent="jamaica"].ab-selected .ab-freshener-img{
+  filter:drop-shadow(0 0 22px rgba(200,40,100,.75)) drop-shadow(0 0 55px rgba(180,30,90,.35));
+}
+.ab-freshener-card[data-scent="pina"]:hover .ab-freshener-img,
+.ab-freshener-card[data-scent="pina"].ab-selected .ab-freshener-img{
+  filter:drop-shadow(0 0 22px rgba(80,220,130,.7)) drop-shadow(0 0 55px rgba(60,180,100,.3));
+}
+
+.ab-freshener-name{
+  font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.15em;
+  color:var(--gold);text-transform:uppercase;text-align:center;
+  opacity:.7;margin-top:4px;
+}
+/* info icon */
+.ab-info-icon{
+  position:absolute;top:36px;right:-4px;
+  width:22px;height:22px;border-radius:50%;
+  background:rgba(10,8,5,.85);border:1px solid rgba(74,144,226,.5);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.6rem;color:var(--gold);font-family:'Cinzel',serif;font-weight:700;
+  opacity:0;transition:opacity .25s;cursor:pointer;z-index:5;
+  box-shadow:0 0 8px rgba(74,144,226,.3);
+}
+.ab-freshener-card:hover .ab-info-icon{opacity:1;}
+/* info popup */
+.ab-info-popup{
+  position:absolute;bottom:calc(100% + 18px);left:50%;transform:translateX(-50%) scale(.92);
+  width:230px;background:rgba(10,8,5,.97);
+  border:1px solid rgba(74,144,226,.35);
+  padding:16px 18px;z-index:50;
+  opacity:0;pointer-events:none;
+  transition:opacity .25s,transform .25s;
+  backdrop-filter:blur(8px);
+}
+.ab-info-popup::after{
+  content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  border:7px solid transparent;border-top-color:rgba(74,144,226,.35);
+}
+.ab-freshener-card:hover .ab-info-popup{
+  opacity:1;pointer-events:auto;transform:translateX(-50%) scale(1);
+}
+.ab-info-title{
+  font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.14em;
+  color:var(--gold);text-transform:uppercase;margin-bottom:8px;
+  border-bottom:1px solid rgba(74,144,226,.2);padding-bottom:6px;
+}
+.ab-info-label{
+  font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.1em;
+  color:var(--gold);opacity:.55;text-transform:uppercase;margin-bottom:3px;
+}
+.ab-info-text{
+  font-family:'Montserrat','Barlow',sans-serif;font-size:.72rem;
+  color:var(--cream);opacity:.78;line-height:1.65;margin-bottom:9px;
+}
+@media(max-width:900px){
+  .ab-freshener-row{gap:10px;padding:0 16px;}
+  .ab-freshener-img{width:180px;}
+  .ab-info-popup{width:190px;}
+}
+@media(max-width:600px){
+  .ab-freshener-img{width:130px;}
+  .ab-info-popup{width:165px;font-size:.6rem;}
+}
+.ab-emblem{display:flex;align-items:center;gap:14px;}
+.ab-emblem-line{width:70px;height:1px;}
+.ab-emblem-line:first-child{background:linear-gradient(90deg,transparent,rgba(74,144,226,.5));}
+.ab-emblem-line:last-child{background:linear-gradient(90deg,rgba(74,144,226,.5),transparent);}
+.ab-emblem-text{
+  font-family:'Cinzel',serif;font-size:.55rem;
+  letter-spacing:.28em;color:var(--gold);opacity:.45;
+  text-transform:uppercase;white-space:nowrap;
+}
+.ab-bottom-trim{
+  width:min(480px,80vw);height:1px;
+  background:linear-gradient(90deg,transparent,rgba(74,144,226,.4) 30%,rgba(74,144,226,.4) 70%,transparent);
+}
+
+/* FADE-IN */
+.ab-fade{opacity:0;transform:translateY(18px);transition:opacity .9s ease,transform .9s ease;}
+.ab-fade.ab-visible{opacity:1;transform:translateY(0);}
+
+/* ═══════════════════════════════════════════
+   CONTACT
+═══════════════════════════════════════════ */
+#section-contact{
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 100%, rgba(74,144,226,.06) 0%, transparent 55%),
+    linear-gradient(180deg, #0f0e0c 0%, #0B0A0A 100%);
+}
+
+.contact-layout{
+  max-width:900px;margin:0 auto;padding:0 2.5rem 100px;
+  display:grid;grid-template-columns:1fr 1.4fr;gap:5rem;align-items:start;
+}
+.contact-info h3{
+  font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.08em;
+  color:var(--cream);margin-bottom:1rem;
+}
+.contact-info p{font-size:.85rem;line-height:1.7;opacity:.55;margin-bottom:2rem}
+
+.social-links{display:flex;flex-direction:column;gap:.75rem}
+.social-link{
+  display:flex;align-items:center;gap:.75rem;
+  font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--cream);opacity:.55;text-decoration:none;
+  transition:opacity .2s,color .2s;padding:.5rem 0;
+  border-bottom:1px solid rgba(var(--gold-rgb),.08);
+}
+.social-link:hover{opacity:1;color:var(--gold)}
+.social-link .social-icon{font-size:1rem;opacity:.8}
+
+.contact-form{display:flex;flex-direction:column;gap:1rem}
+.form-group{display:flex;flex-direction:column;gap:.4rem}
+.form-label{
+  font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gold);opacity:.7;
+}
+.form-input,
+.form-textarea,
+.form-select{
+  padding:.85rem 1rem;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(var(--gold-rgb),.18);
+  color:var(--cream);font-family:'Barlow',sans-serif;font-size:.88rem;
+  outline:none;transition:border-color .2s,background .2s;
+  -webkit-appearance:none;
+}
+.form-input::placeholder,
+.form-textarea::placeholder{color:rgba(184,212,240,.25)}
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus{
+  border-color:rgba(var(--gold-rgb),.5);
+  background:rgba(255,255,255,.06);
+}
+.form-textarea{resize:vertical;min-height:120px}
+.form-select{background-color:var(--charcoal);cursor:pointer}
+.form-select option{background:var(--charcoal)}
+
+.btn-submit{
+  padding:.9rem 2rem;margin-top:.5rem;
+  background:transparent;
+  color:var(--gold);
+  border:1px solid rgba(74,144,226,.5);
+  cursor:pointer;
+  font-family:'Cinzel',serif;font-weight:700;
+  font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;
+  clip-path:none;
+  transition:all .3s;
+  position:relative;overflow:hidden;
+}
+.btn-submit:hover{
+  border-color:var(--gold);color:var(--cream);
+  box-shadow:0 0 30px rgba(74,144,226,.2);
+  background:rgba(74,144,226,.06);
+  transform:translateY(-1px);
+}
+
+/* ═══════════════════════════════════════════
+   LOGIN MODAL
+═══════════════════════════════════════════ */
+#login-modal{
+  display:none;position:fixed;inset:0;z-index:9000;
+  align-items:center;justify-content:center;
+  background:rgba(0,0,0,.8);backdrop-filter:blur(8px);
+  animation:fadeIn .2s ease;
+}
+#login-modal.open{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{
+  background:var(--charcoal);
+  border:1px solid rgba(var(--gold-rgb),.25);
+  padding:3rem;max-width:440px;width:90%;text-align:center;
+  position:relative;
+  animation:slideUp .3s ease;
+}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-box::before{
+  content:'';position:absolute;top:0;left:0;right:0;
+  height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.modal-close{
+  position:absolute;top:1rem;right:1rem;
+  background:none;border:none;color:var(--cream);
+  font-size:1.2rem;cursor:pointer;opacity:.5;transition:opacity .2s;
+}
+.modal-close:hover{opacity:1}
+.modal-logo{
+  font-family:'Cinzel',serif;font-size:1.1rem;letter-spacing:.2em;
+  color:var(--gold);margin-bottom:1.5rem;opacity:.8;
+}
+.modal-title{
+  font-family:'Cormorant Garamond',serif;font-size:1.4rem;
+  color:var(--cream);margin-bottom:.75rem;
+}
+.modal-desc{font-size:.85rem;line-height:1.7;opacity:.55;margin-bottom:2rem}
+.modal-action-name{color:var(--gold);font-weight:600}
+.modal-buttons{display:flex;flex-direction:column;gap:.75rem}
+.btn-modal-primary{
+  padding:.85rem;background:var(--gold);color:var(--black);border:none;cursor:pointer;
+  font-family:'Barlow',sans-serif;font-weight:700;
+  font-size:.78rem;letter-spacing:.15em;text-transform:uppercase;
+  transition:background .2s,box-shadow .2s;
+}
+.btn-modal-primary:hover{background:var(--cream);box-shadow:0 4px 20px rgba(var(--gold-rgb),.3)}
+.btn-modal-secondary{
+  padding:.85rem;background:transparent;
+  border:1px solid rgba(var(--gold-rgb),.3);color:var(--cream);cursor:pointer;
+  font-family:'Barlow',sans-serif;font-size:.78rem;letter-spacing:.15em;text-transform:uppercase;
+  transition:border-color .2s,color .2s;
+}
+.btn-modal-secondary:hover{border-color:var(--gold);color:var(--gold)}
+.btn-modal-ghost{
+  background:none;border:none;color:var(--cream);cursor:pointer;
+  font-family:'Barlow',sans-serif;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;
+  opacity:.4;transition:opacity .2s;
+}
+.btn-modal-ghost:hover{opacity:.8}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+footer{
+  background:var(--black);
+  border-top:1px solid rgba(var(--gold-rgb),.1);
+  padding:3rem 2.5rem;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:1.5rem;
+}
+.footer-brand{
+  font-family:'Cinzel',serif;font-size:1.3rem;letter-spacing:.15em;
+  color:var(--gold);opacity:.7;
+}
+.footer-copy{font-size:.72rem;letter-spacing:.08em;opacity:.3;text-transform:uppercase}
+.footer-links{display:flex;gap:1.5rem}
+.footer-links a{
+  font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--cream);opacity:.35;text-decoration:none;transition:opacity .2s;
+}
+.footer-links a:hover{opacity:.8;color:var(--gold)}
+
+/* ═══════════════════════════════════════════
+   SCENT PROMO POPUP
+═══════════════════════════════════════════ */
+#scent-overlay{
+  position:fixed;top:0;left:0;right:0;bottom:0;z-index:2000;
+  background:rgba(4,6,14,.6);
+  backdrop-filter:blur(4px);
+  display:flex;align-items:flex-start;justify-content:center;
+  padding-top:clamp(80px,10vh,120px);
+  opacity:0;pointer-events:none;
+  transition:opacity .5s ease;
+}
+#scent-overlay.open{opacity:1;pointer-events:auto;}
+
+#scent-popup{
+  position:relative;
+  width:min(900px,82vw);
+  max-height:88vh;
+  background:#06080f;
+  border:1px solid rgba(74,144,226,.3);
+  box-shadow:
+    0 0 0 1px rgba(74,144,226,.08),
+    0 30px 80px rgba(4,6,14,.9),
+    0 0 60px rgba(74,144,226,.12);
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  animation:scentPopIn .5s cubic-bezier(.22,.68,0,1.2) both;
+}
+@keyframes scentPopIn{
+  from{transform:scale(.88) translateY(30px);opacity:0;}
+  to  {transform:scale(1)   translateY(0);   opacity:1;}
+}
+
+/* video bg — fills entire popup */
+#scent-video{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;
+}
+
+/* dark overlay so text reads */
+.sp-fade{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 50%,transparent 0%,rgba(4,6,14,.55) 100%),
+    linear-gradient(180deg,rgba(4,6,14,.5) 0%,rgba(4,6,14,.1) 40%,rgba(4,6,14,.7) 100%);
+}
+
+/* corner accent lines */
+.sp-corner{position:absolute;width:22px;height:22px;z-index:2;}
+.sp-corner::before,.sp-corner::after{content:'';position:absolute;background:rgba(74,144,226,.6);}
+.sp-corner::before{width:100%;height:1px;top:0;left:0;}
+.sp-corner::after {width:1px;height:100%;top:0;left:0;}
+.sp-corner.tl{top:12px;left:12px;}
+.sp-corner.tr{top:12px;right:12px;transform:scaleX(-1);}
+.sp-corner.bl{bottom:12px;left:12px;transform:scaleY(-1);}
+.sp-corner.br{bottom:12px;right:12px;transform:scale(-1);}
+
+/* close */
+.sp-close{
+  position:absolute;top:12px;right:14px;z-index:10;
+  font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.18em;
+  color:rgba(74,144,226,.55);background:rgba(4,6,14,.6);
+  border:1px solid rgba(74,144,226,.2);padding:4px 12px;
+  cursor:pointer;transition:color .2s,border-color .2s;
+}
+.sp-close:hover{color:var(--cream);border-color:rgba(74,144,226,.6);}
+
+/* header */
+.sp-header{
+  position:relative;z-index:3;
+  text-align:center;padding:28px 20px 10px;
+}
+.sp-eyebrow{
+  font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.3em;
+  color:var(--gold);opacity:.5;text-transform:uppercase;margin-bottom:6px;
+}
+.sp-title{
+  font-family:'Pirata One',serif;
+  font-size:clamp(1.5rem,2.8vw,2.2rem);
+  color:var(--cream);letter-spacing:.06em;
+  text-shadow:0 0 40px rgba(74,144,226,.5),0 0 80px rgba(74,144,226,.2);
+}
+.sp-divider{
+  display:flex;align-items:center;gap:8px;
+  width:min(280px,70%);margin:10px auto 0;
+}
+.sp-divider::before{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(74,144,226,.5));}
+.sp-divider::after {content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(74,144,226,.5),transparent);}
+.sp-divider span{width:5px;height:5px;background:var(--gold);transform:rotate(45deg);flex-shrink:0;}
+
+/* cards row */
+.sp-row{
+  position:relative;z-index:3;
+  display:flex;justify-content:space-evenly;align-items:flex-end;
+  padding:10px 30px 28px;gap:0;
+}
+.sp-row .ab-freshener-img{width:170px;}
+.sp-row .ab-info-popup{bottom:calc(100% + 10px);}
+
+/* god ray card sweep */
+@keyframes spRayWave{
+  0%  {opacity:0;transform:translateX(-130%);}
+  25% {opacity:.6;}
+  75% {opacity:.5;}
+  100%{opacity:0;transform:translateX(130%);}
+}
+.sp-row .ab-freshener-card::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 25%,rgba(74,200,255,.35) 50%,transparent 75%);
+  pointer-events:none;z-index:10;
+  animation:spRayWave 4s ease-in-out infinite;
+}
+.sp-row .ab-freshener-card:nth-child(1)::after{animation-delay:0s;}
+.sp-row .ab-freshener-card:nth-child(2)::after{animation-delay:.65s;}
+.sp-row .ab-freshener-card:nth-child(3)::after{animation-delay:1.3s;}
+.sp-row .ab-freshener-card:nth-child(4)::after{animation-delay:1.95s;}
+
+/* hero trigger button */
+
+/* hero trigger button */
+.hero-scent-btn{
+  margin-top:16px;display:inline-flex;align-items:center;gap:10px;
+  font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.2em;
+  color:var(--cream);opacity:.7;cursor:pointer;
+  background:none;border:none;padding:0;
+  transition:opacity .25s;
+}
+.hero-scent-btn:hover{opacity:1;}
+.hero-scent-btn-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 8px rgba(74,144,226,.6);
+  animation:abSparkPulse 2s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media(max-width:900px){
+  .ab-body{grid-template-columns:1fr;grid-template-rows:auto auto auto;}
+  .ab-left{order:1;min-height:180px;border:none;border-bottom:1px solid rgba(74,144,226,.08);}
+  .ab-center{order:2;padding:14px;}
+  .ab-right{order:3;min-height:180px;border:none;border-top:1px solid rgba(74,144,226,.08);}
+  .ab-mural-img{max-width:140px !important;}
+  .ab-panel{padding:26px 18px;}
+  .contact-layout{grid-template-columns:1fr}
+  .contact-info{display:none}
+}
+@media(max-width:768px){
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  #nav{padding:0 1.5rem}
+  .products-grid,.deals-grid,.gift-grid{padding:0 1.5rem 80px}
+  .contact-layout,
+  .wholesale-inner,.custom-note-inner{padding:1.5rem}
+  .ab-founder-title{font-size:clamp(1.6rem,7vw,2.2rem);}
+  .ab-freshener-card{width:62px;}
+  footer{flex-direction:column;text-align:center}
+  .wholesale-inner{flex-direction:column}
+}
+
+/* ═══════════════════════════════════════════
+   MOBILE — max 480px (desktop untouched)
+═══════════════════════════════════════════ */
+@media(max-width:480px){
+
+  /* GLOBAL — kill horizontal scroll */
+  html,body{overflow-x:hidden;width:100%;}
+
+  /* NAV */
+  #nav{padding:0 1rem;}
+
+  /* HERO */
+  #section-home{min-height:100svh;}
+  .hero-inner{
+    padding:0 1.2rem 8vh 1.2rem;
+    max-width:100%;
+  }
+  .hero-title{font-size:clamp(2.4rem,11vw,3.6rem)!important;}
+  .hero-sub{font-size:.82rem;max-width:100%;}
+  .hero-cta{width:100%;text-align:center;justify-content:center;}
+
+  /* ABOUT — 3-col → single col */
+  .ab-body{
+    grid-template-columns:1fr!important;
+    grid-template-rows:auto!important;
+  }
+  .ab-left,.ab-right{
+    min-height:120px!important;
+    border:none!important;
+    border-bottom:1px solid rgba(74,144,226,.08)!important;
+  }
+  .ab-center{order:1!important;padding:10px 12px!important;}
+  .ab-left{order:2!important;}
+  .ab-right{order:3!important;}
+  .ab-panel{padding:20px 16px!important;}
+  .ab-mural-img{max-width:90px!important;}
+
+  /* SCENT POPUP */
+  #scent-popup{width:95vw!important;max-height:92vh!important;}
+  .sp-row{
+    flex-wrap:wrap!important;
+    justify-content:center!important;
+    gap:8px!important;
+    padding:8px 12px 20px!important;
+  }
+  .sp-row .ab-freshener-img{width:110px!important;}
+  .sp-row .ab-freshener-card{width:48%!important;}
+  .sp-header{padding:20px 16px 8px!important;}
+
+  /* SHOP / DEALS / GIFTING — single column */
+  .products-grid{
+    grid-template-columns:1fr!important;
+    padding:0 1rem 60px!important;
+    gap:1.2rem!important;
+  }
+  .deals-grid{
+    grid-template-columns:1fr!important;
+    padding:0 1rem 60px!important;
+    gap:1.2rem!important;
+  }
+  .gift-grid{
+    grid-template-columns:1fr!important;
+    padding:0 1rem 60px!important;
+    gap:1.2rem!important;
+  }
+
+  /* PRODUCT CARD — remove clip-path on mobile (renders wrong on some phones) */
+  .product-card{clip-path:none!important;}
+
+  /* WHOLESALE BANNER */
+  .wholesale-inner{
+    flex-direction:column!important;
+    padding:1.5rem 1rem!important;
+    gap:1rem!important;
+  }
+  .btn-outline{width:100%;}
+
+  /* CONTACT */
+  .contact-layout{
+    grid-template-columns:1fr!important;
+    padding:0 1rem 60px!important;
+  }
+
+  /* SECTION TITLES */
+  .sec-title{font-size:clamp(1.8rem,9vw,2.6rem)!important;}
+
+  /* FOOTER */
+  footer{flex-direction:column!important;text-align:center!important;padding:2rem 1rem!important;}
+}
+
+/* ═══════════════════════════════════════════
+   FEATURE 1 — SCENT PALETTE SWITCHER
+═══════════════════════════════════════════ */
+body, .section-bg, .nav-logo, .sec-title span, .card-scent, .ab-quote p {
+  transition: color 0.4s ease, background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+#scent-palette-badge {
+  position: fixed;
+  top: 86px;
+  right: 16px;
+  z-index: 998;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0,0,0,0.72);
+  border: 1px solid rgba(var(--gold-rgb),0.3);
+  border-radius: 20px;
+  padding: .28rem .75rem .28rem .5rem;
+  font-family: 'Cinzel', serif;
+  font-size: .5rem;
+  letter-spacing: .14em;
+  color: var(--gold);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s, color 0.4s, border-color 0.4s;
+}
+#scent-palette-badge.visible { opacity: 1; }
+#scent-palette-badge .badge-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gold);
+  transition: background 0.4s;
+  display: inline-block;
+}
+
+/* ═══════════════════════════════════════════
+   FEATURE 2 — CURSOR FRESHENER
+═══════════════════════════════════════════ */
+#cursor-freshener {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  width: 52px;
+  opacity: 0.9;
+  transform: translate(-50%, -50%);
+  display: none;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+}
+#section-home:hover { cursor: none; }
+#cursor-freshener.cf-hover {
+  width: 64px;
+  opacity: 1;
+  filter: drop-shadow(0 0 14px rgba(212,162,76,.9)) drop-shadow(0 0 28px rgba(212,162,76,.5));
+}
+
+/* ═══════════════════════════════════════════
+   FEATURE 3 — TESTIMONIALS TICKER
+═══════════════════════════════════════════ */
+#testimonials-ticker {
+  overflow: hidden;
+  white-space: nowrap;
+  background: rgba(0,0,0,0.6);
+  border-top: 1px solid rgba(var(--gold-rgb),0.2);
+  border-bottom: 1px solid rgba(var(--gold-rgb),0.2);
+  padding: 12px 0;
+  position: relative;
+  z-index: 2;
+}
+.ticker-track {
+  display: inline-flex;
+  animation: tickerScroll 30s linear infinite;
+}
+.ticker-item {
+  font-family: 'Pirata One', serif;
+  color: var(--gold);
+  font-size: .85rem;
+  padding: 0 1.5rem;
+  white-space: nowrap;
+  transition: color 0.4s;
+}
+.ticker-divider {
+  color: var(--amber);
+  padding: 0 .5rem;
+  opacity: .6;
+  transition: color 0.4s;
+}
+@keyframes tickerScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ═══════════════════════════════════════════
+   FEATURE 4 — CARD SMOKE CANVAS
+═══════════════════════════════════════════ */
+.card-smoke-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.3s;
+  border-radius: inherit;
+}
+.product-card { position: relative; overflow: hidden; }
+
+/* ═══════════════════════════════════════════
+   FEATURE 5 — TIMELINE SLIDER
+═══════════════════════════════════════════ */
+#timeline-track::-webkit-scrollbar { display: none; }
+#timeline-track { scrollbar-width: none; }
+.timeline-card {
+  min-width: 260px;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(var(--gold-rgb),0.25);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-right: 1.5rem;
+  cursor: grab;
+  user-select: none;
+  transition: border-color 0.4s, transform 0.2s;
+}
+.timeline-card:hover { border-color: rgba(var(--gold-rgb),0.55); transform: translateY(-3px); }
+.timeline-year {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.2rem;
+  color: var(--gold);
+  line-height: 1;
+  transition: color 0.4s;
+}
+.timeline-label {
+  font-family: 'Cinzel', serif;
+  font-size: .7rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin: .4rem 0 .7rem;
+  transition: color 0.4s;
+}
+.timeline-desc {
+  font-family: 'Barlow', sans-serif;
+  font-size: .82rem;
+  line-height: 1.5;
+  color: var(--cream);
+  opacity: .85;
+  transition: color 0.4s;
+}
+
+/* ═══════════════════════════════════════════
+   FEATURE 6 — NIGHT / DAY MODE
+═══════════════════════════════════════════ */
+body.day-mode {
+  --black: #1a1208;
+  --charcoal: #2a1e10;
+}
+#timemode-badge {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  z-index: 999;
+  font-family: 'Cinzel', serif;
+  font-size: .55rem;
+  letter-spacing: .15em;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(var(--gold-rgb),0.3);
+  color: var(--gold);
+  padding: .3rem .7rem;
+  border-radius: 20px;
+  pointer-events: none;
+  transition: color 0.4s, border-color 0.4s;
+}
+
+/* ════════════════════════════════════════════
+   CHECKOUT SECTION
+════════════════════════════════════════════ */
+#section-checkout {
+  background: linear-gradient(180deg, #0B0A0A 0%, #0f0c07 50%, #0B0A0A 100%);
+}
+.checkout-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
+}
+.checkout-steps {
+  display: flex;
+  gap: 2.5rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.checkout-left {
+  flex: 1 1 320px;
+  min-width: 280px;
+}
+.checkout-right {
+  flex: 1 1 340px;
+  min-width: 280px;
+}
+.checkout-step-label {
+  font-family: 'Pirata One', cursive;
+  color: #d4a24c;
+  font-size: 1.05rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: .9rem;
+  margin-top: 0;
+}
+/* Product selector cards */
+.co-product-list {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  margin-bottom: 2.2rem;
+}
+.co-product-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(212,162,76,.18);
+  border-radius: 8px;
+  padding: .65rem 1rem;
+  gap: .75rem;
+}
+.co-product-info { flex: 1; }
+.co-product-name {
+  font-family: 'Cinzel', serif;
+  color: var(--cream);
+  font-size: .85rem;
+  font-weight: 600;
+}
+.co-product-price {
+  font-family: 'Cinzel', serif;
+  color: #d4a24c;
+  font-size: .8rem;
+  margin-top: .15rem;
+}
+.co-qty-controls {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.co-qty-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid rgba(212,162,76,.6);
+  background: transparent;
+  color: var(--cream);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s, border-color .2s;
+}
+.co-qty-btn:hover {
+  background: rgba(212,162,76,.15);
+  border-color: var(--gold);
+}
+.co-qty-val {
+  font-family: 'Cinzel', serif;
+  color: var(--cream);
+  font-size: .9rem;
+  min-width: 18px;
+  text-align: center;
+}
+/* Promo panel */
+.co-promo-panel {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(212,162,76,.2);
+  border-radius: 10px;
+  padding: 1.4rem 1.5rem;
+  margin-bottom: 2rem;
+}
+.co-promo-row {
+  display: flex;
+  gap: .75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.co-promo-input {
+  flex: 1;
+  min-width: 180px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(212,162,76,.25);
+  color: var(--cream);
+  border-radius: 6px;
+  padding: .75rem 1rem;
+  font-family: 'Cinzel', serif;
+  font-size: .85rem;
+  letter-spacing: .08em;
+  outline: none;
+  transition: border-color .25s, box-shadow .25s;
+  caret-color: #d4a24c;
+}
+.co-promo-input::placeholder { color: rgba(255,255,255,.3); }
+.co-promo-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(212,162,76,.1);
+}
+.co-promo-btn {
+  background: rgba(212,162,76,.12);
+  border: 1px solid rgba(212,162,76,.4);
+  color: #d4a24c;
+  font-family: 'Cinzel', serif;
+  font-size: .8rem;
+  letter-spacing: .1em;
+  padding: .75rem 1.4rem;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .2s, border-color .2s;
+}
+.co-promo-btn:hover {
+  background: rgba(212,162,76,.22);
+  border-color: var(--gold);
+}
+.co-promo-msg {
+  margin-top: .75rem;
+  font-family: 'Cinzel', serif;
+  font-size: .8rem;
+  min-height: 1.2em;
+  transition: opacity .3s;
+}
+.co-promo-msg.valid   { color: #6fcf97; }
+.co-promo-msg.invalid { color: #eb5757; }
+@keyframes promoShake {
+  0%,100% { transform: translateX(0); }
+  15%      { transform: translateX(-8px); }
+  30%      { transform: translateX(8px); }
+  45%      { transform: translateX(-6px); }
+  60%      { transform: translateX(6px); }
+  75%      { transform: translateX(-4px); }
+  90%      { transform: translateX(4px); }
+}
+@keyframes promoFlash {
+  0%,100% { box-shadow: 0 0 0 0 rgba(212,162,76,0); }
+  33%     { box-shadow: 0 0 0 6px rgba(212,162,76,.35); }
+  66%     { box-shadow: 0 0 0 3px rgba(212,162,76,.18); }
+}
+.co-promo-panel.shake { animation: promoShake .55s ease; }
+.co-promo-panel.flash { animation: promoFlash .9s ease; }
+
+/* Order summary card */
+.co-summary-card {
+  position: relative;
+  background: rgba(6,8,16,.9);
+  border: 1px solid rgba(212,162,76,.3);
+  border-radius: 12px;
+  padding: 1.8rem 1.6rem 1.6rem;
+  overflow: hidden;
+}
+/* Gold top/bottom accent lines */
+.co-summary-card::before,
+.co-summary-card::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #d4a24c 30%, #f0c060 50%, #d4a24c 70%, transparent);
+}
+.co-summary-card::before { top: 0; }
+.co-summary-card::after  { bottom: 0; }
+/* Corner ornaments */
+.co-corner { position: absolute; width: 16px; height: 16px; }
+.co-corner.tl { top: 8px; left: 8px; border-top: 1px solid #d4a24c; border-left: 1px solid #d4a24c; }
+.co-corner.tr { top: 8px; right: 8px; border-top: 1px solid #d4a24c; border-right: 1px solid #d4a24c; }
+.co-corner.bl { bottom: 8px; left: 8px; border-bottom: 1px solid #d4a24c; border-left: 1px solid #d4a24c; }
+.co-corner.br { bottom: 8px; right: 8px; border-bottom: 1px solid #d4a24c; border-right: 1px solid #d4a24c; }
+
+.co-summary-title {
+  font-family: 'Pirata One', cursive;
+  color: #d4a24c;
+  font-size: 1.15rem;
+  letter-spacing: .1em;
+  margin-bottom: 1.1rem;
+  text-align: center;
+}
+.co-item-list {
+  list-style: none;
+  padding: 0; margin: 0 0 1rem;
+  display: flex; flex-direction: column; gap: .45rem;
+}
+.co-item-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Cinzel', serif;
+  font-size: .8rem;
+  color: rgba(255,255,255,.75);
+}
+.co-item-row .co-item-name { flex: 1; }
+.co-item-row .co-item-qty  { margin: 0 .75rem; color: rgba(255,255,255,.45); }
+.co-item-row .co-item-price{ color: var(--cream); }
+.co-divider-line {
+  border: none;
+  border-top: 1px solid rgba(212,162,76,.15);
+  margin: .8rem 0;
+}
+.co-summary-line {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Cinzel', serif;
+  font-size: .82rem;
+  color: rgba(255,255,255,.7);
+  margin-bottom: .5rem;
+}
+.co-summary-line.discount .co-sum-val { color: #6fcf97; }
+.co-summary-line.shipping .co-sum-val { color: rgba(255,255,255,.6); }
+.co-original-price {
+  text-decoration: line-through;
+  color: rgba(255,255,255,.35);
+  margin-right: .4rem;
+  font-size: .75rem;
+}
+.co-discount-badge {
+  background: rgba(111,207,151,.15);
+  color: #6fcf97;
+  border-radius: 4px;
+  padding: .05rem .35rem;
+  font-size: .7rem;
+  font-family: 'Cinzel', serif;
+  margin-left: .4rem;
+}
+.co-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: .9rem;
+  padding-top: .9rem;
+  border-top: 1px solid rgba(212,162,76,.25);
+}
+.co-total-label {
+  font-family: 'Pirata One', cursive;
+  color: #d4a24c;
+  font-size: 1.15rem;
+  letter-spacing: .08em;
+}
+.co-total-val {
+  font-family: 'Pirata One', cursive;
+  font-size: 1.6rem;
+  color: #d4a24c;
+  text-shadow: 0 0 18px rgba(212,162,76,.55), 0 0 6px rgba(212,162,76,.3);
+}
+/* Place order button */
+.co-place-btn {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin-top: 1.4rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(90deg, #b8892e 0%, #d4a24c 40%, #f0c060 60%, #d4a24c 80%, #b8892e 100%);
+  background-size: 200% 100%;
+  color: #0B0A0A;
+  font-family: 'Cinzel', serif;
+  font-size: .92rem;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: background-position .5s, transform .15s, box-shadow .3s;
+}
+.co-place-btn:hover {
+  background-position: 100% 0;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(212,162,76,.35);
+}
+.co-place-btn::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.22), transparent);
+  transform: skewX(-20deg);
+  transition: left .5s;
+}
+.co-place-btn:hover::after { left: 160%; }
+/* Trust badges */
+.co-trust-row {
+  display: flex;
+  justify-content: center;
+  gap: 1.4rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+.co-trust-item {
+  font-family: 'Cinzel', serif;
+  font-size: .7rem;
+  color: rgba(255,255,255,.45);
+  letter-spacing: .05em;
+}
+/* Empty cart state */
+.co-empty-note {
+  font-family: 'Cinzel', serif;
+  font-size: .8rem;
+  color: rgba(255,255,255,.35);
+  text-align: center;
+  padding: 1.2rem 0;
+  font-style: italic;
+}
+/* Success modal */
+.co-success-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(6,5,3,.94);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .35s;
+}
+.co-success-overlay.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+.co-success-box {
+  text-align: center;
+  padding: 3rem 2.5rem;
+  max-width: 400px;
+}
+.co-check-icon {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  border: 3px solid #d4a24c;
+  margin: 0 auto 1.5rem;
+  position: relative;
+  box-shadow: 0 0 30px rgba(212,162,76,.3);
+}
+.co-check-icon::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 36px; height: 22px;
+  border-left: 3px solid #d4a24c;
+  border-bottom: 3px solid #d4a24c;
+  transform: translate(-55%, -62%) rotate(-45deg);
+}
+.co-success-title {
+  font-family: 'Pirata One', cursive;
+  font-size: 2.2rem;
+  color: #d4a24c;
+  text-shadow: 0 0 20px rgba(212,162,76,.4);
+  margin-bottom: .6rem;
+}
+.co-success-sub {
+  font-family: 'Cinzel', serif;
+  font-size: .88rem;
+  color: rgba(255,255,255,.6);
+  margin-bottom: 2rem;
+}
+.co-success-close {
+  background: transparent;
+  border: 1px solid rgba(212,162,76,.4);
+  color: #d4a24c;
+  font-family: 'Cinzel', serif;
+  font-size: .8rem;
+  letter-spacing: .12em;
+  padding: .7rem 2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background .2s;
+}
+.co-success-close:hover { background: rgba(212,162,76,.1); }
+</style>
+</head>
+<body>
+<div class="bandana-bg"></div>
+
+<!-- FEATURE 2: Cursor freshener -->
+<img id="cursor-freshener" src="assets/Churro.png" alt=""/>
+
+<!-- FEATURE 1: Scent palette badge -->
+<div id="scent-palette-badge">
+  <span class="badge-dot"></span>
+  <span id="scent-badge-text">Churro</span>
+</div>
+
+<!-- FEATURE 6: Time mode badge -->
+<div id="timemode-badge">🌙 Night Mode</div>
+
+<!-- ════════════════ SCENT POPUP ════════════════ -->
+<div id="scent-overlay" onclick="if(event.target===this)closeScentPopup()">
+  <div id="scent-popup">
+    <video id="scent-video" autoplay muted loop playsinline style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;"></video>
+    <div class="sp-fade"></div>
+    <div class="sp-corner tl"></div>
+    <div class="sp-corner tr"></div>
+    <div class="sp-corner bl"></div>
+    <div class="sp-corner br"></div>
+    <button class="sp-close" onclick="closeScentPopup()">CLOSE ✕</button>
+
+    <div class="sp-header">
+      <div class="sp-eyebrow">Street Scentz — Exclusive Collection</div>
+      <div class="sp-title">Our Signature Scents</div>
+      <div class="sp-divider"><span></span></div>
+    </div>
+
+    <div class="sp-row">
+      <!-- CHURRO -->
+      <div class="ab-freshener-card" data-tilt data-scent="churro">
+        <div class="ab-hang-string"></div><div class="ab-hang-knot"></div>
+        <div class="ab-info-icon">i</div>
+        <div class="ab-info-popup">
+          <div class="ab-info-title">Churro</div>
+          <div class="ab-info-label">Smells Like</div>
+          <div class="ab-info-text">Warm cinnamon sugar fresh off the fryer, toasted dough, and a hint of sweet vanilla cream.</div>
+          <div class="ab-info-label">Key Ingredients</div>
+          <div class="ab-info-text">Cinnamon · Brown Sugar · Vanilla · Warm Bread Accord · Caramel Musk</div>
+        </div>
+        <img class="ab-freshener-img" src="assets/Churro.png" alt="Churro"/>
+        <div class="ab-glow-pool"></div>
+        <div class="ab-freshener-name">Churro</div>
+      </div>
+      <!-- HORCHATA -->
+      <div class="ab-freshener-card" data-tilt data-scent="horchata">
+        <div class="ab-hang-string"></div><div class="ab-hang-knot"></div>
+        <div class="ab-info-icon">i</div>
+        <div class="ab-info-popup">
+          <div class="ab-info-title">Horchata</div>
+          <div class="ab-info-label">Smells Like</div>
+          <div class="ab-info-text">Cold sweet rice milk with cinnamon bark, soft vanilla, and a creamy almond finish.</div>
+          <div class="ab-info-label">Key Ingredients</div>
+          <div class="ab-info-text">Rice Water Accord · Cinnamon Bark · Vanilla Cream · Almond · Soft Musk</div>
+        </div>
+        <img class="ab-freshener-img" src="assets/Horchata.png" alt="Horchata"/>
+        <div class="ab-glow-pool"></div>
+        <div class="ab-freshener-name">Horchata</div>
+      </div>
+      <!-- JAMAICA -->
+      <div class="ab-freshener-card" data-tilt data-scent="jamaica">
+        <div class="ab-hang-string"></div><div class="ab-hang-knot"></div>
+        <div class="ab-info-icon">i</div>
+        <div class="ab-info-popup">
+          <div class="ab-info-title">Jamaica</div>
+          <div class="ab-info-label">Smells Like</div>
+          <div class="ab-info-text">Bright hibiscus flowers, tart berry, a touch of citrus zest, and a clean floral finish.</div>
+          <div class="ab-info-label">Key Ingredients</div>
+          <div class="ab-info-text">Hibiscus Extract · Tart Berry · Citrus Zest · Floral Musk · Aquatic Clean</div>
+        </div>
+        <img class="ab-freshener-img" src="assets/Jamaica.png" alt="Jamaica"/>
+        <div class="ab-glow-pool"></div>
+        <div class="ab-freshener-name">Jamaica</div>
+      </div>
+      <!-- PINA COLADA -->
+      <div class="ab-freshener-card" data-tilt data-scent="pina">
+        <div class="ab-hang-string"></div><div class="ab-hang-knot"></div>
+        <div class="ab-info-icon">i</div>
+        <div class="ab-info-popup">
+          <div class="ab-info-title">Piña Colada</div>
+          <div class="ab-info-label">Smells Like</div>
+          <div class="ab-info-text">Ripe golden pineapple, rich coconut cream, and a warm tropical breeze with vanilla undertones.</div>
+          <div class="ab-info-label">Key Ingredients</div>
+          <div class="ab-info-text">Pineapple Extract · Coconut Cream · Tropical Floral · Vanilla · Sweet Musk</div>
+        </div>
+        <img class="ab-freshener-img" src="assets/Pina Colada.png" alt="Pina Colada"/>
+        <div class="ab-glow-pool"></div>
+        <div class="ab-freshener-name">Piña Colada</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GPU PARTICLE CANVAS — fixed background layer -->
+<canvas id="gpu-particles" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:3;pointer-events:none;"></canvas>
+
+<!-- ════════════════ NAV ════════════════ -->
+<nav id="nav">
+  <div class="nav-logo" onclick="showSection('home')" style="cursor:pointer;line-height:0;display:flex;align-items:center;position:relative;">
+    <img id="logo-img" src="assets/logo title.png" alt="Street Scentz" style="height:200px;width:auto;display:block;filter:drop-shadow(0 0 8px rgba(74,144,226,.4));margin-top:30px;"/>
+    <canvas id="logo-glamour" style="position:absolute;top:0;left:0;pointer-events:none;z-index:9999;"></canvas>
+  </div>
+  <div style="display:none">
+    <svg viewBox="0 0 320 72" width="220" height="55" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block;">
+      <defs>
+        <!-- Main gold metallic gradient -->
+        <linearGradient id="goldMetal" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%"   stop-color="#FFF3C4"/>
+          <stop offset="12%"  stop-color="#F0C84A"/>
+          <stop offset="28%"  stop-color="#4A90E2"/>
+          <stop offset="45%"  stop-color="#FFF0A0"/>
+          <stop offset="60%"  stop-color="#C8882A"/>
+          <stop offset="75%"  stop-color="#E8B84A"/>
+          <stop offset="88%"  stop-color="#1A3A8F"/>
+          <stop offset="100%" stop-color="#4A90E2"/>
+        </linearGradient>
+
+        <!-- Highlight sweep gradient -->
+        <linearGradient id="goldHighlight" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stop-color="#1A3A8F" stop-opacity="0"/>
+          <stop offset="35%"  stop-color="#FFF8D0" stop-opacity=".7"/>
+          <stop offset="50%"  stop-color="#ffffff"  stop-opacity=".9"/>
+          <stop offset="65%"  stop-color="#FFF8D0" stop-opacity=".7"/>
+          <stop offset="100%" stop-color="#1A3A8F" stop-opacity="0"/>
+        </linearGradient>
+
+        <!-- Glow filter -->
+        <filter id="logoGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="2.5" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+
+        <!-- Soft drop shadow -->
+        <filter id="logoDrop" x="-10%" y="-10%" width="120%" height="130%">
+          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1A3A8F" flood-opacity=".5"/>
+        </filter>
+
+        <!-- Shine sweep animation clip -->
+        <clipPath id="textClip">
+          <rect x="0" y="0" width="320" height="72"/>
+        </clipPath>
+      </defs>
+
+      <!-- ── CROWN ── -->
+      <g transform="translate(160,0)" filter="url(#logoDrop)">
+        <!-- Crown base -->
+        <path d="M-18,14 L-18,20 L18,20 L18,14 L10,14 L6,6 L0,12 L-6,6 L-10,14 Z"
+          fill="url(#goldMetal)" stroke="#1A3A8F" stroke-width=".4"/>
+        <!-- Crown center jewel -->
+        <ellipse cx="0" cy="7" rx="2.2" ry="2.5" fill="#FFF3C4" opacity=".9"/>
+        <!-- Crown left jewel -->
+        <ellipse cx="-8" cy="11" rx="1.4" ry="1.6" fill="#F0C84A" opacity=".85"/>
+        <!-- Crown right jewel -->
+        <ellipse cx="8" cy="11" rx="1.4" ry="1.6" fill="#F0C84A" opacity=".85"/>
+        <!-- Crown points accent lines -->
+        <line x1="0" y1="4" x2="0" y2="8" stroke="#FFF3C4" stroke-width=".6" opacity=".7"/>
+      </g>
+
+      <!-- ── SPARKLE STARS ── -->
+      <!-- Top left sparkle -->
+      <g transform="translate(28,12)" opacity=".9">
+        <line x1="0" y1="-5" x2="0" y2="5" stroke="#F0C84A" stroke-width="1.2"/>
+        <line x1="-5" y1="0" x2="5" y2="0" stroke="#F0C84A" stroke-width="1.2"/>
+        <line x1="-3.5" y1="-3.5" x2="3.5" y2="3.5" stroke="#F0C84A" stroke-width=".6"/>
+        <line x1="3.5" y1="-3.5" x2="-3.5" y2="3.5" stroke="#F0C84A" stroke-width=".6"/>
+        <circle cx="0" cy="0" r="1.2" fill="#FFF8D0"/>
+      </g>
+      <!-- Top right sparkle (small) -->
+      <g transform="translate(290,10)" opacity=".8">
+        <line x1="0" y1="-3.5" x2="0" y2="3.5" stroke="#F0C84A" stroke-width="1"/>
+        <line x1="-3.5" y1="0" x2="3.5" y2="0" stroke="#F0C84A" stroke-width="1"/>
+        <line x1="-2.5" y1="-2.5" x2="2.5" y2="2.5" stroke="#F0C84A" stroke-width=".5"/>
+        <line x1="2.5" y1="-2.5" x2="-2.5" y2="2.5" stroke="#F0C84A" stroke-width=".5"/>
+        <circle cx="0" cy="0" r=".9" fill="#FFF8D0"/>
+      </g>
+      <!-- Bottom right sparkle (tiny) -->
+      <g transform="translate(305,54)" opacity=".7">
+        <line x1="0" y1="-3" x2="0" y2="3" stroke="#4A90E2" stroke-width=".8"/>
+        <line x1="-3" y1="0" x2="3" y2="0" stroke="#4A90E2" stroke-width=".8"/>
+        <circle cx="0" cy="0" r=".7" fill="#FFF8D0"/>
+      </g>
+      <!-- Bottom left sparkle (tiny) -->
+      <g transform="translate(14,58)" opacity=".65">
+        <line x1="0" y1="-3" x2="0" y2="3" stroke="#4A90E2" stroke-width=".8"/>
+        <line x1="-3" y1="0" x2="3" y2="0" stroke="#4A90E2" stroke-width=".8"/>
+        <circle cx="0" cy="0" r=".7" fill="#FFF8D0"/>
+      </g>
+
+      <!-- ── LEFT FLOURISH SWASH ── -->
+      <path d="M4,45 C2,42 1,38 4,35 C7,32 12,33 10,37 C8,40 4,39 6,36"
+        fill="none" stroke="url(#goldMetal)" stroke-width="1.2" stroke-linecap="round" opacity=".8"/>
+      <path d="M4,35 C6,30 14,28 8,24"
+        fill="none" stroke="url(#goldMetal)" stroke-width=".8" stroke-linecap="round" opacity=".5"/>
+
+      <!-- ── RIGHT FLOURISH SWASH ── -->
+      <path d="M316,45 C318,42 319,38 316,35 C313,32 308,33 310,37 C312,40 316,39 314,36"
+        fill="none" stroke="url(#goldMetal)" stroke-width="1.2" stroke-linecap="round" opacity=".8"/>
+      <path d="M316,35 C314,30 306,28 312,24"
+        fill="none" stroke="url(#goldMetal)" stroke-width=".8" stroke-linecap="round" opacity=".5"/>
+
+      <!-- ── CENTER DIVIDER LINE ── -->
+      <line x1="80" y1="43" x2="240" y2="43" stroke="url(#goldHighlight)" stroke-width=".6" opacity=".6"/>
+
+      <!-- ── "STREET" TEXT ── -->
+      <text
+        x="160" y="40"
+        text-anchor="middle"
+        font-family="'Cinzel', 'Trajan Pro', 'Times New Roman', serif"
+        font-weight="900"
+        font-size="26"
+        letter-spacing="6"
+        fill="url(#goldMetal)"
+        filter="url(#logoDrop)"
+      >STREET</text>
+
+      <!-- "STREET" shine overlay -->
+      <text
+        x="160" y="40"
+        text-anchor="middle"
+        font-family="'Cinzel', 'Trajan Pro', 'Times New Roman', serif"
+        font-weight="900"
+        font-size="26"
+        letter-spacing="6"
+        fill="url(#goldHighlight)"
+        opacity=".4"
+      >STREET</text>
+
+      <!-- ── "SCENTZ" TEXT ── -->
+      <text
+        x="160" y="66"
+        text-anchor="middle"
+        font-family="'Cinzel', 'Trajan Pro', 'Times New Roman', serif"
+        font-weight="400"
+        font-size="18"
+        letter-spacing="12"
+        fill="url(#goldMetal)"
+        filter="url(#logoDrop)"
+      >SCENTZ</text>
+
+      <!-- "SCENTZ" shine overlay -->
+      <text
+        x="160" y="66"
+        text-anchor="middle"
+        font-family="'Cinzel', 'Trajan Pro', 'Times New Roman', serif"
+        font-weight="400"
+        font-size="18"
+        letter-spacing="12"
+        fill="url(#goldHighlight)"
+        opacity=".35"
+      >SCENTZ</text>
+
+      <!-- ── ANIMATED SHINE SWEEP ── -->
+      <rect x="-320" y="0" width="640" height="72"
+        fill="url(#goldHighlight)" opacity=".18" clip-path="url(#textClip)">
+        <animateTransform attributeName="transform" type="translate"
+          from="-320 0" to="320 0" dur="4s" repeatCount="indefinite"/>
+      </rect>
+
+      <!-- ── SPARKLE TWINKLE ANIMATIONS ── -->
+      <g transform="translate(28,12)">
+        <circle cx="0" cy="0" r="1.2" fill="#FFF8D0">
+          <animate attributeName="opacity" values="1;0.2;1" dur="2.1s" repeatCount="indefinite"/>
+          <animate attributeName="r" values="1.2;2;1.2" dur="2.1s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+      <g transform="translate(290,10)">
+        <circle cx="0" cy="0" r=".9" fill="#FFF8D0">
+          <animate attributeName="opacity" values="0.4;1;0.4" dur="1.7s" repeatCount="indefinite"/>
+          <animate attributeName="r" values=".9;1.8;.9" dur="1.7s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+    </svg>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#" class="active" data-section="home" onclick="navClick(event,'home')">Home</a></li>
+    <li><a href="#" data-section="shop" onclick="navClick(event,'shop')">Shop</a></li>
+    <li><a href="#" data-section="discounts" onclick="navClick(event,'discounts')">Discounts</a></li>
+    <li><a href="#" data-section="checkout" onclick="navClick(event,'checkout')">Checkout</a></li>
+    <li><a href="#" data-section="gifting" onclick="navClick(event,'gifting')">Gifting</a></li>
+    <li><a href="#" data-section="about" onclick="navClick(event,'about')">About</a></li>
+    <li><a href="#" data-section="contact" onclick="navClick(event,'contact')">Contact</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- mobile menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#" class="active" data-section="home" onclick="mobileNav(event,'home')">Home</a>
+  <a href="#" data-section="shop" onclick="mobileNav(event,'shop')">Shop</a>
+  <a href="#" data-section="discounts" onclick="mobileNav(event,'discounts')">Discounts</a>
+  <a href="#" data-section="checkout" onclick="mobileNav(event,'checkout')">Checkout</a>
+  <a href="#" data-section="gifting" onclick="mobileNav(event,'gifting')">Gifting</a>
+  <a href="#" data-section="about" onclick="mobileNav(event,'about')">About</a>
+  <a href="#" data-section="contact" onclick="mobileNav(event,'contact')">Contact</a>
+</div>
+
+<!-- ════════════════ HOME ════════════════ -->
+<section id="section-home" class="section-wrap active">
+  <!-- hero-particles retired: GPU system covers full page -->
+  <div class="hero-bg"></div>
+
+  <!-- SUNSET HORIZON GLOW -->
+  <div class="hero-horizon"></div>
+
+
+  <!-- GROUND FOG -->
+  <div class="hero-fog"></div>
+
+  <!-- EXCLUSIVE DEALS TAB — above girl & lowrider -->
+  <div id="deals-tab" style="position:absolute;right:5%;bottom:calc(63% + 70px);z-index:10;width:300px;">
+
+    <!-- tab header label -->
+    <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;">
+      <div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(212,162,76,.4));"></div>
+      <span style="font-family:'Pirata One',serif;font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--amber);opacity:.8;">Exclusive Deals</span>
+      <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(212,162,76,.4),transparent);"></div>
+    </div>
+
+    <!-- card -->
+    <div style="background:rgba(13,9,0,.82);border:1px solid rgba(212,162,76,.3);border-radius:8px;
+      box-shadow:0 8px 32px rgba(0,0,0,.7),0 0 16px rgba(212,162,76,.1);
+      backdrop-filter:blur(6px);padding:.7rem 1rem .55rem;position:relative;overflow:hidden;">
+
+      <!-- gold shimmer line top -->
+      <div style="position:absolute;top:0;left:0;right:0;height:1px;
+        background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5;"></div>
+
+      <!-- slide track -->
+      <div id="deals-track" style="min-height:52px;display:flex;align-items:center;justify-content:space-between;gap:.6rem;">
+
+        <!-- prev arrow -->
+        <button onclick="dealsPrev()" style="flex-shrink:0;background:none;border:1px solid rgba(212,162,76,.25);
+          color:var(--gold);width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:.85rem;
+          display:flex;align-items:center;justify-content:center;padding:0;">&#8249;</button>
+
+        <!-- slide content -->
+        <div style="flex:1;text-align:center;">
+          <div id="deal-label" style="font-family:'Pirata One',serif;font-size:.5rem;letter-spacing:.3em;
+            text-transform:uppercase;color:var(--amber);opacity:.75;margin-bottom:.2rem;">Limited Time</div>
+          <div id="deal-text" style="font-family:'Cinzel',serif;font-weight:700;font-size:.72rem;
+            color:var(--cream);letter-spacing:.06em;line-height:1.3;margin-bottom:.4rem;">
+            FREE SHIPPING ON ORDERS $35+
+          </div>
+          <button onclick="openScentPopup()" style="font-family:'Cinzel',serif;font-size:.52rem;font-weight:700;
+            letter-spacing:.15em;text-transform:uppercase;background:var(--gold);color:#0B0A0A;
+            border:none;padding:.28rem .7rem;border-radius:3px;cursor:pointer;
+            box-shadow:0 0 10px rgba(212,162,76,.35);" id="deal-btn">CLAIM NOW</button>
+        </div>
+
+        <!-- next arrow -->
+        <button onclick="dealsNext()" style="flex-shrink:0;background:none;border:1px solid rgba(212,162,76,.25);
+          color:var(--gold);width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:.85rem;
+          display:flex;align-items:center;justify-content:center;padding:0;">&#8250;</button>
+
+      </div>
+
+      <!-- dots -->
+      <div style="display:flex;justify-content:center;gap:5px;margin-top:.4rem;" id="deals-dots">
+        <span class="deal-dot active" onclick="dealsGo(0)"></span>
+        <span class="deal-dot" onclick="dealsGo(1)"></span>
+        <span class="deal-dot" onclick="dealsGo(2)"></span>
+        <span class="deal-dot" onclick="dealsGo(3)"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOWRIDER — behind character, bottom-right -->
+  <div style="position:absolute;right:-2%;bottom:0;width:min(55vw,700px);z-index:3;pointer-events:none;transform:translateX(-100px);">
+    <img src="assets/lowrider.png" alt="Lowrider"
+      style="width:100%;display:block;object-fit:contain;object-position:bottom right;filter:drop-shadow(0 0 40px rgba(30,94,200,.25)) drop-shadow(0 20px 60px rgba(0,0,0,.8));"/>
+  </div>
+
+  <!-- FEMALE CHARACTER — front, anchored to bottom so crop is hidden -->
+  <div style="position:absolute;right:8%;bottom:0;width:min(28vw,360px);z-index:4;pointer-events:none;">
+    <img src="assets/female 1.png" alt="Street Scentz"
+      style="width:100%;display:block;object-fit:contain;object-position:bottom center;filter:drop-shadow(0 0 30px rgba(74,144,226,.2)) drop-shadow(0 10px 40px rgba(0,0,0,.9));"/>
+  </div>
+
+  <!-- TRAILER BLOCK — left side -->
+  <div style="position:absolute;left:4%;top:12%;width:min(400px,44vw);z-index:6;">
+
+    <!-- header -->
+    <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.35rem;">
+      <div style="width:28px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));"></div>
+      <span style="font-family:'Pirata One',serif;font-size:.58rem;letter-spacing:.38em;text-transform:uppercase;color:var(--amber);opacity:.85;">✦ Trailer</span>
+      <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--gold),transparent);"></div>
+    </div>
+    <div style="font-family:'Pirata One',serif;font-size:clamp(1.2rem,2.4vw,1.9rem);color:var(--cream);margin-bottom:.75rem;text-shadow:0 0 22px rgba(212,162,76,.3);line-height:1.1;">Check Out Our Brand</div>
+
+    <!-- video card -->
+    <div style="position:relative;border-radius:10px;overflow:hidden;
+      border:1px solid rgba(212,162,76,.35);
+      box-shadow:0 12px 48px rgba(0,0,0,.85),0 0 24px rgba(212,162,76,.15),inset 0 1px 0 rgba(212,162,76,.1);
+      background:#000;">
+
+      <!-- top accent line -->
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;z-index:2;
+        background:linear-gradient(90deg,transparent 0%,var(--gold) 40%,var(--amber) 60%,transparent 100%);opacity:.6;pointer-events:none;"></div>
+
+
+      <video
+        id="brand-video"
+        controls
+        playsinline
+        preload="auto"
+        style="width:100%;display:block;background:#000;">
+        <source src="assets/COMMERCIAL.mp4" type="video/mp4">
+      </video>
+
+      <!-- corner ornaments -->
+      <div style="position:absolute;top:6px;left:6px;width:12px;height:12px;z-index:3;pointer-events:none;
+        border-top:1px solid rgba(212,162,76,.6);border-left:1px solid rgba(212,162,76,.6);border-radius:2px 0 0 0;"></div>
+      <div style="position:absolute;top:6px;right:6px;width:12px;height:12px;z-index:3;pointer-events:none;
+        border-top:1px solid rgba(212,162,76,.6);border-right:1px solid rgba(212,162,76,.6);border-radius:0 2px 0 0;"></div>
+      <div style="position:absolute;bottom:6px;left:6px;width:12px;height:12px;z-index:3;pointer-events:none;
+        border-bottom:1px solid rgba(212,162,76,.6);border-left:1px solid rgba(212,162,76,.6);border-radius:0 0 0 2px;"></div>
+      <div style="position:absolute;bottom:6px;right:6px;width:12px;height:12px;z-index:3;pointer-events:none;
+        border-bottom:1px solid rgba(212,162,76,.6);border-right:1px solid rgba(212,162,76,.6);border-radius:0 0 2px 0;"></div>
+    </div>
+
+    <!-- footer label — Old English, audio reactive -->
+    <div style="text-align:center;margin-top:.5rem;">
+      <span id="audio-react-text" style="font-family:'Pirata One',serif;font-size:1rem;
+        color:var(--cream);letter-spacing:.08em;
+        text-shadow:0 0 8px rgba(212,162,76,.4);
+        transition:text-shadow .1s ease, color .1s ease;">
+        Est. 2026 — Street Scentz
+      </span>
+    </div>
+  </div>
+
+  <!-- LEFT SIDE HERO CONTENT -->
+  <div class="section-content hero-inner">
+    <p id="hero-sub-text" class="hero-sub">"A Smell That Hits Home"</p>
+    <button class="hero-scent-btn" onclick="document.getElementById('section-promo').scrollIntoView({behavior:'smooth'})">
+      <span class="hero-scent-btn-dot"></span>
+      View Our Scents
+    </button>
+  </div>
+
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- ════════════════ PROMO BUNDLE STRIP ════════════════ -->
+<section id="section-promo" class="section-wrap" style="min-height:auto;padding:80px 0 100px;background:linear-gradient(180deg,#0B0A0A 0%,#130f07 40%,#0B0A0A 100%);overflow:visible;">
+
+  <!-- ambient spotlight -->
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:700px;height:400px;border-radius:50%;
+    background:radial-gradient(ellipse at center, rgba(74,144,226,.1) 0%, rgba(30,94,200,.05) 40%, transparent 70%);
+    pointer-events:none;z-index:0;">
+  </div>
+
+  <div style="position:relative;z-index:1;text-align:center;">
+
+    <!-- collection logo small header -->
+    <div id="collection-logo-wrap" style="display:inline-block;position:relative;margin-bottom:1rem;">
+      <img id="collection-logo" src="assets/collection logo.png" alt="Street Scentz Collection"
+        style="width:80px;height:auto;display:block;animation:logoBreathe 8s linear infinite;"/>
+      <canvas id="collection-fx" style="position:absolute;top:0;left:0;pointer-events:none;z-index:10;"></canvas>
+    </div>
+
+    <!-- header -->
+    <div style="font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.45em;text-transform:uppercase;color:var(--amber);opacity:.8;margin-bottom:.75rem;">
+      New Drop — Summer 2026
+    </div>
+    <h2 style="font-family:'Cinzel',serif;font-size:clamp(2rem,5vw,3.8rem);font-weight:900;
+      letter-spacing:.15em;color:var(--cream);margin-bottom:.4rem;line-height:1;">
+      SUMMER OF <span style="color:var(--gold);">2026</span>
+    </h2>
+    <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.1rem;
+      color:var(--cream);opacity:.5;margin-bottom:.5rem;">Collection</div>
+    <div style="width:60px;height:1px;margin:.8rem auto 2.8rem;background:linear-gradient(90deg,transparent,var(--gold),transparent);"></div>
+
+    <!-- straight up floating fresheners -->
+    <div style="display:flex;align-items:flex-end;justify-content:center;gap:2rem;margin-bottom:3rem;position:relative;height:360px;">
+
+      <!-- Churro -->
+      <div style="display:flex;flex-direction:column;align-items:center;animation:fanFloat1 4.2s ease-in-out infinite;">
+        <img src="assets/Churro.png" alt="Churro"
+          style="height:300px;width:auto;display:block;
+          filter:drop-shadow(0 10px 30px rgba(0,0,0,.8)) drop-shadow(0 0 20px rgba(30,94,200,.25));"/>
+        <div style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;
+          color:var(--gold);opacity:.75;margin-top:.75rem;">Churro</div>
+      </div>
+
+      <!-- Horchata -->
+      <div style="display:flex;flex-direction:column;align-items:center;animation:fanFloat2 3.8s ease-in-out infinite;">
+        <img src="assets/Horchata.png" alt="Horchata"
+          style="height:300px;width:auto;display:block;
+          filter:drop-shadow(0 10px 30px rgba(0,0,0,.8)) drop-shadow(0 0 25px rgba(74,144,226,.3));"/>
+        <div style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;
+          color:var(--gold);opacity:.75;margin-top:.75rem;">Horchata</div>
+      </div>
+
+      <!-- Pina Colada — center, brightest glow -->
+      <div style="display:flex;flex-direction:column;align-items:center;animation:fanFloat3 4.5s ease-in-out infinite;z-index:2;">
+        <img src="assets/Pina Colada.png" alt="Pina Colada"
+          style="height:320px;width:auto;display:block;
+          filter:drop-shadow(0 10px 40px rgba(0,0,0,.9)) drop-shadow(0 0 40px rgba(74,144,226,.4));"/>
+        <div style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;
+          color:var(--gold);opacity:.75;margin-top:.75rem;">Piña Colada</div>
+      </div>
+
+      <!-- Jamaica -->
+      <div style="display:flex;flex-direction:column;align-items:center;animation:fanFloat1 4s ease-in-out infinite;animation-delay:.5s;">
+        <img src="assets/Jamaica.png" alt="Jamaica"
+          style="height:300px;width:auto;display:block;
+          filter:drop-shadow(0 10px 30px rgba(0,0,0,.8)) drop-shadow(0 0 22px rgba(30,94,200,.25));"/>
+        <div style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;
+          color:var(--gold);opacity:.75;margin-top:.75rem;">Jamaica</div>
+      </div>
+
+    </div>
+
+    <!-- description -->
+    <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.1rem;
+      color:var(--cream);opacity:.6;max-width:500px;margin:0 auto 2.5rem;line-height:1.7;">
+      Premium scents inspired by culture, memory, and the streets that raised us.
+    </p>
+
+    <!-- CTA -->
+    <a href="#" onclick="navClick(event,'shop')"
+      style="display:inline-flex;align-items:center;gap:.75rem;
+      padding:1rem 2.8rem;
+      font-family:'Cinzel',serif;font-weight:700;font-size:.72rem;letter-spacing:.25em;text-transform:uppercase;
+      color:var(--gold);background:transparent;
+      border:1px solid rgba(74,144,226,.45);text-decoration:none;
+      transition:all .3s;position:relative;overflow:hidden;">
+      Shop the Drop &nbsp;→
+    </a>
+
+  </div>
+</section>
+
+<!-- ════════════════ SHOP ════════════════ -->
+<section id="section-shop" class="section-wrap">
+  <div class="section-bg" style="background-image:var(--bg-shop)"></div>
+  <div class="section-content">
+    <div class="sec-header">
+      <div class="sec-eyebrow">The Collection</div>
+      <h2 class="sec-title">THE <span>SCENT</span> DROP</h2>
+      <div class="sec-divider"></div>
+      <p class="sec-desc">Collectible air fresheners built for the culture. Every scent tells a story.</p>
+    </div>
+    <div class="products-grid">
+
+      <div class="product-card">
+        <canvas class="card-smoke-canvas"></canvas>
+        <div class="card-img-wrap">
+          <div class="img-ph" style="height:100%;border:none"><div class="img-ph-icon">🖼</div><div class="img-ph-label">PRODUCT 1<br/>Sunset Boulevard</div><div class="img-ph-size">280×220px</div></div>
+          <div class="rarity-badge legendary">Legendary</div>
+        </div>
+        <div class="card-body">
+          <div class="card-scent">Sunset Boulevard</div>
+          <div class="card-desc">Warm sandalwood and amber musk — the smell of cruising Whittier on a Friday night with the windows down.</div>
+          <div class="card-footer">
+            <span class="card-price">$14.99</span>
+            <button class="btn-cart">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <canvas class="card-smoke-canvas"></canvas>
+        <div class="card-img-wrap">
+          <div class="img-ph" style="height:100%;border:none"><div class="img-ph-icon">🖼</div><div class="img-ph-label">PRODUCT 2<br/>Abuela's Garden</div><div class="img-ph-size">280×220px</div></div>
+          <div class="rarity-badge rare">Rare</div>
+        </div>
+        <div class="card-body">
+          <div class="card-scent">Abuela's Garden</div>
+          <div class="card-desc">Soft rose and jasmine — Sunday mornings after mass, carnitas in the air, the whole family together.</div>
+          <div class="card-footer">
+            <span class="card-price">$12.99</span>
+            <button class="btn-cart">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <canvas class="card-smoke-canvas"></canvas>
+        <div class="card-img-wrap">
+          <div class="img-ph" style="height:100%;border:none"><div class="img-ph-icon">🖼</div><div class="img-ph-label">PRODUCT 3<br/>First Paint Job</div><div class="img-ph-size">280×220px</div></div>
+          <div class="rarity-badge limited">Limited</div>
+        </div>
+        <div class="card-body">
+          <div class="card-scent">First Paint Job</div>
+          <div class="card-desc">Fresh lacquer, clean leather, chrome polish — the pride you feel when your build finally hits the street.</div>
+          <div class="card-footer">
+            <span class="card-price">$15.99</span>
+            <button class="btn-cart">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <canvas class="card-smoke-canvas"></canvas>
+        <div class="card-img-wrap">
+          <div class="img-ph" style="height:100%;border:none"><div class="img-ph-icon">🖼</div><div class="img-ph-label">PRODUCT 4<br/>Midnight Hydraulics</div><div class="img-ph-size">280×220px</div></div>
+          <div class="rarity-badge">Standard</div>
+        </div>
+        <div class="card-body">
+          <div class="card-scent">Midnight Hydraulics</div>
+          <div class="card-desc">Cool night air mixed with motor oil and cedar — three-wheel motion under the streetlights.</div>
+          <div class="card-footer">
+            <span class="card-price">$11.99</span>
+            <button class="btn-cart">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <canvas class="card-smoke-canvas"></canvas>
+        <div class="card-img-wrap">
+          <div class="img-ph" style="height:100%;border:none"><div class="img-ph-icon">🖼</div><div class="img-ph-label">PRODUCT 5<br/>Oldies Night</div><div class="img-ph-size">280×220px</div></div>
+          <div class="rarity-badge rare">Rare</div>
+        </div>
+        <div class="card-body">
+          <div class="card-scent">Oldies Night</div>
+          <div class="card-desc">Vanilla and cool water — slow jam on the radio, parked at the lake, memories that never leave you.</div>
+          <div class="card-footer">
+            <span class="card-price">$12.99</span>
+            <button class="btn-cart">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <canvas class="card-smoke-canvas"></canvas>
+        <div class="card-img-wrap">
+          <div class="img-ph" style="height:100%;border:none"><div class="img-ph-icon">🖼</div><div class="img-ph-label">PRODUCT 6<br/>Car Show Sunday</div><div class="img-ph-size">280×220px</div></div>
+          <div class="rarity-badge legendary">Legendary</div>
+        </div>
+        <div class="card-body">
+          <div class="card-scent">Car Show Sunday</div>
+          <div class="card-desc">Rich oud, dark patchouli, and a hit of exhaust smoke — the day your ride won best in show.</div>
+          <div class="card-footer">
+            <span class="card-price">$16.99</span>
+            <button class="btn-cart">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ DISCOUNTS ════════════════ -->
+<section id="section-discounts" class="section-wrap">
+  <div class="section-bg" style="background-image:var(--bg-discounts)"></div>
+  <div class="section-content">
+    <div class="sec-header">
+      <div class="sec-eyebrow">Limited Deals</div>
+      <h2 class="sec-title">EXCLUSIVE <span>DROPS</span></h2>
+      <div class="sec-divider"></div>
+      <p class="sec-desc">Real deals. Limited time. Built for the ones who know.</p>
+    </div>
+
+    <div class="promo-area">
+      <div class="promo-label">Got a promo code?</div>
+      <div class="promo-row">
+        <input class="promo-input" type="text" placeholder="Enter code — e.g. LOWRIDER20"/>
+        <button class="btn-promo">Apply</button>
+      </div>
+    </div>
+
+    <div class="deals-grid">
+
+      <div class="deal-card">
+        <div class="deal-tag">🔥 Flash Deal — Today Only</div>
+        <div class="deal-title">3-Pack Bundle</div>
+        <div class="deal-desc">Pick any 3 scents from the core collection. Mix and match.</div>
+        <div class="deal-price-row">
+          <span class="deal-orig">$44.97</span>
+          <span class="deal-new">$31.99</span>
+          <span class="deal-save">Save 29%</span>
+        </div>
+        <div class="deal-timer">Ends in 08:47:23</div>
+      </div>
+
+      <div class="deal-card">
+        <div class="deal-tag">⭐ First Order Special</div>
+        <div class="deal-title">Welcome to the Family</div>
+        <div class="deal-desc">First-time buyers get 20% off their entire cart. Use code: FIRSTRIDE</div>
+        <div class="deal-price-row">
+          <span class="deal-new">20% OFF</span>
+          <span class="deal-save">Any Order</span>
+        </div>
+        <div class="deal-timer">New customers only</div>
+      </div>
+
+      <div class="deal-card">
+        <div class="deal-tag">🏁 Car Club Bundle</div>
+        <div class="deal-title">6-Pack Loyalty Pack</div>
+        <div class="deal-desc">The full drop. One of every signature scent, collectible packaging.</div>
+        <div class="deal-price-row">
+          <span class="deal-orig">$89.94</span>
+          <span class="deal-new">$59.99</span>
+          <span class="deal-save">Save 33%</span>
+        </div>
+        <div class="deal-timer">Limited qty available</div>
+      </div>
+
+      <div class="deal-card">
+        <div class="deal-tag">🌅 Season Special</div>
+        <div class="deal-title">Summer Cruise Pack</div>
+        <div class="deal-desc">Sunset Boulevard + Oldies Night + Abuela's Garden. Built for the summer.</div>
+        <div class="deal-price-row">
+          <span class="deal-orig">$40.97</span>
+          <span class="deal-new">$27.99</span>
+          <span class="deal-save">Save 32%</span>
+        </div>
+        <div class="deal-timer">Ends Sunday</div>
+      </div>
+
+    </div>
+
+    <div class="wholesale-banner">
+      <div class="wholesale-inner">
+        <div class="wholesale-text">
+          <h3>Wholesale & Bulk Orders</h3>
+          <p>Car clubs, barber shops, detail studios — let's talk volume pricing.</p>
+        </div>
+        <button class="btn-outline" onclick="navClick(event,'contact')">Inquire Now</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ CHECKOUT ════════════════ -->
+<section id="section-checkout" class="section-wrap">
+  <div class="section-bg" style="background:linear-gradient(180deg,#0B0A0A 0%,#0f0c07 50%,#0B0A0A 100%)"></div>
+  <div class="section-content">
+    <div class="sec-header">
+      <div class="sec-eyebrow">Secure &amp; Easy</div>
+      <h2 class="sec-title">CHECK<span>OUT</span></h2>
+      <div class="sec-divider"></div>
+      <p class="sec-desc">Pick your scents, drop your code, and ride out with the culture.</p>
+    </div>
+
+    <div class="checkout-wrap">
+      <!-- ── STEPS 1 + 2 (left) ── -->
+      <div class="checkout-steps">
+        <div class="checkout-left">
+
+          <!-- STEP 1: Product Selector -->
+          <p class="checkout-step-label">Step 1 — Build Your Order</p>
+          <div class="co-product-list">
+            <div class="co-product-row">
+              <div class="co-product-info">
+                <div class="co-product-name">Churro</div>
+                <div class="co-product-price">$14.99 each</div>
+              </div>
+              <div class="co-qty-controls">
+                <button class="co-qty-btn" onclick="checkoutRemoveItem('Churro',14.99)">−</button>
+                <span class="co-qty-val" id="co-qty-Churro">0</span>
+                <button class="co-qty-btn" onclick="checkoutAddItem('Churro',14.99)">+</button>
+              </div>
+            </div>
+            <div class="co-product-row">
+              <div class="co-product-info">
+                <div class="co-product-name">Horchata</div>
+                <div class="co-product-price">$14.99 each</div>
+              </div>
+              <div class="co-qty-controls">
+                <button class="co-qty-btn" onclick="checkoutRemoveItem('Horchata',14.99)">−</button>
+                <span class="co-qty-val" id="co-qty-Horchata">0</span>
+                <button class="co-qty-btn" onclick="checkoutAddItem('Horchata',14.99)">+</button>
+              </div>
+            </div>
+            <div class="co-product-row">
+              <div class="co-product-info">
+                <div class="co-product-name">Jamaica</div>
+                <div class="co-product-price">$14.99 each</div>
+              </div>
+              <div class="co-qty-controls">
+                <button class="co-qty-btn" onclick="checkoutRemoveItem('Jamaica',14.99)">−</button>
+                <span class="co-qty-val" id="co-qty-Jamaica">0</span>
+                <button class="co-qty-btn" onclick="checkoutAddItem('Jamaica',14.99)">+</button>
+              </div>
+            </div>
+            <div class="co-product-row">
+              <div class="co-product-info">
+                <div class="co-product-name">Pina Colada</div>
+                <div class="co-product-price">$14.99 each</div>
+              </div>
+              <div class="co-qty-controls">
+                <button class="co-qty-btn" onclick="checkoutRemoveItem('Pina Colada',14.99)">−</button>
+                <span class="co-qty-val" id="co-qty-PinaColada">0</span>
+                <button class="co-qty-btn" onclick="checkoutAddItem('Pina Colada',14.99)">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2: Promo Code -->
+          <p class="checkout-step-label">Step 2 — Drop Your Code</p>
+          <div class="co-promo-panel" id="co-promo-panel">
+            <div class="co-promo-row">
+              <input class="co-promo-input" id="co-promo-input" type="text" placeholder="ENTER PROMO CODE" maxlength="20" autocomplete="off" />
+              <button class="co-promo-btn" onclick="checkoutApplyPromo()">Apply</button>
+            </div>
+            <div class="co-promo-msg" id="co-promo-msg"></div>
+          </div>
+
+        </div><!-- /.checkout-left -->
+
+        <!-- STEP 3: Order Summary (right) -->
+        <div class="checkout-right">
+          <p class="checkout-step-label">Step 3 — Your Order Summary</p>
+          <div class="co-summary-card" id="co-summary-card">
+            <div class="co-corner tl"></div>
+            <div class="co-corner tr"></div>
+            <div class="co-corner bl"></div>
+            <div class="co-corner br"></div>
+            <div class="co-summary-title">&#x2605; Order Summary &#x2605;</div>
+            <ul class="co-item-list" id="co-item-list">
+              <li class="co-empty-note">Your cart is empty — add some scents above.</li>
+            </ul>
+            <hr class="co-divider-line" />
+            <div class="co-summary-line" id="co-line-subtotal">
+              <span class="co-sum-label">Subtotal</span>
+              <span class="co-sum-val" id="co-val-subtotal">$0.00</span>
+            </div>
+            <div class="co-summary-line discount" id="co-line-discount" style="display:none">
+              <span class="co-sum-label">Promo — <span id="co-promo-applied"></span></span>
+              <span class="co-sum-val">
+                <span class="co-original-price" id="co-val-original"></span>
+                <span id="co-val-discount" style="color:#6fcf97"></span>
+                <span class="co-discount-badge" id="co-badge-pct"></span>
+              </span>
+            </div>
+            <div class="co-summary-line shipping" id="co-line-shipping">
+              <span class="co-sum-label">Shipping</span>
+              <span class="co-sum-val" id="co-val-shipping">—</span>
+            </div>
+            <div class="co-total-row">
+              <span class="co-total-label">Total</span>
+              <span class="co-total-val" id="co-val-total">$0.00</span>
+            </div>
+            <button class="co-place-btn" onclick="checkoutPlaceOrder()">Place Order</button>
+            <div class="co-trust-row">
+              <span class="co-trust-item">🔒 Secure Checkout</span>
+              <span class="co-trust-item">📦 Free Returns</span>
+              <span class="co-trust-item">⭐ Premium Quality</span>
+            </div>
+          </div>
+        </div><!-- /.checkout-right -->
+      </div><!-- /.checkout-steps -->
+    </div><!-- /.checkout-wrap -->
+  </div><!-- /.section-content -->
+</section>
+
+<!-- Checkout success modal -->
+<div class="co-success-overlay" id="co-success-overlay">
+  <div class="co-success-box">
+    <div class="co-check-icon"></div>
+    <div class="co-success-title">Order Received!</div>
+    <div class="co-success-sub">We'll be in touch soon, familia.</div>
+    <button class="co-success-close" onclick="document.getElementById('co-success-overlay').classList.remove('visible')">Close</button>
+  </div>
+</div>
+
+<!-- ════════════════ GIFTING ════════════════ -->
+<section id="section-gifting" class="section-wrap">
+  <div class="section-bg" style="background-image:var(--bg-gifting)"></div>
+  <div class="section-content">
+    <div class="sec-header">
+      <div class="sec-eyebrow">Give the Culture</div>
+      <h2 class="sec-title">GIFT <span>SETS</span></h2>
+      <div class="sec-divider"></div>
+      <p class="sec-desc">Premium gift sets for the people who matter. Every pack wrapped in culture.</p>
+    </div>
+
+    <div class="gift-grid">
+      <div class="gift-card">
+        <div class="gift-card-header"></div>
+        <div class="gift-card-body">
+          <div class="gift-icon">🎂</div>
+          <div class="gift-name">Birthday Pack</div>
+          <div class="gift-desc">Three signature scents in premium gift packaging with a personalized message card. The perfect birthday flex.</div>
+          <div class="gift-price">$39.99</div>
+          <button class="btn-gift">Add to Cart</button>
+        </div>
+      </div>
+
+      <div class="gift-card">
+        <div class="gift-card-header"></div>
+        <div class="gift-card-body">
+          <div class="gift-icon">🏁</div>
+          <div class="gift-name">Car Club Pack</div>
+          <div class="gift-desc">Six fresheners with car culture artwork. Perfect for giveaways at shows, club events, or cruises.</div>
+          <div class="gift-price">$59.99</div>
+          <button class="btn-gift">Add to Cart</button>
+        </div>
+      </div>
+
+      <div class="gift-card">
+        <div class="gift-card-header"></div>
+        <div class="gift-card-body">
+          <div class="gift-icon">✂️</div>
+          <div class="gift-name">Barber Shop Bundle</div>
+          <div class="gift-desc">Retail-ready display pack for shops. 12 mixed scents with branded display header card.</div>
+          <div class="gift-price">$89.99</div>
+          <button class="btn-gift">Order for Shop</button>
+        </div>
+      </div>
+
+      <div class="gift-card">
+        <div class="gift-card-header"></div>
+        <div class="gift-card-body">
+          <div class="gift-icon">🎄</div>
+          <div class="gift-name">Holiday Box Set</div>
+          <div class="gift-desc">Full collection boxed set with gold foil packaging. Limited holiday edition — drops every December.</div>
+          <div class="gift-price">$74.99</div>
+          <button class="btn-gift">Notify Me</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="custom-note-banner">
+      <div class="custom-note-inner">
+        <h3>Add a Personal Message</h3>
+        <p>Every gift order can include a handwritten-style message card at no extra cost.</p>
+        <textarea class="custom-note-input" placeholder="Write your message here — we'll include it with your gift order..."></textarea>
+        <br/>
+        <button class="btn-outline">Include Message with Order</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE 3: TESTIMONIALS TICKER -->
+<div id="testimonials-ticker">
+  <div class="ticker-track">
+    <span class="ticker-item">⭐⭐⭐⭐⭐ "Smells exactly like the streets I grew up on" — @lowrider_mike</span><span class="ticker-divider">✦</span>
+    <span class="ticker-item">⭐⭐⭐⭐⭐ "My whole car smells like churros now, no complaints" — @cruising_maria</span><span class="ticker-divider">✦</span>
+    <span class="ticker-item">⭐⭐⭐⭐⭐ "Horchata scent is unreal, takes me back every time" — @eastside_rafa</span><span class="ticker-divider">✦</span>
+    <span class="ticker-item">⭐⭐⭐⭐⭐ "Been buying these since day one, never switching" — @la_vida_loca_ss</span><span class="ticker-divider">✦</span>
+    <span class="ticker-item">⭐⭐⭐⭐⭐ "Jamaica is the one. Period." — @the_real_chula</span><span class="ticker-divider">✦</span>
+    <!-- Duplicate for seamless loop -->
+    <span class="ticker-item">⭐⭐⭐⭐⭐ "Smells exactly like the streets I grew up on" — @lowrider_mike</span><span class="ticker-divider">✦</span>
+    <span class="ticker-item">⭐⭐⭐⭐⭐ "My whole car smells like churros now, no complaints" — @cruising_maria</span><span class="ticker-divider">✦</span>
+    <span class="ticker-item">⭐⭐⭐⭐⭐ "Horchata scent is unreal, takes me back every time" — @eastside_rafa</span><span class="ticker-divider">✦</span>
+    <span class="ticker-item">⭐⭐⭐⭐⭐ "Been buying these since day one, never switching" — @la_vida_loca_ss</span><span class="ticker-divider">✦</span>
+    <span class="ticker-item">⭐⭐⭐⭐⭐ "Jamaica is the one. Period." — @the_real_chula</span><span class="ticker-divider">✦</span>
+  </div>
+</div>
+
+<!-- ════════════════ ABOUT — MAGAZINE REDESIGN ════════════════ -->
+<section id="section-about" class="section-wrap" style="overflow:visible;">
+  <canvas id="about-particles"></canvas>
+
+  <!-- ── FRAME OVERLAY — sits above rose bed, below text ── -->
+  <div style="position:absolute;inset:0;z-index:6;pointer-events:none;display:flex;align-items:stretch;justify-content:center;">
+    <img src="ABOUT US/about us frame.png" alt=""
+      style="width:100%;height:100%;object-fit:fill;opacity:.92;min-height:1000px;"/>
+  </div>
+
+
+  <!-- ── CROWN — top center ── -->
+  <div style="position:absolute;top:-110px;left:50%;transform:translateX(-50%);z-index:100;pointer-events:none;">
+    <img src="ABOUT US/CROWN.png" alt="Crown"
+      style="width:260px;height:auto;
+      filter:drop-shadow(0 0 24px rgba(74,144,226,.8)) drop-shadow(0 0 60px rgba(74,144,226,.35));
+      animation:abLogoGlow 4s ease-in-out infinite alternate;"/>
+  </div>
+
+  <!-- ── CORNER CROWNS ── -->
+  <!-- top-left -->
+  <div style="position:absolute;top:-18px;left:-18px;z-index:7;pointer-events:none;">
+    <img src="ABOUT US/CROWN.png" alt=""
+      style="width:90px;height:auto;transform:rotate(-45deg);opacity:.75;
+      filter:drop-shadow(0 0 10px rgba(74,144,226,.6)) drop-shadow(0 0 24px rgba(74,144,226,.3));
+      animation:abLogoGlow 4s ease-in-out infinite alternate;"/>
+  </div>
+  <!-- top-right -->
+  <div style="position:absolute;top:-18px;right:-18px;z-index:7;pointer-events:none;">
+    <img src="ABOUT US/CROWN.png" alt=""
+      style="width:90px;height:auto;transform:rotate(45deg);opacity:.75;
+      filter:drop-shadow(0 0 10px rgba(74,144,226,.6)) drop-shadow(0 0 24px rgba(74,144,226,.3));
+      animation:abLogoGlow 4s ease-in-out infinite alternate 0.5s;"/>
+  </div>
+  <!-- bottom-left -->
+  <div style="position:absolute;bottom:-18px;left:-18px;z-index:7;pointer-events:none;">
+    <img src="ABOUT US/CROWN.png" alt=""
+      style="width:90px;height:auto;transform:rotate(-135deg);opacity:.75;
+      filter:drop-shadow(0 0 10px rgba(74,144,226,.6)) drop-shadow(0 0 24px rgba(74,144,226,.3));
+      animation:abLogoGlow 4s ease-in-out infinite alternate 1s;"/>
+  </div>
+  <!-- bottom-right -->
+  <div style="position:absolute;bottom:-18px;right:-18px;z-index:7;pointer-events:none;">
+    <img src="ABOUT US/CROWN.png" alt=""
+      style="width:90px;height:auto;transform:rotate(135deg);opacity:.75;
+      filter:drop-shadow(0 0 10px rgba(74,144,226,.6)) drop-shadow(0 0 24px rgba(74,144,226,.3));
+      animation:abLogoGlow 4s ease-in-out infinite alternate 1.5s;"/>
+  </div>
+
+  <!-- ── MURAL PNGs — realigned to taller frame ── -->
+  <!-- FLAG — top left corner -->
+  <img src="ABOUT US/FLAG.png" alt="" style="position:absolute;width:300px;top:60px;left:-20px;transform:rotate(-8deg);opacity:.88;z-index:9;pointer-events:none;"/>
+  <!-- DICE — top right -->
+  <img src="ABOUT US/DICE.png" alt="" style="position:absolute;width:150px;top:30px;right:30px;transform:rotate(6deg);opacity:.95;z-index:9;pointer-events:none;"/>
+  <!-- LOCS — mid left, vertically centered to frame -->
+  <img src="ABOUT US/LOCS.png" alt="" style="position:absolute;width:240px;top:50%;left:-8px;transform:rotate(-5deg) translateY(-50%);opacity:1;z-index:9;pointer-events:none;filter:drop-shadow(0 4px 20px rgba(0,0,0,.8));"/>
+  <!-- LATINA 2 — right side bottom anchored -->
+  <img src="ABOUT US/LATINA 2.png" alt="" style="position:absolute;width:300px;bottom:0;right:-10px;opacity:1;z-index:9;pointer-events:none;filter:drop-shadow(-8px 0 20px rgba(0,0,0,.7));"/>
+  <!-- BIKE — bottom left anchored -->
+  <img src="ABOUT US/BIKE.png" alt="" style="position:absolute;width:280px;bottom:0;left:-10px;transform:rotate(3deg);opacity:.95;z-index:9;pointer-events:none;filter:drop-shadow(0 -4px 18px rgba(0,0,0,.7));"/>
+
+  <!-- spacer so cards don't hide under crown -->
+  <div style="height:120px;"></div>
+
+  <!-- ── 3 FOUNDER CARDS ── -->
+  <div style="position:relative;z-index:8;display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;width:88%;max-width:1100px;margin:0 auto 20px;align-items:start;">
+
+    <!-- CARD 1 — Who I Am -->
+    <div style="background:rgba(6,8,16,.75);border:1px solid rgba(var(--gold-rgb),.25);border-radius:10px;overflow:hidden;
+      box-shadow:0 8px 32px rgba(0,0,0,.6),0 0 16px rgba(var(--gold-rgb),.06);">
+      <!-- photo slot -->
+      <div style="position:relative;height:240px;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;border-bottom:1px solid rgba(var(--gold-rgb),.15);">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5;"></div>
+        <div style="font-size:2.5rem;opacity:.2;">👤</div>
+        <div style="font-family:'Cinzel',serif;font-size:.45rem;letter-spacing:.2em;text-transform:uppercase;color:var(--cream);opacity:.35;">Drop founder photo here</div>
+        <!-- <img src="assets/founder.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"> -->
+      </div>
+      <!-- text -->
+      <div style="padding:1.2rem 1.3rem 1.5rem;">
+        <div style="font-family:'Pirata One',serif;font-size:.55rem;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);opacity:.75;margin-bottom:.4rem;">01 — Who I Am</div>
+        <h3 style="font-family:'Pirata One',serif;font-size:1.15rem;color:var(--cream);margin:0 0 .6rem;line-height:1.2;">Me & My Family</h3>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:.88rem;color:var(--cream);opacity:.75;line-height:1.6;margin:0;">I grew up surrounded by family, music, and the smell of a freshly detailed car on a Sunday morning. Everything I do is for them — my wife, my kids, my parents who taught me what pride really means.</p>
+      </div>
+    </div>
+
+    <!-- CARD 2 — My Culture -->
+    <div style="background:rgba(6,8,16,.75);border:1px solid rgba(var(--gold-rgb),.25);border-radius:10px;overflow:hidden;
+      box-shadow:0 8px 32px rgba(0,0,0,.6),0 0 16px rgba(var(--gold-rgb),.06);">
+      <!-- photo slot -->
+      <div style="position:relative;height:240px;background:rgba(0,0,0,.5);border-bottom:1px solid rgba(var(--gold-rgb),.15);overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5;z-index:2;"></div>
+        <img src="ABOUT US FOUNDER/CLOVIS.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;">
+      </div>
+      <!-- text -->
+      <div style="padding:1.2rem 1.3rem 1.5rem;">
+        <div style="font-family:'Pirata One',serif;font-size:.55rem;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);opacity:.75;margin-bottom:.4rem;">02 — My Roots</div>
+        <h3 style="font-family:'Pirata One',serif;font-size:1.15rem;color:var(--cream);margin:0 0 .6rem;line-height:1.2;">Culture & Identity</h3>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:.88rem;color:var(--cream);opacity:.75;line-height:1.6;margin:0;">Born and raised in East LA since 1989, Chicano culture runs through my blood. Lowriders, street art, family cookouts, and the boulevard on a Saturday night — this is where Street Scentz comes from. Not a trend. A lifestyle.</p>
+      </div>
+    </div>
+
+    <!-- CARD 3 — Why I Did It -->
+    <div style="background:rgba(6,8,16,.75);border:1px solid rgba(var(--gold-rgb),.25);border-radius:10px;overflow:hidden;
+      box-shadow:0 8px 32px rgba(0,0,0,.6),0 0 16px rgba(var(--gold-rgb),.06);">
+      <!-- photo slot -->
+      <div style="position:relative;height:240px;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;border-bottom:1px solid rgba(var(--gold-rgb),.15);">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5;"></div>
+        <div style="font-size:2.5rem;opacity:.2;">🚗</div>
+        <div style="font-family:'Cinzel',serif;font-size:.45rem;letter-spacing:.2em;text-transform:uppercase;color:var(--cream);opacity:.35;">Drop brand photo here</div>
+        <!-- <img src="assets/brand.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"> -->
+      </div>
+      <!-- text -->
+      <div style="padding:1.2rem 1.3rem 1.5rem;">
+        <div style="font-family:'Pirata One',serif;font-size:.55rem;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);opacity:.75;margin-bottom:.4rem;">03 — The Why</div>
+        <h3 style="font-family:'Pirata One',serif;font-size:1.15rem;color:var(--cream);margin:0 0 .6rem;line-height:1.2;">Why Street Scentz</h3>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:.88rem;color:var(--cream);opacity:.75;line-height:1.6;margin:0;">I wanted to create something that kept our memories alive. Something you could hang in your car and instantly be taken back to your block, your family, your roots. A smell that hits home — every single time.</p>
+      </div>
+    </div>
+
+  </div><!-- end 3 cards -->
+
+  <!-- ── BOTTOM: Old English Founder Title ── -->
+  <div style="position:relative;z-index:8;text-align:center;padding:16px 5% 40px;">
+
+    <!-- thin rule -->
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.4rem;width:70%;max-width:700px;margin-left:auto;margin-right:auto;">
+      <div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,#fff);opacity:.15;"></div>
+      <span style="font-family:'Pirata One',serif;font-size:.5rem;letter-spacing:.5em;text-transform:uppercase;color:#fff;opacity:.3;">The Founder</span>
+      <div style="flex:1;height:1px;background:linear-gradient(90deg,#fff,transparent);opacity:.15;"></div>
+    </div>
+
+    <!-- main title -->
+    <h2 style="
+      font-family:'Pirata One',serif;
+      font-size:clamp(3rem,8vw,7rem);
+      font-weight:900;
+      color:#fff;
+      letter-spacing:.04em;
+      line-height:.9;
+      margin:0;
+      text-transform:uppercase;
+      -webkit-text-stroke:1.5px rgba(255,255,255,.9);
+      color:transparent;
+      text-shadow:
+        0 0 0 #fff,
+        2px 2px 0 #000,
+        4px 4px 0 rgba(0,0,0,.5);
+      filter:drop-shadow(0 8px 32px rgba(0,0,0,.9));
+    ">About<br>The Founder</h2>
+
+    <!-- subtitle rule -->
+    <div style="margin-top:1.2rem;display:flex;align-items:center;gap:1rem;width:50%;max-width:500px;margin-left:auto;margin-right:auto;">
+      <div style="flex:1;height:1px;background:#fff;opacity:.12;"></div>
+      <span style="font-family:'Cinzel',serif;font-size:.45rem;letter-spacing:.6em;text-transform:uppercase;color:#fff;opacity:.35;">The Man Behind The Brand</span>
+      <div style="flex:1;height:1px;background:#fff;opacity:.12;"></div>
+    </div>
+
+  </div>
+
+
+</section>
+
+<!-- ════════════════ OUR STORY ════════════════ -->
+<section id="section-story" class="section-wrap" style="background:linear-gradient(180deg,#0B0A0A 0%,#120d04 50%,#0B0A0A 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 0;">
+
+  <!-- ambient glow -->
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;border-radius:50%;
+    background:radial-gradient(ellipse,rgba(var(--gold-rgb),.06) 0%,transparent 70%);pointer-events:none;"></div>
+
+  <!-- header -->
+  <div style="position:relative;z-index:2;text-align:center;margin-bottom:3rem;">
+    <div style="font-family:'Pirata One',serif;font-size:.6rem;letter-spacing:.45em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:.6rem;">Est. 2021</div>
+    <h2 style="font-family:'Pirata One',serif;font-size:clamp(2.2rem,5vw,4rem);color:var(--cream);letter-spacing:.1em;text-shadow:0 0 40px rgba(var(--gold-rgb),.3);margin:0;">Our Story</h2>
+    <div style="width:80px;height:1px;margin:.8rem auto 0;background:linear-gradient(90deg,transparent,var(--gold),transparent);"></div>
+  </div>
+
+  <!-- cards grid -->
+  <div id="timeline-track" style="position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;width:90%;max-width:1100px;">
+
+    <div class="timeline-card" style="position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5;"></div>
+      <div class="timeline-year">2021</div>
+      <div class="timeline-label">The Idea</div>
+      <div class="timeline-desc">Started mixing scents in East LA, trying to bottle the feeling of the block</div>
+    </div>
+
+    <div class="timeline-card" style="position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5;"></div>
+      <div class="timeline-year">2022</div>
+      <div class="timeline-label">First Drop</div>
+      <div class="timeline-desc">Dropped 50 units of Churro at a lowrider show. Sold out in 2 hours</div>
+    </div>
+
+    <div class="timeline-card" style="position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5;"></div>
+      <div class="timeline-year">2023</div>
+      <div class="timeline-label">Going Viral</div>
+      <div class="timeline-desc">Jamaica hit TikTok. 200k views overnight. The streets were talking</div>
+    </div>
+
+    <div class="timeline-card" style="position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5;"></div>
+      <div class="timeline-year">2024</div>
+      <div class="timeline-label">Street Certified</div>
+      <div class="timeline-desc">Now in 3 states, 12 shops, and still hand-crafted with love</div>
+    </div>
+
+  </div>
+
+  <!-- connecting line between cards -->
+  <div style="position:absolute;top:50%;left:5%;right:5%;height:1px;z-index:1;pointer-events:none;
+    background:linear-gradient(90deg,transparent,rgba(var(--gold-rgb),.2) 15%,rgba(var(--gold-rgb),.2) 85%,transparent);"></div>
+
+</section>
+
+<!-- ════════════════ CONTACT ════════════════ -->
+<section id="section-contact" class="section-wrap">
+  <div class="section-bg" style="background-image:var(--bg-contact)"></div>
+  <div class="section-content">
+    <div class="sec-header">
+      <div class="sec-eyebrow">Get in Touch</div>
+      <h2 class="sec-title">CONTACT <span>US</span></h2>
+      <div class="sec-divider"></div>
+    </div>
+    <div class="contact-layout">
+      <div class="contact-info">
+        <h3>Let's Talk</h3>
+        <p>Whether you're a customer, a shop owner, a car club, or an artist — we want to hear from you.</p>
+        <div class="social-links">
+          <a href="#" class="social-link"><span class="social-icon">📸</span> @StreetScentz</a>
+          <a href="#" class="social-link"><span class="social-icon">📘</span> Street Scentz</a>
+          <a href="#" class="social-link"><span class="social-icon">📧</span> hello@streetscentz.com</a>
+          <a href="#" class="social-link"><span class="social-icon">📞</span> Available by DM</a>
+        </div>
+      </div>
+      <form class="contact-form" onsubmit="handleContact(event)">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input class="form-input" type="text" placeholder="Your name"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input class="form-input" type="email" placeholder="your@email.com"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Inquiry Type</label>
+          <select class="form-select">
+            <option value="">Select inquiry type</option>
+            <option>General Question</option>
+            <option>Order Issue</option>
+            <option>Wholesale / Bulk Order</option>
+            <option>Car Club Partnership</option>
+            <option>Artist Collaboration</option>
+            <option>Barber Shop / Retail</option>
+            <option>Media / Press</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message</label>
+          <textarea class="form-textarea" placeholder="Tell us what's on your mind..."></textarea>
+        </div>
+        <button class="btn-submit" type="submit">Send Message</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ FOOTER ════════════════ -->
+<footer>
+  <div class="footer-brand">Street Scentz</div>
+  <div class="footer-copy">© 2024 Street Scentz. All rights reserved.</div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#" onclick="navClick(event,'contact')">Contact</a>
+  </div>
+</footer>
+
+<!-- ════════════════ LOGIN MODAL ════════════════ -->
+<div id="login-modal">
+  <div class="modal-box">
+    <div class="modal-logo">STREET SCENTZ</div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2 class="modal-title">Sign In Required</h2>
+    <p class="modal-desc">Create an account or sign in to <span class="modal-action-name" id="modal-action-text">save and export</span> your Street Scentz design.</p>
+    <div class="modal-buttons">
+      <button class="btn-modal-primary">Sign In</button>
+      <button class="btn-modal-secondary">Create Account</button>
+      <button class="btn-modal-ghost" onclick="closeModal()">Continue Previewing</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+// ═══════════════════════════════════════════
+// GPU PARTICLES — Three.js ShaderMaterial
+// Source techniques:
+//   - KNOWLEDGE_webgl_programming_guide.md: additive blend, gl_PointCoord circle discard
+//   - SHADER_SNIPPETS.md: pulse sin, FBM noise pattern, fresnel
+//   - BUILD_RECIPES.md: BufferGeometry Float32Array, depthWrite:false, AdditiveBlending
+//   - KNOWLEDGE_TAG_INDEX.md: webgl_buffergeometry_custom_attributes_particles pattern
+// ═══════════════════════════════════════════
+(function initGPUParticles() {
+  const canvas = document.getElementById('gpu-particles');
+  if(!canvas || !window.THREE) return;
+
+  // ── RENDERER ──
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: false,
+    alpha: true,
+    preserveDrawingBuffer: false
+  });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x000000, 0);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.0;
+
+  // ── SCENE + CAMERA ──
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.z = 5;
+
+  // ── VERTEX SHADER ──
+  // Per-particle: position + aRand (random seed) + aSize
+  // CPU sets initial positions. GPU animates via uTime.
+  // Drift: upward + horizontal sine wave per particle (unique phase from aRand)
+  // Wrap: mod so particles loop seamlessly
+  const vertexShader = `
+    attribute float aRand;
+    attribute float aSize;
+    uniform float uTime;
+    uniform float uScrollY;
+
+    void main() {
+      vec3 pos = position;
+
+      // Vertical drift — each particle has unique speed from aRand
+      float speed = 0.08 + aRand * 0.12;
+      float drift = mod(pos.y + uTime * speed, 14.0) - 7.0;
+
+      // Horizontal sway — sine wave with unique frequency + phase per particle
+      float sway = sin(uTime * (0.3 + aRand * 0.4) + aRand * 6.2831) * (0.15 + aRand * 0.25);
+
+      // Depth pulse — subtle z oscillation for parallax feel
+      float zPulse = cos(uTime * 0.2 + aRand * 3.14) * 0.3;
+
+      vec3 animated = vec3(pos.x + sway, drift, pos.z + zPulse);
+
+      vec4 mvPosition = modelViewMatrix * vec4(animated, 1.0);
+      gl_Position = projectionMatrix * mvPosition;
+
+      // Size: base size + pulse breathing (SHADER_SNIPPETS.md pulse sin pattern)
+      float pulse = 0.5 + 0.5 * sin(uTime * (1.0 + aRand * 2.0) + aRand * 6.28);
+      gl_PointSize = aSize * (1.0 + pulse * 0.35) * (300.0 / -mvPosition.z);
+      gl_PointSize = clamp(gl_PointSize, 1.0, 12.0);
+    }
+  `;
+
+  // ── FRAGMENT SHADER ──
+  // Soft circular sprite (gl_PointCoord — KNOWLEDGE_webgl_programming_guide.md)
+  // Color: mix gold → amber → cream based on aRand
+  // Alpha: soft edge + center fade for depth
+  const fragmentShader = `
+    attribute float aRand;
+    uniform float uTime;
+    uniform vec3 uColorA;   // gold:   #4A90E2
+    uniform vec3 uColorB;   // amber:  #1E5EC8
+    uniform vec3 uColorC;   // cream:  #B8D4F0
+    varying float vRand;
+    varying float vAlpha;
+
+    void main() {
+      // Circular sprite — discard outside circle (KNOWLEDGE_webgl_programming_guide.md)
+      vec2 coord = gl_PointCoord - vec2(0.5);
+      float dist = length(coord);
+      if(dist > 0.5) discard;
+
+      // Soft gaussian falloff from center — brighter core, fading edge
+      float alpha = 1.0 - smoothstep(0.0, 0.5, dist);
+      alpha = pow(alpha, 1.8);  // sharpen the core glow
+
+      // Color blend: mix between gold/amber/cream based on vRand
+      vec3 color = vRand < 0.4
+        ? mix(uColorA, uColorB, vRand * 2.5)   // gold → amber
+        : mix(uColorB, uColorC, (vRand - 0.4) * 1.667); // amber → cream
+
+      // Pulse brightness (SHADER_SNIPPETS.md pulse sin)
+      float brightness = 0.6 + 0.4 * vAlpha;
+
+      gl_FragColor = vec4(color * brightness, alpha * vAlpha * 0.75);
+    }
+  `;
+
+  // ── VERTEX SHADER (dust layer) — slower, larger, cooler tones ──
+  const vertexShaderDust = `
+    attribute float aRand;
+    attribute float aSize;
+    uniform float uTime;
+    varying float vRand;
+    varying float vAlpha;
+
+    void main() {
+      vRand = aRand;
+
+      vec3 pos = position;
+      float speed = 0.02 + aRand * 0.04;
+      float drift = mod(pos.y + uTime * speed + aRand * 14.0, 14.0) - 7.0;
+      float sway  = sin(uTime * (0.1 + aRand * 0.2) + aRand * 6.28) * 0.4;
+
+      vec3 animated = vec3(pos.x + sway, drift, pos.z);
+      vec4 mvPosition = modelViewMatrix * vec4(animated, 1.0);
+      gl_Position = projectionMatrix * mvPosition;
+
+      float pulse = 0.5 + 0.5 * sin(uTime * 0.5 + aRand * 6.28);
+      vAlpha = 0.08 + pulse * 0.12;
+
+      gl_PointSize = aSize * (300.0 / -mvPosition.z);
+      gl_PointSize = clamp(gl_PointSize, 2.0, 18.0);
+    }
+  `;
+
+  // Shared vertex shader needs varying outputs — fix:
+  const vertexShaderEmber = `
+    attribute float aRand;
+    attribute float aSize;
+    uniform float uTime;
+    varying float vRand;
+    varying float vAlpha;
+
+    void main() {
+      vRand = aRand;
+
+      vec3 pos = position;
+      float speed = 0.08 + aRand * 0.12;
+      float drift = mod(pos.y + uTime * speed, 14.0) - 7.0;
+      float sway  = sin(uTime * (0.3 + aRand * 0.4) + aRand * 6.2831) * (0.15 + aRand * 0.25);
+      float zPulse = cos(uTime * 0.2 + aRand * 3.14) * 0.3;
+
+      vec3 animated = vec3(pos.x + sway, drift, pos.z + zPulse);
+      vec4 mvPosition = modelViewMatrix * vec4(animated, 1.0);
+      gl_Position = projectionMatrix * mvPosition;
+
+      float pulse = 0.5 + 0.5 * sin(uTime * (1.0 + aRand * 2.0) + aRand * 6.28);
+      vAlpha = 0.3 + pulse * 0.5;
+
+      gl_PointSize = aSize * (1.0 + pulse * 0.35) * (300.0 / -mvPosition.z);
+      gl_PointSize = clamp(gl_PointSize, 1.0, 10.0);
+    }
+  `;
+
+  const fragmentShaderShared = `
+    uniform vec3 uColorA;
+    uniform vec3 uColorB;
+    uniform vec3 uColorC;
+    varying float vRand;
+    varying float vAlpha;
+
+    void main() {
+      vec2 coord = gl_PointCoord - vec2(0.5);
+      float dist = length(coord);
+      if(dist > 0.5) discard;
+
+      float alpha = pow(1.0 - smoothstep(0.0, 0.5, dist), 1.8);
+
+      vec3 color = vRand < 0.4
+        ? mix(uColorA, uColorB, vRand * 2.5)
+        : mix(uColorB, uColorC, (vRand - 0.4) * 1.667);
+
+      gl_FragColor = vec4(color, alpha * vAlpha);
+    }
+  `;
+
+  // ── BUILD BUFFER GEOMETRY (BUILD_RECIPES.md pattern) ──
+  function makeParticleSystem(count, spreadX, spreadY, spreadZ, sizeMin, sizeMax) {
+    const geo = new THREE.BufferGeometry();
+
+    const positions = new Float32Array(count * 3);
+    const rands     = new Float32Array(count);
+    const sizes     = new Float32Array(count);
+
+    for(let i = 0; i < count; i++) {
+      // Spread across a wide volume covering the viewport
+      positions[i*3]     = (Math.random() - 0.5) * spreadX;
+      positions[i*3 + 1] = (Math.random() - 0.5) * spreadY;
+      positions[i*3 + 2] = (Math.random() - 0.5) * spreadZ;
+
+      rands[i] = Math.random();
+      sizes[i] = sizeMin + Math.random() * (sizeMax - sizeMin);
+    }
+
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute('aRand',    new THREE.BufferAttribute(rands, 1));
+    geo.setAttribute('aSize',    new THREE.BufferAttribute(sizes, 1));
+    return geo;
+  }
+
+  // ── EMBER LAYER — 3000 gold/amber sparks ──
+  const emberGeo = makeParticleSystem(3000, 14, 14, 8, 0.012, 0.045);
+  const emberMat = new THREE.ShaderMaterial({
+    vertexShader:   vertexShaderEmber,
+    fragmentShader: fragmentShaderShared,
+    uniforms: {
+      uTime:   { value: 0 },
+      uColorA: { value: new THREE.Color(0x4A90E2) },  // blue
+      uColorB: { value: new THREE.Color(0x1E5EC8) },  // royal
+      uColorC: { value: new THREE.Color(0xB8D4F0) },  // ice
+    },
+    transparent:  true,
+    depthWrite:   false,           // BUILD_RECIPES.md law: depthWrite false on particles
+    blending:     THREE.AdditiveBlending,  // KNOWLEDGE_webgl_programming_guide.md: additive = glow accumulation
+    vertexColors: false,
+  });
+  const embers = new THREE.Points(emberGeo, emberMat);
+  scene.add(embers);
+
+  // ── DUST LAYER — 1200 larger soft cream/amber motes ──
+  const dustGeo = makeParticleSystem(1200, 14, 14, 6, 0.04, 0.12);
+  const dustMat = new THREE.ShaderMaterial({
+    vertexShader:   vertexShaderDust,
+    fragmentShader: fragmentShaderShared,
+    uniforms: {
+      uTime:   { value: 0 },
+      uColorA: { value: new THREE.Color(0xB8D4F0) },  // ice
+      uColorB: { value: new THREE.Color(0x4A90E2) },  // blue
+      uColorC: { value: new THREE.Color(0x1A3A8F) },  // navy
+    },
+    transparent: true,
+    depthWrite:  false,
+    blending:    THREE.AdditiveBlending,
+  });
+  const dust = new THREE.Points(dustGeo, dustMat);
+  scene.add(dust);
+
+  // ── RESIZE ──
+  window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+  }, { passive: true });
+
+  // ── ANIMATION LOOP ── single uniform update — everything else runs on GPU
+  let t = 0;
+  function tick() {
+    requestAnimationFrame(tick);
+    t += 0.008;
+    emberMat.uniforms.uTime.value = t;
+    dustMat.uniforms.uTime.value  = t;
+    renderer.render(scene, camera);
+  }
+  tick();
+})();
+
+// ─── AUTH STATE ───
+const isLoggedIn = false;
+function requireLogin(actionName) {
+  if(isLoggedIn) return true;
+  document.getElementById('modal-action-text').textContent = actionName;
+  document.getElementById('login-modal').classList.add('open');
+  return false;
+}
+function closeModal() {
+  document.getElementById('login-modal').classList.remove('open');
+}
+document.getElementById('login-modal').addEventListener('click', e => {
+  if(e.target === document.getElementById('login-modal')) closeModal();
+});
+
+// ─── SECTION ROUTING — smooth scroll ───
+function showSection(id) {
+  const target = document.getElementById(`section-${id}`);
+  if(!target) return;
+  const offset = 64; // nav height
+  const top = target.getBoundingClientRect().top + window.scrollY - offset;
+  window.scrollTo({top, behavior:'smooth'});
+}
+function navClick(e, id) {
+  e.preventDefault();
+  showSection(id);
+}
+function mobileNav(e, id) {
+  e.preventDefault();
+  showSection(id);
+  toggleMenu(false);
+}
+function updateNav(id) {
+  document.querySelectorAll('.nav-links a, .mobile-menu a').forEach(a => {
+    a.classList.toggle('active', a.dataset.section === id);
+  });
+}
+
+// ─── ACTIVE NAV ON SCROLL (IntersectionObserver) ───
+const sections = ['home','shop','discounts','checkout','gifting','about','contact'];
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting) {
+      updateNav(entry.target.id.replace('section-',''));
+    }
+  });
+}, { rootMargin: '-50% 0px -49% 0px' });
+sections.forEach(id => {
+  const el = document.getElementById(`section-${id}`);
+  if(el) observer.observe(el);
+});
+
+// ─── NAV SCROLL ───
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+}, {passive:true});
+
+// ─── HAMBURGER ───
+function toggleMenu(force) {
+  const menu = document.getElementById('mobile-menu');
+  const btn = document.getElementById('hamburger');
+  const open = force !== undefined ? force : !menu.classList.contains('open');
+  menu.classList.toggle('open', open);
+  btn.classList.toggle('open', open);
+}
+
+// CPU hero-particles canvas retired — GPU system covers entire page
+
+// ─── CONTACT FORM ───
+function handleContact(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('.btn-submit');
+  btn.textContent = 'Message Sent ✓';
+  btn.style.background = '#4a7c59';
+  btn.style.color = '#fff';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = 'Send Message';
+    btn.style.background = '';
+    btn.style.color = '';
+    btn.disabled = false;
+    e.target.reset();
+  }, 3000);
+}
+
+// ─── PROMO CODE ───
+document.querySelector('.btn-promo')?.addEventListener('click', () => {
+  const input = document.querySelector('.promo-input');
+  const code = input.value.trim().toUpperCase();
+  const btn = document.querySelector('.btn-promo');
+  if(!code) return;
+  btn.textContent = '✓ Applied';
+  btn.style.background = '#4a7c59';
+  btn.style.color = '#fff';
+  setTimeout(() => {
+    btn.textContent = 'Apply';
+    btn.style.background = '';
+    btn.style.color = '';
+  }, 2500);
+});
+
+// ─── LOGO GLAMOUR FLASH — one bright glow every 2 minutes ───
+(function() {
+  const img   = document.getElementById('logo-img');
+  const canvas = document.getElementById('logo-glamour');
+  if(!canvas || !img) return;
+
+  const ctx = canvas.getContext('2d');
+  let W, H, flash = null;
+
+  function resize() {
+    const r = img.getBoundingClientRect();
+    W = canvas.width  = r.width;
+    H = canvas.height = r.height;
+    canvas.style.width  = r.width  + 'px';
+    canvas.style.height = r.height + 'px';
+    canvas.style.top    = img.offsetTop  + 'px';
+    canvas.style.left   = img.offsetLeft + 'px';
+  }
+
+  // Wait for image to load then size canvas
+  if(img.complete) resize();
+  else img.addEventListener('load', resize);
+  window.addEventListener('resize', resize, {passive:true});
+
+  // Flash state: {x, y, progress 0→1→0, phase: 'in'|'hold'|'out'}
+  function triggerFlash() {
+    // Random point within logo bounds (avoid edges)
+    flash = {
+      x: W * (0.35 + Math.random() * 0.3) + 10,
+      y: H * (0.3  + Math.random() * 0.4) - 93,
+      alpha: 0,
+      phase: 'in'
+    };
+  }
+
+  function drawFlash() {
+    if(!flash) return;
+    ctx.clearRect(0, 0, W, H);
+
+    const a = flash.alpha;
+    const x = flash.x;
+    const y = flash.y;
+
+    // Soft bloom glow
+    const bloom = ctx.createRadialGradient(x, y, 0, x, y, 55);
+    bloom.addColorStop(0,   `rgba(255,248,210,${a * 0.55})`);
+    bloom.addColorStop(0.3, `rgba(74,144,226,${a * 0.3})`);
+    bloom.addColorStop(0.7, `rgba(30,94,200,${a * 0.08})`);
+    bloom.addColorStop(1,   `rgba(0,0,0,0)`);
+    ctx.fillStyle = bloom;
+    ctx.beginPath();
+    ctx.arc(x, y, 55, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Inner sharp bright core
+    const core = ctx.createRadialGradient(x, y, 0, x, y, 8);
+    core.addColorStop(0,   `rgba(255,255,255,${a})`);
+    core.addColorStop(0.4, `rgba(255,248,210,${a * 0.8})`);
+    core.addColorStop(1,   `rgba(255,255,255,0)`);
+    ctx.fillStyle = core;
+    ctx.beginPath();
+    ctx.arc(x, y, 8, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Cross lens flare — 4 streaks
+    ctx.save();
+    ctx.globalAlpha = a * 0.7;
+    ctx.strokeStyle = `rgba(255,248,200,${a})`;
+    ctx.lineWidth = 1.2;
+    ctx.lineCap = 'round';
+
+    const arms = [
+      {dx:1,dy:0,len:40},  // right
+      {dx:-1,dy:0,len:40}, // left
+      {dx:0,dy:-1,len:50}, // up
+      {dx:0,dy:1,len:30},  // down
+    ];
+    arms.forEach(arm => {
+      const grad = ctx.createLinearGradient(
+        x, y,
+        x + arm.dx * arm.len,
+        y + arm.dy * arm.len
+      );
+      grad.addColorStop(0,   `rgba(255,255,255,${a})`);
+      grad.addColorStop(1,   `rgba(255,255,255,0)`);
+      ctx.strokeStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + arm.dx * arm.len, y + arm.dy * arm.len);
+      ctx.stroke();
+    });
+
+    // Diagonal faint streaks
+    ctx.globalAlpha = a * 0.35;
+    [{dx:1,dy:-1,len:25},{dx:-1,dy:1,len:25},{dx:1,dy:1,len:18},{dx:-1,dy:-1,len:18}].forEach(arm => {
+      const d = Math.sqrt(2);
+      const grad = ctx.createLinearGradient(x, y, x+arm.dx*arm.len, y+arm.dy*arm.len);
+      grad.addColorStop(0, `rgba(255,248,200,${a})`);
+      grad.addColorStop(1, `rgba(255,248,200,0)`);
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = .7;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + arm.dx * arm.len, y + arm.dy * arm.len);
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
+
+  // Animation tick
+  const IN_SPEED   = 0.04;  // fade in fast
+  const HOLD_TICKS = 18;    // frames to hold at peak
+  let holdCount = 0;
+  const OUT_SPEED  = 0.025; // fade out slightly slower
+
+  function tick() {
+    requestAnimationFrame(tick);
+    if(!flash) { ctx.clearRect(0,0,W,H); return; }
+
+    if(flash.phase === 'in') {
+      flash.alpha = Math.min(flash.alpha + IN_SPEED, 1);
+      if(flash.alpha >= 1) { flash.phase = 'hold'; holdCount = 0; }
+    } else if(flash.phase === 'hold') {
+      holdCount++;
+      if(holdCount >= HOLD_TICKS) flash.phase = 'out';
+    } else {
+      flash.alpha = Math.max(flash.alpha - OUT_SPEED, 0);
+      if(flash.alpha <= 0) { ctx.clearRect(0,0,W,H); triggerFlash(); return; }
+    }
+
+    drawFlash();
+  }
+
+  // Fire once immediately after 5s delay so user sees it on load, then every 2 min
+  setTimeout(triggerFlash, 1000); // start after 1s then loops automatically
+
+  tick();
+})();
+
+// ─── COLLECTION LOGO FX — embers + crown sparkle ───
+(function() {
+  const logo   = document.getElementById('collection-logo');
+  const canvas = document.getElementById('collection-fx');
+  if(!logo || !canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H;
+
+  function resize() {
+    W = canvas.width  = logo.offsetWidth;
+    H = canvas.height = logo.offsetHeight;
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+  }
+  if(logo.complete) resize();
+  else logo.addEventListener('load', resize);
+  window.addEventListener('resize', resize, {passive:true});
+
+  // ── EMBERS — rise from bottom 30% of logo (Collections banner area)
+  const embers = [];
+  function Ember() {
+    this.x     = W * (0.2 + Math.random() * 0.6);  // across logo width
+    this.y     = H * (0.75 + Math.random() * 0.2);  // bottom area
+    this.vy    = -(0.4 + Math.random() * 0.8);
+    this.vx    = (Math.random() - 0.5) * 0.4;
+    this.alpha = 0;
+    this.size  = 0.8 + Math.random() * 1.6;
+    this.life  = 0;
+    this.maxLife = 60 + Math.random() * 80;
+    this.gold  = Math.random() > 0.4;
+  }
+  for(let i = 0; i < 35; i++) {
+    const e = new Ember();
+    e.life = Math.random() * e.maxLife; // stagger start
+    embers.push(e);
+  }
+
+  // ── CROWN SPARKLES — burst from crown tip (top ~15% center)
+  const sparkles = [];
+  function Sparkle() {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 0.3 + Math.random() * 1.2;
+    this.x     = W * 0.5 + (Math.random() - 0.5) * W * 0.12;
+    this.y     = H * 0.08 + Math.random() * H * 0.08;
+    this.vx    = Math.cos(angle) * speed;
+    this.vy    = Math.sin(angle) * speed - 1.5;
+    this.alpha = 1;
+    this.size  = 1 + Math.random() * 2;
+    this.life  = 0;
+    this.maxLife = 30 + Math.random() * 40;
+  }
+
+  let sparkleTimer = 0;
+  const SPARKLE_INTERVAL = 90; // frames between bursts
+
+  function tick() {
+    requestAnimationFrame(tick);
+    if(!W || !H) return;
+    ctx.clearRect(0, 0, W, H);
+
+    // ── draw embers
+    embers.forEach(e => {
+      e.life++;
+      e.x  += e.vx;
+      e.y  += e.vy;
+      e.vy -= 0.005; // slight acceleration upward
+
+      const progress = e.life / e.maxLife;
+      e.alpha = progress < 0.2
+        ? progress / 0.2              // fade in
+        : 1 - (progress - 0.2) / 0.8; // fade out
+
+      if(e.life >= e.maxLife) {
+        Object.assign(e, new Ember());
+        e.life = 0;
+      }
+
+      ctx.beginPath();
+      ctx.arc(e.x, e.y, e.size, 0, Math.PI * 2);
+      ctx.fillStyle = e.gold
+        ? `rgba(74,144,226,${e.alpha * 0.85})`
+        : `rgba(255,240,180,${e.alpha * 0.65})`;
+      ctx.fill();
+
+      // tiny glow dot
+      ctx.beginPath();
+      ctx.arc(e.x, e.y, e.size * 0.4, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,220,${e.alpha * 0.9})`;
+      ctx.fill();
+    });
+
+    // ── trigger sparkle burst at crown
+    sparkleTimer++;
+    if(sparkleTimer >= SPARKLE_INTERVAL) {
+      sparkleTimer = 0;
+      for(let i = 0; i < 8; i++) sparkles.push(new Sparkle());
+    }
+
+    // ── draw crown sparkles
+    for(let i = sparkles.length - 1; i >= 0; i--) {
+      const s = sparkles[i];
+      s.life++;
+      s.x += s.vx;
+      s.y += s.vy;
+      s.vy += 0.04; // gravity
+      s.alpha = 1 - s.life / s.maxLife;
+
+      if(s.life >= s.maxLife) { sparkles.splice(i, 1); continue; }
+
+      // Cross sparkle shape
+      ctx.save();
+      ctx.globalAlpha = s.alpha;
+      ctx.strokeStyle = `rgba(255,248,200,${s.alpha})`;
+      ctx.lineWidth   = s.size * 0.5;
+      ctx.lineCap     = 'round';
+
+      ctx.beginPath();
+      ctx.moveTo(s.x - s.size * 3, s.y);
+      ctx.lineTo(s.x + s.size * 3, s.y);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(s.x, s.y - s.size * 3);
+      ctx.lineTo(s.x, s.y + s.size * 3);
+      ctx.stroke();
+
+      // bright center dot
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.size * 0.6, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${s.alpha})`;
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  tick();
+})();
+
+// ─── ABOUT SECTION PARTICLES ───
+(function(){
+  const canvas = document.getElementById('about-particles');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, pts = [];
+  function resize(){
+    const s = document.getElementById('section-about');
+    W = canvas.width  = s.offsetWidth;
+    H = canvas.height = s.offsetHeight;
+  }
+  function mkPt(){
+    return{
+      x: Math.random()*W, y: Math.random()*H,
+      vx:(Math.random()-.5)*.18, vy:-(Math.random()*.25+.04),
+      r: Math.random()*1.6+.3,
+      a: Math.random()*.35+.08,
+      life:0, max:Math.random()*350+200,
+      col:Math.random()>.45?'#4A90E2':'#B8D4F0'
+    };
+  }
+  for(let i=0;i<55;i++) pts.push(mkPt());
+  function tick(){
+    requestAnimationFrame(tick);
+    ctx.clearRect(0,0,W,H);
+    for(let i=pts.length-1;i>=0;i--){
+      const p=pts[i];
+      p.x+=p.vx+Math.sin(p.life*.009)*.12;
+      p.y+=p.vy; p.life++;
+      const fade=p.life<45?p.life/45:p.life>p.max-45?(p.max-p.life)/45:1;
+      ctx.globalAlpha=p.a*fade;
+      ctx.fillStyle=p.col;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
+      if(p.life>=p.max) pts[i]=mkPt();
+    }
+    ctx.globalAlpha=1;
+  }
+  resize();
+  window.addEventListener('resize',resize);
+  tick();
+})();
+
+// ─── SCENT POPUP ───
+// ── DEALS TAB ──
+(function(){
+  const DEALS = [
+    { label:'Limited Time',  text:'FREE SHIPPING ON ORDERS $35+',  btn:'CLAIM NOW'  },
+    { label:'Exclusive Drop', text:'BUY 2 GET 1 FREE — ALL SCENTS', btn:'SHOP NOW'   },
+    { label:'Members Only',  text:'20% OFF YOUR FIRST ORDER',       btn:'GET CODE'   },
+    { label:'Gift Season',   text:'GIFT SETS STARTING AT $24.99',   btn:'VIEW SETS'  },
+  ];
+  let cur = 0;
+  const elLabel = document.getElementById('deal-label');
+  const elText  = document.getElementById('deal-text');
+  const elBtn   = document.getElementById('deal-btn');
+  const dots    = document.querySelectorAll('.deal-dot');
+  function show(n){
+    cur = (n + DEALS.length) % DEALS.length;
+    const d = DEALS[cur];
+    if(elLabel) elLabel.textContent = d.label;
+    if(elText)  elText.textContent  = d.text;
+    if(elBtn)   elBtn.textContent   = d.btn;
+    dots.forEach((dot,i)=> dot.classList.toggle('active', i===cur));
+  }
+  window.dealsNext = ()=> show(cur+1);
+  window.dealsPrev = ()=> show(cur-1);
+  window.dealsGo   = (n)=> show(n);
+  setInterval(()=> show(cur+1), 5000);
+})();
+
+
+// ── VIDEO + AUDIO REACT ──
+window.addEventListener('load', ()=>{
+  const v = document.getElementById('brand-video');
+  if(!v) return;
+
+  // 2-loop then stop
+  let loops = 0;
+  v.addEventListener('ended', ()=>{
+    loops++;
+    if(loops < 2){ v.play(); }
+  });
+
+});
+
+function openScentPopup(){
+  document.getElementById('scent-overlay').classList.add('open');
+}
+function closeScentPopup(){
+  document.getElementById('scent-overlay').classList.remove('open');
+  const v = document.getElementById('brand-video');
+  if(v){ v.muted = false; v.currentTime = 0; v.play().catch(()=>{}); }
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeScentPopup(); });
+
+// Auto-open on page enter
+window.addEventListener('load',()=>{ setTimeout(openScentPopup, 1200); });
+
+// ── VIDEO BG (swap in when ready) ──
+// To activate: document.getElementById('scent-video').src = 'assets/YOUR_VIDEO.mp4'; video.style.display='block';
+function _initScentVideo_PLACEHOLDER(){
+  const cv = document.getElementById('scent-vortex');
+  if(!cv) return;
+  const popup = document.getElementById('scent-popup');
+  const W = cv.width  = popup.offsetWidth  || 900;
+  const H = cv.height = popup.offsetHeight || 520;
+  const ctx = cv.getContext('2d');
+  const cx = W/2, cy = H/2;
+  const maxR = Math.sqrt(cx*cx + cy*cy) * 1.15;
+
+  // Vortex ring color stops (blue/violet/cyan theme)
+  const RING_COLORS = [
+    [30,  80, 220],  // deep royal blue
+    [74, 144, 226],  // electric blue
+    [120, 60, 210],  // indigo violet
+    [0,  190, 255],  // bright cyan
+    [20, 110, 200],  // mid ocean blue
+    [160, 80, 240],  // purple
+    [0,  220, 200],  // teal
+    [50, 160, 255],  // sky blue
+  ];
+  const NUM_RINGS = 32;
+
+  // Sparks — 1200 tiny particles spiraling inward
+  const SP = 1200;
+  const spx = new Float32Array(SP);
+  const spy = new Float32Array(SP);
+  const spa = new Float32Array(SP); // angle
+  const spr = new Float32Array(SP); // radius
+  const spv = new Float32Array(SP); // speed
+  const sph = new Float32Array(SP); // hue
+  for(let i=0;i<SP;i++){
+    spa[i] = Math.random()*Math.PI*2;
+    spr[i] = Math.random()*maxR;
+    spv[i] = 0.008 + Math.random()*0.018;
+    sph[i] = 180 + Math.random()*80;
+  }
+
+  let t = 0;
+  function drawVortex(){
+    requestAnimationFrame(drawVortex);
+
+    // Trail fade instead of full clear — creates motion blur
+    ctx.fillStyle = 'rgba(4,6,14,0.28)';
+    ctx.fillRect(0,0,W,H);
+
+    // ── TUNNEL RINGS ──
+    for(let i = 0; i < NUM_RINGS; i++){
+      // Each ring scrolls inward: frac goes 0→1 from outside to center
+      const frac = ((i/NUM_RINGS) + (t * 0.003)) % 1.0;
+      const radius = Math.pow(1 - frac, 1.3) * maxR;
+      if(radius < 2) continue;
+
+      const spin = t * 0.018 + frac * Math.PI * 5;
+      const ci   = (i + Math.floor(t * 0.06)) % RING_COLORS.length;
+      const [r,g,b] = RING_COLORS[ci];
+
+      // Rings brighten and thin as they approach center
+      const alpha = 0.18 + frac * 0.55;
+      const lw    = Math.max(0.8, (1 - frac) * 5 + 0.8);
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(spin);
+      ctx.scale(1, 0.48); // flatten for tunnel perspective
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, 0, Math.PI*2);
+      ctx.strokeStyle = `rgba(${r},${g},${b},${alpha})`;
+      ctx.lineWidth = lw;
+      ctx.stroke();
+      ctx.restore();
+
+      // Every 4th ring also draws a bright highlight arc (depth cue)
+      if(i % 4 === 0){
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(spin + 0.3);
+        ctx.scale(1, 0.48);
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, -0.4, 0.4);
+        ctx.strokeStyle = `rgba(${Math.min(r+80,255)},${Math.min(g+80,255)},255,${alpha * 0.6})`;
+        ctx.lineWidth = lw * 1.6;
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    // ── SPIRAL SPARKS ──
+    ctx.beginPath();
+    for(let i=0;i<SP;i++){
+      spr[i] -= spv[i] * (spr[i] / maxR * 1.5 + 0.4); // accelerate inward
+      spa[i] += 0.012 + spv[i] * 0.4;
+      if(spr[i] < 1){
+        spr[i] = maxR * (0.3 + Math.random()*0.7);
+        spa[i] = Math.random()*Math.PI*2;
+      }
+      spx[i] = cx + Math.cos(spa[i]) * spr[i];
+      spy[i] = cy + Math.sin(spa[i]) * spr[i] * 0.48;
+      const alpha = 0.4 + (1 - spr[i]/maxR)*0.5;
+      ctx.moveTo(spx[i]+1, spy[i]);
+      ctx.arc(spx[i], spy[i], 1, 0, Math.PI*2);
+    }
+    ctx.fillStyle = 'rgba(120,180,255,0.55)';
+    ctx.fill();
+
+    // ── CENTER GLOW ──
+    const pulse = 0.7 + 0.3*Math.sin(t*0.04);
+    const cg = ctx.createRadialGradient(cx,cy,0, cx,cy, 110*pulse);
+    cg.addColorStop(0,   'rgba(180,220,255,0.55)');
+    cg.addColorStop(0.25,'rgba(74,144,226,0.3)');
+    cg.addColorStop(0.6, 'rgba(30,60,200,0.1)');
+    cg.addColorStop(1,   'transparent');
+    ctx.fillStyle = cg;
+    ctx.fillRect(0,0,W,H);
+
+    // ── EDGE VIGNETTE ──
+    const vg = ctx.createRadialGradient(cx,cy,Math.min(cx,cy)*0.5, cx,cy,Math.min(cx,cy)*1.05);
+    vg.addColorStop(0,'transparent');
+    vg.addColorStop(1,'rgba(4,6,14,0.75)');
+    ctx.fillStyle = vg;
+    ctx.fillRect(0,0,W,H);
+
+    t++;
+  }
+  drawVortex();
+}
+
+// ─── FRESHENER CARD 3D TILT + SELECT ───
+(function(){
+  const cards = document.querySelectorAll('.ab-freshener-card[data-tilt]');
+  cards.forEach(card=>{
+    card.addEventListener('mousemove',e=>{
+      const r  = card.getBoundingClientRect();
+      const dx = (e.clientX - (r.left+r.width/2))  / (r.width/2);
+      const dy = (e.clientY - (r.top +r.height/2)) / (r.height/2);
+      card.style.transform=`perspective(700px) rotateX(${-dy*12}deg) rotateY(${dx*12}deg) scale(1.06)`;
+    });
+    card.addEventListener('mouseleave',()=>{
+      card.style.transform='perspective(700px) rotateX(0deg) rotateY(0deg) scale(1)';
+    });
+    card.addEventListener('click',()=>{
+      const already = card.classList.contains('ab-selected');
+      cards.forEach(c=>c.classList.remove('ab-selected'));
+      if(!already) card.classList.add('ab-selected');
+    });
+  });
+})();
+
+// ─── ABOUT FADE-IN ON SCROLL ───
+(function(){
+  const els = document.querySelectorAll('.ab-fade');
+  if(!els.length) return;
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('ab-visible'); });
+  },{threshold:.12});
+  els.forEach(el=>obs.observe(el));
+})();
+
+// ─── ELECTRIC BORDER ANIMATION helper ───
+// Applied via CSS classes. No extra JS needed.
+
+/* ═══════════════════════════════════════════
+   FEATURE 1 — SCENT PALETTE SWITCHER
+═══════════════════════════════════════════ */
+(function() {
+  const PALETTES = {
+    default:     { gold:'#4A90E2', amber:'#1E5EC8', bronze:'#1A3A8F', cream:'#B8D4F0', goldRgb:'74,144,226', amberRgb:'30,94,200' },
+    churro:      { gold:'#D4A24C', amber:'#C9782B', bronze:'#8E5A22', cream:'#F2D9B1', goldRgb:'212,162,76', amberRgb:'201,120,43' },
+    horchata:    { gold:'#E8D5B0', amber:'#C4A882', bronze:'#8B7355', cream:'#F5EDD8', goldRgb:'232,213,176', amberRgb:'196,168,130' },
+    jamaica:     { gold:'#C0392B', amber:'#96281B', bronze:'#6C1A12', cream:'#F5B7B1', goldRgb:'192,57,43',   amberRgb:'150,40,27' },
+    'pina-colada':{ gold:'#F0C040', amber:'#D4A820', bronze:'#A07818', cream:'#FFF5CC', goldRgb:'240,192,64',  amberRgb:'212,168,32' },
+    pina:        { gold:'#F0C040', amber:'#D4A820', bronze:'#A07818', cream:'#FFF5CC', goldRgb:'240,192,64',  amberRgb:'212,168,32' }
+  };
+  const SCENT_IMAGES = {
+    default:'assets/Churro.png', churro:'assets/Churro.png',
+    horchata:'assets/Horchata.png', jamaica:'assets/Jamaica.png',
+    'pina-colada':'assets/Pina Colada.png', pina:'assets/Pina Colada.png'
+  };
+  let activePalette = 'default';
+
+  window.setScentPalette = function(scent) {
+    const p = PALETTES[scent] || PALETTES.default;
+    const r = document.documentElement;
+    r.style.setProperty('--gold',   p.gold);
+    r.style.setProperty('--amber',  p.amber);
+    r.style.setProperty('--bronze', p.bronze);
+    r.style.setProperty('--cream',  p.cream);
+    r.style.setProperty('--gold-rgb',  p.goldRgb);
+    r.style.setProperty('--amber-rgb', p.amberRgb);
+    activePalette = scent || 'default';
+
+    // Update badge
+    const badge = document.getElementById('scent-palette-badge');
+    const badgeText = document.getElementById('scent-badge-text');
+    if (badge) {
+      if (activePalette === 'default') {
+        badge.classList.remove('visible');
+      } else {
+        const label = activePalette === 'pina' ? 'Piña Colada' :
+          activePalette.charAt(0).toUpperCase() + activePalette.slice(1);
+        badgeText.textContent = label;
+        badge.classList.add('visible');
+      }
+    }
+
+    // Update cursor freshener image
+    const cf = document.getElementById('cursor-freshener');
+    if (cf) cf.src = SCENT_IMAGES[activePalette] || SCENT_IMAGES.default;
+  };
+
+  // Wire up freshener card clicks
+  document.querySelectorAll('.ab-freshener-card[data-scent]').forEach(card => {
+    card.addEventListener('click', function() {
+      const scent = this.getAttribute('data-scent');
+      // Toggle: click same card again resets
+      if (activePalette === scent) {
+        document.querySelectorAll('.ab-freshener-card').forEach(c => c.classList.remove('ab-selected'));
+        window.setScentPalette('default');
+      } else {
+        document.querySelectorAll('.ab-freshener-card').forEach(c => c.classList.remove('ab-selected'));
+        this.classList.add('ab-selected');
+        window.setScentPalette(scent);
+      }
+    });
+  });
+})();
+
+/* ═══════════════════════════════════════════
+   FEATURE 2 — CURSOR FRESHENER
+═══════════════════════════════════════════ */
+(function() {
+  const hero = document.getElementById('section-home');
+  const el   = document.getElementById('cursor-freshener');
+  if (!hero || !el) return;
+
+  let active = false;
+  hero.addEventListener('mousemove', function(e) {
+    if (!active) { active = true; el.style.display = 'block'; }
+    el.style.left = e.clientX + 'px';
+    el.style.top  = e.clientY + 'px';
+    const t = document.elementFromPoint(e.clientX, e.clientY);
+    const clickable = t && (t.closest('a,button,[onclick]') !== null);
+    el.classList.toggle('cf-hover', clickable);
+  }, {passive:true});
+  hero.addEventListener('mouseleave', function() {
+    active = false;
+    el.style.display = 'none';
+    hero.style.cursor = '';
+  });
+  hero.addEventListener('mouseenter', function() {
+    hero.style.cursor = 'none';
+  });
+})();
+
+/* ═══════════════════════════════════════════
+   FEATURE 4 — SMOKE / FOG ON PRODUCT CARDS
+═══════════════════════════════════════════ */
+(function() {
+  document.querySelectorAll('.product-card').forEach(card => {
+    const canvas = card.querySelector('.card-smoke-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let raf = null;
+    let particles = [];
+
+    function resize() {
+      canvas.width  = card.offsetWidth;
+      canvas.height = card.offsetHeight;
+    }
+
+    function spawnParticle() {
+      return {
+        x: Math.random() * canvas.width,
+        y: canvas.height * 0.85 + Math.random() * canvas.height * 0.15,
+        r: 3 + Math.random() * 8,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: -(0.4 + Math.random() * 0.8),
+        life: 1,
+        decay: 0.008 + Math.random() * 0.012
+      };
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // spawn if below max
+      if (particles.length < 12) particles.push(spawnParticle());
+
+      particles.forEach((p, i) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.r += 0.06;
+        p.life -= p.decay;
+
+        const alpha = Math.max(0, p.life * 0.45);
+        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+        // gold-tinted wisps
+        grad.addColorStop(0, `rgba(255,220,140,${alpha})`);
+        grad.addColorStop(1, `rgba(255,255,255,0)`);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        if (p.life <= 0) particles.splice(i, 1);
+      });
+
+      raf = requestAnimationFrame(draw);
+    }
+
+    card.addEventListener('mouseenter', function() {
+      resize();
+      particles = [];
+      canvas.style.opacity = '1';
+      if (!raf) draw();
+    });
+
+    card.addEventListener('mouseleave', function() {
+      canvas.style.opacity = '0';
+      if (raf) { cancelAnimationFrame(raf); raf = null; }
+      particles = [];
+    });
+  });
+})();
+
+/* ═══════════════════════════════════════════
+   FEATURE 5 — TIMELINE DRAG SCROLL
+═══════════════════════════════════════════ */
+(function() {
+  const track = document.getElementById('timeline-track');
+  if (!track) return;
+  let isDragging = false, startX = 0, scrollLeft = 0;
+
+  track.addEventListener('mousedown', e => {
+    isDragging = true;
+    startX = e.pageX - track.offsetLeft;
+    scrollLeft = track.scrollLeft;
+    track.style.cursor = 'grabbing';
+    e.preventDefault();
+  });
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+    track.style.cursor = 'grab';
+  });
+  document.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    const x = e.pageX - track.offsetLeft;
+    track.scrollLeft = scrollLeft - (x - startX);
+  });
+})();
+
+/* ═══════════════════════════════════════════
+   CHECKOUT — FEATURE
+═══════════════════════════════════════════ */
+(function() {
+  // ── State ──
+  const PRICES = { 'Churro': 14.99, 'Horchata': 14.99, 'Jamaica': 14.99, 'Pina Colada': 14.99 };
+  const ID_MAP  = { 'Churro': 'Churro', 'Horchata': 'Horchata', 'Jamaica': 'Jamaica', 'Pina Colada': 'PinaColada' };
+  const PROMOS  = {
+    'LOWRIDER20' : 20,
+    'FIRSTRIDE'  : 20,
+    'FAMILIA10'  : 10,
+    'CRUISEPACK' : 15,
+    'STREETLIFE' : 25,
+    'BLOCKLOVE'  : 30
+  };
+  const cart = { items: {}, promoCode: null, discount: 0 };
+
+  function fmt(n) { return '$' + n.toFixed(2); }
+  function subtotal() {
+    return Object.entries(cart.items).reduce(function(sum, entry){ return sum + entry[1] * PRICES[entry[0]]; }, 0);
+  }
+
+  window.checkoutAddItem = function(scent) {
+    cart.items[scent] = (cart.items[scent] || 0) + 1;
+    checkoutRender();
+  };
+  window.checkoutRemoveItem = function(scent) {
+    if (!cart.items[scent]) return;
+    cart.items[scent]--;
+    if (cart.items[scent] === 0) delete cart.items[scent];
+    checkoutRender();
+  };
+
+  window.checkoutApplyPromo = function() {
+    var raw   = (document.getElementById('co-promo-input').value || '').trim().toUpperCase();
+    var panel = document.getElementById('co-promo-panel');
+    var msg   = document.getElementById('co-promo-msg');
+    panel.classList.remove('shake','flash');
+    void panel.offsetWidth;
+    if (PROMOS[raw] !== undefined) {
+      cart.promoCode = raw;
+      cart.discount  = PROMOS[raw];
+      panel.classList.add('flash');
+      msg.className  = 'co-promo-msg valid';
+      msg.innerHTML  = '✔ Code applied — ' + cart.discount + '% off!';
+    } else {
+      cart.promoCode = null;
+      cart.discount  = 0;
+      panel.classList.add('shake');
+      msg.className  = 'co-promo-msg invalid';
+      msg.innerHTML  = "That code doesn't ride with us.";
+    }
+    checkoutRender();
+  };
+
+  window.checkoutRender = function() {
+    Object.keys(ID_MAP).forEach(function(scent) {
+      var el = document.getElementById('co-qty-' + ID_MAP[scent]);
+      if (el) el.textContent = cart.items[scent] || 0;
+    });
+    var listEl  = document.getElementById('co-item-list');
+    var entries = Object.keys(cart.items).filter(function(s){ return cart.items[s] > 0; });
+    if (!listEl) return;
+    if (entries.length === 0) {
+      listEl.innerHTML = '<li class="co-empty-note">Your cart is empty — add some scents above.</li>';
+    } else {
+      listEl.innerHTML = entries.map(function(scent) {
+        var qty = cart.items[scent];
+        return '<li class="co-item-row">' +
+          '<span class="co-item-name">' + scent + '</span>' +
+          '<span class="co-item-qty">x' + qty + '</span>' +
+          '<span class="co-item-price">' + fmt(qty * PRICES[scent]) + '</span>' +
+        '</li>';
+      }).join('');
+    }
+    var sub       = subtotal();
+    var discAmt   = cart.discount ? sub * (cart.discount / 100) : 0;
+    var afterDisc = sub - discAmt;
+    var shipping  = (sub === 0) ? 0 : (afterDisc >= 35 ? 0 : 4.99);
+    var total     = afterDisc + shipping;
+
+    var subEl = document.getElementById('co-val-subtotal');
+    if (subEl) subEl.textContent = fmt(sub);
+
+    var discLine = document.getElementById('co-line-discount');
+    if (discLine) {
+      if (cart.promoCode && discAmt > 0) {
+        discLine.style.display = '';
+        document.getElementById('co-promo-applied').textContent = cart.promoCode;
+        document.getElementById('co-val-original').textContent  = fmt(sub);
+        document.getElementById('co-val-discount').textContent  = fmt(afterDisc);
+        document.getElementById('co-badge-pct').textContent     = '-' + cart.discount + '%';
+      } else {
+        discLine.style.display = 'none';
+      }
+    }
+
+    var shipEl = document.getElementById('co-val-shipping');
+    if (shipEl) {
+      if (sub === 0) {
+        shipEl.textContent = '—'; shipEl.style.color = '';
+      } else if (shipping === 0) {
+        shipEl.textContent = 'FREE'; shipEl.style.color = '#6fcf97';
+      } else {
+        shipEl.textContent = fmt(shipping); shipEl.style.color = '';
+      }
+    }
+    var totEl = document.getElementById('co-val-total');
+    if (totEl) totEl.textContent = fmt(total);
+  };
+
+  window.checkoutPlaceOrder = function() {
+    if (subtotal() === 0) { alert('Add at least one item before placing your order.'); return; }
+    document.getElementById('co-success-overlay').classList.add('visible');
+    cart.items = {}; cart.promoCode = null; cart.discount = 0;
+    var msg = document.getElementById('co-promo-msg');
+    if (msg) { msg.textContent = ''; msg.className = 'co-promo-msg'; }
+    var inp = document.getElementById('co-promo-input');
+    if (inp) inp.value = '';
+    checkoutRender();
+  };
+
+  var promoInput = document.getElementById('co-promo-input');
+  if (promoInput) promoInput.addEventListener('keydown', function(e){ if(e.key==='Enter') checkoutApplyPromo(); });
+  checkoutRender();
+})();
+
+/* ═══════════════════════════════════════════
+   FEATURE 6 — NIGHT / DAY MODE
+═══════════════════════════════════════════ */
+(function() {
+  const hour  = new Date().getHours();
+  const isDay = hour >= 6 && hour < 18;
+  document.body.classList.add(isDay ? 'day-mode' : 'night-mode');
+  const badge = document.getElementById('timemode-badge');
+  if (badge) badge.textContent = isDay ? '☀️ Day Mode' : '🌙 Night Mode';
+})();
+
+</script>
+</body>
+</html>
