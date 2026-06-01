@@ -4153,11 +4153,16 @@ window.addEventListener('load', ()=>{
 
 function openScentPopup(){
   document.getElementById('scent-overlay').classList.add('open');
+  // pause music when popup opens
+  if(window.ssPlayer) window.ssPlayer._pause();
 }
 function closeScentPopup(){
   document.getElementById('scent-overlay').classList.remove('open');
+  // resume commercial muted — music takes priority
   const v = document.getElementById('brand-video');
-  if(v){ v.muted = false; v.currentTime = 0; v.play().catch(()=>{}); }
+  if(v){ v.muted = true; v.currentTime = 0; v.play().catch(()=>{}); }
+  // resume music if it was playing before
+  if(window.ssPlayer) window.ssPlayer._resume();
 }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeScentPopup(); });
 
@@ -4694,21 +4699,22 @@ const ssPlayer = (function(){
     obs.observe(shopSection);
   }
 
-  // Pause music when popup opens
-  const origOpen = window.openScentPopup;
-  window.openScentPopup = function(){
-    origOpen && origOpen();
-    if(playing){ audio.pause(); playing=false; syncBtn(); }
-  };
+
+  function muteCommercial(mute){
+    const v = document.getElementById('brand-video');
+    if(v) v.muted = mute;
+  }
 
   return {
     toggle(){
-      if(playing){ audio.pause(); playing=false; }
-      else { audio.play().catch(()=>{}); playing=true; }
+      if(playing){ audio.pause(); playing=false; muteCommercial(false); }
+      else { audio.play().catch(()=>{}); playing=true; muteCommercial(true); }
       syncBtn();
     },
     prev(){ load(idx-1); if(playing){ audio.play().catch(()=>{}); } },
-    next(){ load(idx+1); if(playing){ audio.play().catch(()=>{}); } }
+    next(){ load(idx+1); if(playing){ audio.play().catch(()=>{}); } },
+    _pause(){ if(playing){ audio.pause(); } },
+    _resume(){ if(playing){ audio.play().catch(()=>{}); muteCommercial(true); } }
   };
 })();
 
