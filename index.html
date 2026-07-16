@@ -17,6 +17,11 @@
   src:url('fonts/brotheric/Brotheric Regular Demo.otf') format('opentype');
   font-display:swap;
 }
+@font-face{
+  font-family:'RetroVintage';
+  src:url('fonts/retro_vintage/RetroVintage-Regular.otf') format('opentype');
+  font-display:swap;
+}
 :root {
   --black:    #060810;
   --charcoal: #0D1220;
@@ -253,7 +258,7 @@ body{
   margin-bottom:.8rem;
 }
 .hero-title .shine{
-  display:block;font-family:'Brotheric','Cinzel',serif;
+  display:block;font-family:'RetroVintage','Cinzel',serif;
   background:linear-gradient(135deg,
     #B8D4F0 0%,
     #4A90E2 25%,
@@ -370,7 +375,7 @@ body{
   color:var(--gold);margin-bottom:1rem;opacity:.8;
 }
 .sec-title{
-  font-family:'Brotheric','Cinzel',serif;
+  font-family:'RetroVintage','Cinzel',serif;
   font-size:clamp(2rem,5vw,4rem);
   font-weight:900;
   letter-spacing:.15em;color:var(--cream);
@@ -904,7 +909,7 @@ body{
   opacity:.8;box-shadow:0 0 5px rgba(74,144,226,.5);
 }
 .ab-founder-title{
-  font-family:'Brotheric',cursive;
+  font-family:'RetroVintage',cursive;
   font-size:clamp(2rem,3.5vw,3rem);
   color:var(--gold);text-align:center;
   line-height:1.1;margin:4px 0 2px;
@@ -1353,7 +1358,7 @@ footer{
   color:var(--gold);opacity:.5;text-transform:uppercase;margin-bottom:6px;
 }
 .sp-title{
-  font-family:'Brotheric',serif;
+  font-family:'RetroVintage',serif;
   font-size:clamp(1.5rem,2.8vw,2.2rem);
   color:var(--cream);letter-spacing:.06em;
   text-shadow:0 0 40px rgba(74,144,226,.5),0 0 80px rgba(74,144,226,.2);
@@ -1373,7 +1378,24 @@ footer{
   padding:10px 30px 28px;gap:0;
 }
 .sp-row .ab-freshener-img{width:170px;}
-.sp-row .ab-info-popup{bottom:calc(100% + 10px);}
+/* flip popup below card so it doesn't get clipped by overflow:hidden on #scent-popup */
+.sp-row .ab-info-popup{
+  bottom:auto;
+  top:calc(100% + 10px);
+  transform:translateX(-50%) scale(.92);
+}
+.sp-row .ab-freshener-card:hover .ab-info-popup{
+  transform:translateX(-50%) scale(1);
+}
+/* flip arrow to point up */
+.sp-row .ab-info-popup::after{
+  top:auto;
+  bottom:100%;
+  border-top-color:transparent;
+  border-bottom-color:rgba(74,144,226,.6);
+}
+/* give room below cards for the popup */
+.sp-row{padding-bottom:180px;}
 
 /* god ray card sweep */
 @keyframes spRayWave{
@@ -1588,7 +1610,7 @@ footer{
 }
 #ss-cta-bar button{
   width:100%;
-  font-family:'Brotheric',cursive;
+  font-family:'RetroVintage',cursive;
   font-size:1.1rem;letter-spacing:.08em;
   color:var(--cream);
   background:linear-gradient(90deg,rgba(30,94,200,.5),rgba(74,144,226,.3));
@@ -2569,7 +2591,7 @@ body.day-mode {
 
   <!-- FEMALE CHARACTER — front, anchored to bottom so crop is hidden -->
   <div style="position:absolute;right:8%;bottom:0;width:min(28vw,360px);z-index:4;pointer-events:none;">
-    <img src="assets/female 1.png" alt="Street Scentz"
+    <img src="New Assets/Clovis_Girl2.png" alt="Street Scentz"
       style="width:100%;display:block;object-fit:contain;object-position:bottom center;filter:drop-shadow(0 0 30px rgba(74,144,226,.2)) drop-shadow(0 10px 40px rgba(0,0,0,.9));"/>
   </div>
 
@@ -2582,7 +2604,7 @@ body.day-mode {
       <span style="font-family:'Brotheric',serif;font-size:.58rem;letter-spacing:.38em;text-transform:uppercase;color:var(--amber);opacity:.85;">✦ Trailer</span>
       <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--gold),transparent);"></div>
     </div>
-    <div style="font-family:'Brotheric',serif;font-size:clamp(1.2rem,2.4vw,1.9rem);color:var(--cream);margin-bottom:.75rem;text-shadow:0 0 22px rgba(212,162,76,.3);line-height:1.1;">Check Out Our Brand</div>
+    <div style="font-family:'RetroVintage',serif;font-size:clamp(1.2rem,2.4vw,1.9rem);color:var(--cream);margin-bottom:.75rem;text-shadow:0 0 22px rgba(212,162,76,.3);line-height:1.1;">Check Out Our Brand</div>
 
     <!-- video card -->
     <div style="position:relative;border-radius:10px;overflow:hidden;
@@ -3226,7 +3248,7 @@ body.day-mode {
       <!-- text -->
       <div style="padding:1.2rem 1.3rem 1.5rem;">
         <div style="font-family:'Brotheric',serif;font-size:.55rem;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);opacity:.75;margin-bottom:.4rem;">01 — Who I Am</div>
-        <h3 style="font-family:'Brotheric',serif;font-size:1.15rem;color:var(--cream);margin:0 0 .6rem;line-height:1.2;">Me & My Family</h3>
+        <h3 style="font-family:'RetroVintage',serif;font-size:1.15rem;color:var(--cream);margin:0 0 .6rem;line-height:1.2;">Me & My Family</h3>
         <p style="font-family:'Cormorant Garamond',serif;font-size:.88rem;color:var(--cream);opacity:.75;line-height:1.6;margin:0;">My love for Chicano culture started at a young age. I grew up flipping through <em>Lowrider</em> magazines, admiring the artwork, the cars, the bikes, the music — everything that made our culture unique. I spent countless hours drawing little cholo characters, and when the Homies collectibles came out, <em>olvídate</em> — I was hooked. Like many youngsters, I ran with the homies, got into trouble, and experienced the streets firsthand. Those years became part of my story, but they didn't define my future.</p>
       </div>
     </div>
@@ -3242,7 +3264,7 @@ body.day-mode {
       <!-- text -->
       <div style="padding:1.2rem 1.3rem 1.5rem;">
         <div style="font-family:'Brotheric',serif;font-size:.55rem;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);opacity:.75;margin-bottom:.4rem;">02 — My Roots</div>
-        <h3 style="font-family:'Brotheric',serif;font-size:1.15rem;color:var(--cream);margin:0 0 .6rem;line-height:1.2;">Culture & Identity</h3>
+        <h3 style="font-family:'RetroVintage',serif;font-size:1.15rem;color:var(--cream);margin:0 0 .6rem;line-height:1.2;">Culture & Identity</h3>
         <p style="font-family:'Cormorant Garamond',serif;font-size:.88rem;color:var(--cream);opacity:.75;line-height:1.6;margin:0;">The biggest reason was my father. He never gave up on me. Even when we argued, he kept trying to steer me away from that life. He believed I was capable of more — taught me discipline, respect, and the value of earning an honest living. As I got older, I grew out of the <em>mocoso</em> stage and into the man I wanted to become. Today, I'm a husband, a father, a hardworking man, and an entrepreneur. But one thing never changed — my love for Chicano culture.</p>
       </div>
     </div>
@@ -3260,7 +3282,7 @@ body.day-mode {
       <!-- text -->
       <div style="padding:1.2rem 1.3rem 1.5rem;">
         <div style="font-family:'Brotheric',serif;font-size:.55rem;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);opacity:.75;margin-bottom:.4rem;">03 — The Why</div>
-        <h3 style="font-family:'Brotheric',serif;font-size:1.15rem;color:var(--cream);margin:0 0 .6rem;line-height:1.2;">Why Street Scentz</h3>
+        <h3 style="font-family:'RetroVintage',serif;font-size:1.15rem;color:var(--cream);margin:0 0 .6rem;line-height:1.2;">Why Street Scentz</h3>
         <p style="font-family:'Cormorant Garamond',serif;font-size:.88rem;color:var(--cream);opacity:.75;line-height:1.6;margin:0;">That's why I created <strong style="color:var(--gold);">Street Scentz</strong>. It's more than an air freshener company — it's a tribute to our raza, our memories, and the culture that helped shape us. From <strong>Horchata</strong> and <strong>Fresas Con Crema</strong> to every future collection, each design tells a story through artwork, nostalgia, and culture. My hope is that every time you catch one of our scents, it reminds you of where you came from, the people you love, and the pride of being part of a culture rich with history, family, and heart. <em>The Smell That Hits Home.</em></p>
       </div>
     </div>
@@ -3279,7 +3301,7 @@ body.day-mode {
 
     <!-- main title -->
     <h2 style="
-      font-family:'Brotheric',serif;
+      font-family:'RetroVintage',serif;
       font-size:clamp(3rem,8vw,7rem);
       font-weight:900;
       color:#fff;
@@ -3318,7 +3340,7 @@ body.day-mode {
   <!-- header -->
   <div style="position:relative;z-index:2;text-align:center;margin-bottom:3rem;">
     <div style="font-family:'Brotheric',serif;font-size:.6rem;letter-spacing:.45em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:.6rem;">Est. 2021</div>
-    <h2 style="font-family:'Brotheric',serif;font-size:clamp(2.2rem,5vw,4rem);color:var(--cream);letter-spacing:.1em;text-shadow:0 0 40px rgba(var(--gold-rgb),.3);margin:0;">Our Story</h2>
+    <h2 style="font-family:'RetroVintage',serif;font-size:clamp(2.2rem,5vw,4rem);color:var(--cream);letter-spacing:.1em;text-shadow:0 0 40px rgba(var(--gold-rgb),.3);margin:0;">Our Story</h2>
     <div style="width:80px;height:1px;margin:.8rem auto 0;background:linear-gradient(90deg,transparent,var(--gold),transparent);"></div>
   </div>
 
