@@ -6,17 +6,12 @@
 <title>Street Scentz — A Smell That Hits Home</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Bebas+Neue&family=Barlow:wght@300;400;500;600&family=Cinzel:wght@400;700;900&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Barlow:wght@400;500;600;700&family=Cinzel:wght@400;700;900&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
 /* ═══════════════════════════════════════════
    STREET SCENTZ — DESIGN SYSTEM
 ═══════════════════════════════════════════ */
-@font-face{
-  font-family:'Brotheric';
-  src:url('fonts/brotheric/Brotheric Regular Demo.otf') format('opentype');
-  font-display:swap;
-}
 @font-face{
   font-family:'RetroVintage';
   src:url('fonts/retro_vintage/RetroVintage-Regular.otf') format('opentype');
@@ -35,10 +30,10 @@
   --bronze-rgb: 26,58,143;
 
   /* Typography */
-  --font-display: 'Brotheric', serif;
-  --font-serif: 'Cormorant Garamond', serif;
+  --font-display: 'Cinzel', serif;
+  --font-heading: 'Cinzel', serif;
   --font-body: 'Barlow', sans-serif;
-  --font-bold: 'Bebas Neue', sans-serif;
+  --font-editorial: 'Cormorant Garamond', serif;
 
 }
 
@@ -150,7 +145,7 @@ body{
 }
 .mobile-menu.open{display:flex}
 .mobile-menu a{
-  font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.1em;
+  font-family:'Cinzel',serif;font-size:1.2rem;letter-spacing:.08em;
   color:var(--cream);text-decoration:none;transition:color .2s;
 }
 .mobile-menu a:hover,
@@ -258,7 +253,7 @@ body{
   margin-bottom:.8rem;
 }
 .hero-title .shine{
-  display:block;font-family:'RetroVintage','Cinzel',serif;
+  display:block;font-family:'Cinzel',serif;
   background:linear-gradient(135deg,
     #B8D4F0 0%,
     #4A90E2 25%,
@@ -375,7 +370,7 @@ body{
   color:var(--gold);margin-bottom:1rem;opacity:.8;
 }
 .sec-title{
-  font-family:'RetroVintage','Cinzel',serif;
+  font-family:'Cinzel',serif;
   font-size:clamp(2rem,5vw,4rem);
   font-weight:900;
   letter-spacing:.15em;color:var(--cream);
@@ -485,6 +480,18 @@ body{
   width:100%;height:100%;object-fit:cover;
   transition:transform .5s ease;
 }
+.card-img.freshener{
+  object-fit:contain;
+  padding:14px 10px;box-sizing:border-box;
+  filter:drop-shadow(0 8px 20px rgba(0,0,0,.55));
+  position:relative;z-index:2;
+}
+.card-img-wrap.bg-wood{background:url('New Assets/WoodBG.png') center/cover no-repeat;}
+.card-img-wrap.bg-marble{background:url('New Assets/MarbleBG.png') center/cover no-repeat;}
+.card-img-wrap.bg-wood::before,.card-img-wrap.bg-marble::before{
+  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(5,7,14,.35),rgba(5,7,14,.55));
+}
 .product-card:hover .card-img{transform:scale(1.07)}
 
 /* ── ALL IMAGES — any size, always fill slot ── */
@@ -547,13 +554,13 @@ body{
   display:flex;align-items:center;justify-content:space-between;
 }
 .card-price{
-  font-family:'Bebas Neue',sans-serif;font-size:1.4rem;
-  color:var(--gold);letter-spacing:.06em;
+  font-family:'Barlow',sans-serif;font-size:1.4rem;font-weight:700;
+  color:var(--gold);letter-spacing:.03em;
 }
 .btn-cart{
   padding:.55rem 1.3rem;
   font-family:'Cinzel',serif;
-  font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
   color:var(--gold);background:transparent;
   border:1px solid rgba(74,144,226,.4);
   cursor:pointer;
@@ -641,15 +648,15 @@ body{
   text-decoration:line-through;
 }
 .deal-new{
-  font-family:'Bebas Neue',sans-serif;font-size:1.6rem;
-  color:var(--gold);letter-spacing:.04em;
+  font-family:'Barlow',sans-serif;font-size:1.6rem;font-weight:700;
+  color:var(--gold);letter-spacing:.02em;
 }
 .deal-save{
-  font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;
+  font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;
   color:var(--amber);opacity:.9;
 }
 .deal-timer{
-  font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;
+  font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;
   color:var(--cream);opacity:.4;
   display:flex;align-items:center;gap:.5rem;
 }
@@ -669,7 +676,7 @@ body{
   flex-wrap:wrap;
 }
 .wholesale-text h3{
-  font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.08em;
+  font-family:'Cinzel',serif;font-size:1.6rem;font-weight:700;letter-spacing:.05em;
   color:var(--cream);margin-bottom:.35rem;
 }
 .wholesale-text p{font-size:.85rem;color:var(--cream);opacity:.55}
@@ -720,9 +727,16 @@ body{
   background:linear-gradient(90deg, #1A3A8F, #4A90E2, #B8D4F0, #4A90E2, #1A3A8F);
 }
 .gift-card-body{padding:2rem}
-.gift-icon{
-  font-size:2.2rem;margin-bottom:1rem;opacity:.7;
+.gift-flavors{
+  display:flex;justify-content:center;align-items:flex-end;gap:6px;
+  margin-bottom:1rem;flex-wrap:wrap;
 }
+.gift-flavors img{
+  width:58px;height:72px;object-fit:contain;
+  filter:drop-shadow(0 6px 14px rgba(0,0,0,.55));
+  transition:transform .3s;
+}
+.gift-card:hover .gift-flavors img{transform:translateY(-4px);}
 .gift-name{
   font-family:'Cinzel',serif;font-size:1.05rem;letter-spacing:.08em;
   color:var(--cream);margin-bottom:.5rem;
@@ -731,8 +745,20 @@ body{
   font-size:.82rem;line-height:1.6;color:var(--cream);opacity:.55;margin-bottom:1.5rem;
 }
 .gift-price{
-  font-family:'Bebas Neue',sans-serif;font-size:1.4rem;
-  color:var(--gold);letter-spacing:.06em;margin-bottom:1.2rem;
+  font-family:'Barlow',sans-serif;font-size:1.4rem;font-weight:700;
+  color:var(--gold);letter-spacing:.02em;margin-bottom:1.2rem;
+}
+.gift-orig{
+  font-size:.9rem;font-weight:500;color:var(--cream);opacity:.4;
+  text-decoration:line-through;margin-right:.4rem;
+}
+.gift-save{
+  display:inline-block;margin-left:.4rem;padding:.15rem .5rem;
+  font-family:'Cinzel',serif;font-size:.6rem;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--cream);background:rgba(74,144,226,.15);
+  border:1px solid rgba(74,144,226,.35);border-radius:3px;
+  vertical-align:middle;
 }
 .btn-gift{
   width:100%;padding:.75rem;
@@ -764,7 +790,7 @@ body{
   height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);
 }
 .custom-note-inner h3{
-  font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.08em;
+  font-family:'Cinzel',serif;font-size:1.8rem;font-weight:700;letter-spacing:.05em;
   color:var(--cream);margin-bottom:.5rem;
 }
 .custom-note-inner p{font-size:.88rem;opacity:.55;margin-bottom:1.5rem}
@@ -909,7 +935,7 @@ body{
   opacity:.8;box-shadow:0 0 5px rgba(74,144,226,.5);
 }
 .ab-founder-title{
-  font-family:'RetroVintage',cursive;
+  font-family:'Cinzel',serif;
   font-size:clamp(2rem,3.5vw,3rem);
   color:var(--gold);text-align:center;
   line-height:1.1;margin:4px 0 2px;
@@ -926,8 +952,8 @@ body{
   text-transform:uppercase;margin-bottom:4px;
 }
 .ab-body-text{
-  font-family:'Montserrat','Barlow',sans-serif;
-  font-size:.875rem;line-height:1.9;
+  font-family:'Barlow',sans-serif;
+  font-size:1rem;line-height:1.8;
   color:var(--cream);opacity:.72;margin-bottom:1rem;
 }
 .ab-quote{
@@ -941,9 +967,9 @@ body{
   position:absolute;top:-8px;left:10px;line-height:1;
 }
 .ab-quote p{
-  font-family:'Cinzel',serif;font-size:.85rem;
-  line-height:1.75;color:var(--gold);
-  letter-spacing:.05em;font-style:italic;
+  font-family:'Cormorant Garamond',serif;font-size:1.1rem;
+  line-height:1.8;color:var(--gold);
+  letter-spacing:.02em;font-style:italic;
   text-align:center;margin:0;
 }
 
@@ -1092,7 +1118,7 @@ body{
   color:var(--gold);opacity:.55;text-transform:uppercase;margin-bottom:3px;
 }
 .ab-info-text{
-  font-family:'Montserrat','Barlow',sans-serif;font-size:.72rem;
+  font-family:'Barlow',sans-serif;font-size:.85rem;
   color:var(--cream);opacity:.78;line-height:1.65;margin-bottom:9px;
 }
 @media(max-width:900px){
@@ -1136,7 +1162,7 @@ body{
   display:grid;grid-template-columns:1fr 1.4fr;gap:5rem;align-items:start;
 }
 .contact-info h3{
-  font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.08em;
+  font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;letter-spacing:.05em;
   color:var(--cream);margin-bottom:1rem;
 }
 .contact-info p{font-size:.85rem;line-height:1.7;opacity:.55;margin-bottom:2rem}
@@ -1358,7 +1384,7 @@ footer{
   color:var(--gold);opacity:.5;text-transform:uppercase;margin-bottom:6px;
 }
 .sp-title{
-  font-family:'RetroVintage',serif;
+  font-family:'Cinzel',serif;
   font-size:clamp(1.5rem,2.8vw,2.2rem);
   color:var(--cream);letter-spacing:.06em;
   text-shadow:0 0 40px rgba(74,144,226,.5),0 0 80px rgba(74,144,226,.2);
@@ -1378,24 +1404,37 @@ footer{
   padding:10px 30px 28px;gap:0;
 }
 .sp-row .ab-freshener-img{width:170px;}
-/* flip popup below card so it doesn't get clipped by overflow:hidden on #scent-popup */
-.sp-row .ab-info-popup{
-  bottom:auto;
-  top:calc(100% + 10px);
-  transform:translateX(-50%) scale(.92);
+
+/* ═══ FLIP CARD — click freshener to see flavor info on back ═══ */
+.sp-flip{position:relative;perspective:900px;cursor:pointer;}
+.sp-flip-inner{
+  position:relative;
+  transition:transform .65s cubic-bezier(.4,.15,.2,1);
+  transform-style:preserve-3d;
 }
-.sp-row .ab-freshener-card:hover .ab-info-popup{
-  transform:translateX(-50%) scale(1);
+.ab-freshener-card.flipped .sp-flip-inner{transform:rotateY(180deg);}
+.sp-flip-front,.sp-flip-back{
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
 }
-/* flip arrow to point up */
-.sp-row .ab-info-popup::after{
-  top:auto;
-  bottom:100%;
-  border-top-color:transparent;
-  border-bottom-color:rgba(74,144,226,.6);
+.sp-flip-front{position:relative;}
+.sp-flip-back{
+  position:absolute;inset:0;
+  transform:rotateY(180deg);
+  background:linear-gradient(160deg,rgba(10,14,26,.97),rgba(6,8,15,.99));
+  border:1px solid rgba(74,144,226,.55);
+  border-radius:26px; /* matches rounded freshener silhouette */
+  padding:20px 14px;
+  display:flex;flex-direction:column;justify-content:center;gap:5px;
+  overflow:hidden;text-align:center;
+  box-shadow:inset 0 0 24px rgba(74,144,226,.08),0 0 18px rgba(74,144,226,.15);
 }
-/* give room below cards for the popup */
-.sp-row{padding-bottom:180px;}
+.sp-flip-back .ab-info-title{border-bottom:1px solid rgba(74,144,226,.25);text-align:center;font-size:.85rem;}
+.sp-flip-back .ab-info-label{text-align:center;font-size:.68rem;}
+.sp-flip-back .ab-info-text{text-align:center;font-size:.78rem;line-height:1.5;margin-bottom:6px;}
+.sp-flip-hint{
+  font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gold);opacity:.5;margin-top:4px;
+}
 
 /* god ray card sweep */
 @keyframes spRayWave{
@@ -1554,6 +1593,29 @@ footer{
 
   /* CTA BAR — mobile only */
   #ss-cta-bar{display:flex!important;}
+
+  /* HERO SCENE — building + lowrider fit small screens */
+  #hero-building-wrap{width:82vw!important;right:-6%!important;transform:translateY(-36px)!important;}
+  #hero-lowrider-wrap{width:76vw!important;right:-4%!important;transform:translateX(-18px)!important;}
+
+  /* DEALS TAB — fit viewport */
+  #deals-tab{width:min(300px,88vw)!important;}
+
+  /* NAV CART — compact */
+  #ss-cart{margin-right:6px!important;}
+  #ss-cart-btn{padding:0 9px!important;font-size:.9rem!important;}
+
+  /* FLIP CARDS — smaller back face text */
+  .sp-flip-back{padding:12px 8px!important;gap:3px!important;}
+  .sp-flip-back div{font-size:.62rem!important;line-height:1.35!important;}
+  .sp-flip-hint{font-size:.52rem!important;}
+
+  /* GIFT BUNDLES — smaller flavor row */
+  .gift-flavors img{width:44px!important;height:56px!important;}
+  .gift-card-body{padding:1.4rem 1rem!important;}
+
+  /* SHOP CARD BG — keep freshener contained */
+  .card-img-wrap{height:210px!important;}
 }
 
 /* ═══════════════════════════════════════════
@@ -1561,6 +1623,125 @@ footer{
 ═══════════════════════════════════════════ */
 
 /* NAV PLAYER */
+/* ── HERO LOWRIDER — hydraulics (desktop only) ── */
+@media(min-width:481px){
+  #hero-lowrider{
+    pointer-events:auto;cursor:pointer;
+    transform-origin:82% 100%;
+    animation:lowriderIdle 4.5s ease-in-out infinite;
+  }
+  #hero-lowrider.pumping{
+    animation:lowriderPump 1.6s cubic-bezier(.3,1.6,.4,1) 1;
+  }
+}
+@keyframes lowriderIdle{
+  0%,100%{transform:translateY(0) rotate(0deg);}
+  30%{transform:translateY(-4px) rotate(-.5deg);}
+  60%{transform:translateY(-1px) rotate(.3deg);}
+}
+@keyframes lowriderPump{
+  0%{transform:translateY(0) rotate(0deg);}
+  12%{transform:translateY(-26px) rotate(-3.5deg);}
+  24%{transform:translateY(2px) rotate(1.2deg);}
+  38%{transform:translateY(-20px) rotate(3deg);}
+  50%{transform:translateY(2px) rotate(-1deg);}
+  64%{transform:translateY(-24px) rotate(-2.5deg);}
+  78%{transform:translateY(3px) rotate(.8deg);}
+  100%{transform:translateY(0) rotate(0deg);}
+}
+
+/* ── CART FLY ANIMATION ── */
+.cart-fly{
+  position:fixed;z-index:2000;pointer-events:none;
+  object-fit:contain;
+  filter:drop-shadow(0 6px 16px rgba(0,0,0,.6));
+  transition:top .7s cubic-bezier(.5,-.2,.75,.4),left .7s cubic-bezier(.3,.6,.6,1),
+    width .7s ease,height .7s ease,opacity .7s ease,transform .7s ease;
+}
+@keyframes cartBadgePop{
+  0%{transform:scale(1);}
+  40%{transform:scale(1.6);}
+  100%{transform:scale(1);}
+}
+#ss-cart-count.pop{animation:cartBadgePop .45s ease;}
+
+/* ── NAV CART ── */
+#ss-cart{position:relative;margin-right:10px;flex-shrink:0;}
+#ss-cart-btn{
+  position:relative;display:flex;align-items:center;justify-content:center;
+  height:34px;padding:0 12px;cursor:pointer;
+  background:rgba(4,6,14,.7);border:1px solid rgba(74,144,226,.2);border-radius:3px;
+  font-size:1rem;color:var(--gold);transition:border-color .2s,box-shadow .2s;
+}
+#ss-cart-btn:hover{border-color:rgba(74,144,226,.5);box-shadow:0 0 12px rgba(74,144,226,.2);}
+#ss-cart-count{
+  position:absolute;top:-7px;right:-7px;min-width:17px;height:17px;
+  display:flex;align-items:center;justify-content:center;padding:0 4px;
+  background:var(--amber);color:#fff;border-radius:9px;
+  font-family:'Barlow',sans-serif;font-size:.65rem;font-weight:700;
+  box-shadow:0 2px 8px rgba(0,0,0,.5);
+}
+#ss-cart-count.empty{display:none;}
+#ss-cart-panel{
+  position:absolute;top:calc(100% + 12px);right:0;width:320px;
+  background:linear-gradient(160deg,rgba(8,11,22,.98),rgba(4,6,14,.99));
+  border:1px solid rgba(74,144,226,.35);border-radius:6px;
+  box-shadow:0 20px 50px rgba(0,0,0,.7),0 0 24px rgba(74,144,226,.12);
+  padding:16px;display:none;z-index:1001;
+}
+#ss-cart-panel.open{display:block;}
+.ss-cart-title{
+  font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--gold);
+  margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(74,144,226,.2);
+}
+#ss-cart-items{max-height:280px;overflow-y:auto;}
+.ss-cart-item{
+  display:flex;align-items:center;gap:10px;padding:8px 0;
+  border-bottom:1px solid rgba(74,144,226,.1);
+}
+.ss-cart-item img{width:38px;height:48px;object-fit:contain;flex-shrink:0;}
+.ss-cart-item-info{flex:1;min-width:0;}
+.ss-cart-item-name{
+  font-family:'Barlow',sans-serif;font-size:.8rem;font-weight:600;
+  color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.ss-cart-item-price{font-family:'Barlow',sans-serif;font-size:.75rem;color:var(--gold);}
+.ss-cart-qty{display:flex;align-items:center;gap:6px;}
+.ss-cart-qty button{
+  width:20px;height:20px;background:none;cursor:pointer;
+  border:1px solid rgba(74,144,226,.3);border-radius:2px;
+  color:var(--gold);font-size:.75rem;line-height:1;
+}
+.ss-cart-qty button:hover{background:rgba(74,144,226,.12);}
+.ss-cart-qty span{font-family:'Barlow',sans-serif;font-size:.8rem;color:var(--cream);min-width:14px;text-align:center;}
+.ss-cart-remove{
+  background:none;border:none;cursor:pointer;color:rgba(184,212,240,.4);
+  font-size:.85rem;padding:2px;transition:color .2s;
+}
+.ss-cart-remove:hover{color:#e05555;}
+#ss-cart-empty{
+  font-family:'Barlow',sans-serif;font-size:.8rem;color:var(--cream);
+  opacity:.5;text-align:center;padding:14px 0;
+}
+#ss-cart-foot{margin-top:12px;}
+#ss-cart-total-row{
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--cream);margin-bottom:10px;
+}
+#ss-cart-total{font-family:'Barlow',sans-serif;font-size:1.05rem;font-weight:700;color:var(--gold);letter-spacing:0;}
+#ss-cart-checkout{
+  width:100%;padding:.65rem;cursor:pointer;
+  border:1px solid rgba(74,144,226,.4);background:rgba(74,144,226,.1);
+  color:var(--gold);font-family:'Cinzel',serif;font-weight:700;
+  font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;
+  transition:all .3s;
+}
+#ss-cart-checkout:hover{background:rgba(74,144,226,.22);box-shadow:0 0 16px rgba(74,144,226,.25);}
+@media(max-width:480px){
+  #ss-cart-panel{position:fixed;top:64px;left:50%;right:auto;transform:translateX(-50%);width:92vw;}
+}
 #ss-player{
   display:flex;align-items:center;gap:6px;
   background:rgba(4,6,14,.7);
@@ -1610,7 +1791,7 @@ footer{
 }
 #ss-cta-bar button{
   width:100%;
-  font-family:'RetroVintage',cursive;
+  font-family:'Cinzel',serif;
   font-size:1.1rem;letter-spacing:.08em;
   color:var(--cream);
   background:linear-gradient(90deg,rgba(30,94,200,.5),rgba(74,144,226,.3));
@@ -1700,7 +1881,7 @@ body, .section-bg, .nav-logo, .sec-title span, .card-scent, .ab-quote p {
   animation: tickerScroll 30s linear infinite;
 }
 .ticker-item {
-  font-family: 'Brotheric', serif;
+  font-family: 'Cinzel', serif;
   color: var(--gold);
   font-size: .85rem;
   padding: 0 1.5rem;
@@ -1754,16 +1935,17 @@ body, .section-bg, .nav-logo, .sec-title span, .card-scent, .ab-quote p {
 }
 .timeline-card:hover { border-color: rgba(var(--gold-rgb),0.55); transform: translateY(-3px); }
 .timeline-year {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 2.2rem;
+  font-family: 'Cinzel', serif;
+  font-size: 2rem;
+  font-weight: 900;
   color: var(--gold);
   line-height: 1;
   transition: color 0.4s;
 }
 .timeline-label {
   font-family: 'Cinzel', serif;
-  font-size: .7rem;
-  letter-spacing: .18em;
+  font-size: .75rem;
+  letter-spacing: .1em;
   text-transform: uppercase;
   color: var(--amber);
   margin: .4rem 0 .7rem;
@@ -1771,8 +1953,8 @@ body, .section-bg, .nav-logo, .sec-title span, .card-scent, .ab-quote p {
 }
 .timeline-desc {
   font-family: 'Barlow', sans-serif;
-  font-size: .82rem;
-  line-height: 1.5;
+  font-size: .9rem;
+  line-height: 1.7;
   color: var(--cream);
   opacity: .85;
   transition: color 0.4s;
@@ -1791,8 +1973,8 @@ body.day-mode {
   left: 16px;
   z-index: 999;
   font-family: 'Cinzel', serif;
-  font-size: .55rem;
-  letter-spacing: .15em;
+  font-size: .75rem;
+  letter-spacing: .08em;
   background: rgba(0,0,0,0.6);
   border: 1px solid rgba(var(--gold-rgb),0.3);
   color: var(--gold);
@@ -1828,10 +2010,11 @@ body.day-mode {
   min-width: 280px;
 }
 .checkout-step-label {
-  font-family: 'Brotheric', cursive;
+  font-family: 'Cinzel', serif;
   color: #d4a24c;
-  font-size: 1.05rem;
-  letter-spacing: .12em;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .05em;
   text-transform: uppercase;
   margin-bottom: .9rem;
   margin-top: 0;
@@ -2000,10 +2183,11 @@ body.day-mode {
 .co-corner.br { bottom: 8px; right: 8px; border-bottom: 1px solid #d4a24c; border-right: 1px solid #d4a24c; }
 
 .co-summary-title {
-  font-family: 'Brotheric', cursive;
+  font-family: 'Cinzel', serif;
   color: #d4a24c;
-  font-size: 1.15rem;
-  letter-spacing: .1em;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .05em;
   margin-bottom: 1.1rem;
   text-align: center;
 }
@@ -2061,13 +2245,15 @@ body.day-mode {
   border-top: 1px solid rgba(212,162,76,.25);
 }
 .co-total-label {
-  font-family: 'Brotheric', cursive;
+  font-family: 'Cinzel', serif;
   color: #d4a24c;
-  font-size: 1.15rem;
-  letter-spacing: .08em;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .05em;
 }
 .co-total-val {
-  font-family: 'Brotheric', cursive;
+  font-family: 'Barlow', sans-serif;
+  font-weight: 700;
   font-size: 1.6rem;
   color: #d4a24c;
   text-shadow: 0 0 18px rgba(212,162,76,.55), 0 0 6px rgba(212,162,76,.3);
@@ -2170,7 +2356,7 @@ body.day-mode {
   transform: translate(-55%, -62%) rotate(-45deg);
 }
 .co-success-title {
-  font-family: 'Brotheric', cursive;
+  font-family: 'Cinzel', serif;
   font-size: 2.2rem;
   color: #d4a24c;
   text-shadow: 0 0 20px rgba(212,162,76,.4);
@@ -2233,62 +2419,86 @@ body.day-mode {
       <!-- CHURRO -->
       <div class="ab-freshener-card" data-tilt data-scent="churro">
         <div class="ab-hang-string"></div><div class="ab-hang-knot"></div>
-        <div class="ab-info-icon">i</div>
-        <div class="ab-info-popup">
-          <div class="ab-info-title">Churro</div>
-          <div class="ab-info-label">Smells Like</div>
-          <div class="ab-info-text">Warm cinnamon sugar fresh off the fryer, toasted dough, and a hint of sweet vanilla cream.</div>
-          <div class="ab-info-label">Key Ingredients</div>
-          <div class="ab-info-text">Cinnamon · Brown Sugar · Vanilla · Warm Bread Accord · Caramel Musk</div>
+        <div class="sp-flip">
+          <div class="sp-flip-inner">
+            <div class="sp-flip-front">
+              <img class="ab-freshener-img" src="assets/Churro.png" alt="Churro"/>
+            </div>
+            <div class="sp-flip-back">
+              <div class="ab-info-title">Churro</div>
+              <div class="ab-info-label">Smells Like</div>
+              <div class="ab-info-text">Warm cinnamon sugar fresh off the fryer, toasted dough, and sweet vanilla cream.</div>
+              <div class="ab-info-label">Key Ingredients</div>
+              <div class="ab-info-text">Cinnamon · Brown Sugar · Vanilla · Caramel Musk</div>
+            </div>
+          </div>
         </div>
-        <img class="ab-freshener-img" src="assets/Churro.png" alt="Churro"/>
         <div class="ab-glow-pool"></div>
         <div class="ab-freshener-name">Churro</div>
+        <div class="sp-flip-hint">Tap to flip</div>
       </div>
       <!-- HORCHATA -->
       <div class="ab-freshener-card" data-tilt data-scent="horchata">
         <div class="ab-hang-string"></div><div class="ab-hang-knot"></div>
-        <div class="ab-info-icon">i</div>
-        <div class="ab-info-popup">
-          <div class="ab-info-title">Horchata</div>
-          <div class="ab-info-label">Smells Like</div>
-          <div class="ab-info-text">Cold sweet rice milk with cinnamon bark, soft vanilla, and a creamy almond finish.</div>
-          <div class="ab-info-label">Key Ingredients</div>
-          <div class="ab-info-text">Rice Water Accord · Cinnamon Bark · Vanilla Cream · Almond · Soft Musk</div>
+        <div class="sp-flip">
+          <div class="sp-flip-inner">
+            <div class="sp-flip-front">
+              <img class="ab-freshener-img" src="assets/Horchata.png" alt="Horchata"/>
+            </div>
+            <div class="sp-flip-back">
+              <div class="ab-info-title">Horchata</div>
+              <div class="ab-info-label">Smells Like</div>
+              <div class="ab-info-text">Cold sweet rice milk with cinnamon bark, soft vanilla, and a creamy almond finish.</div>
+              <div class="ab-info-label">Key Ingredients</div>
+              <div class="ab-info-text">Rice Water · Cinnamon Bark · Vanilla Cream · Almond</div>
+            </div>
+          </div>
         </div>
-        <img class="ab-freshener-img" src="assets/Horchata.png" alt="Horchata"/>
         <div class="ab-glow-pool"></div>
         <div class="ab-freshener-name">Horchata</div>
+        <div class="sp-flip-hint">Tap to flip</div>
       </div>
       <!-- JAMAICA -->
       <div class="ab-freshener-card" data-tilt data-scent="jamaica">
         <div class="ab-hang-string"></div><div class="ab-hang-knot"></div>
-        <div class="ab-info-icon">i</div>
-        <div class="ab-info-popup">
-          <div class="ab-info-title">Jamaica</div>
-          <div class="ab-info-label">Smells Like</div>
-          <div class="ab-info-text">Bright hibiscus flowers, tart berry, a touch of citrus zest, and a clean floral finish.</div>
-          <div class="ab-info-label">Key Ingredients</div>
-          <div class="ab-info-text">Hibiscus Extract · Tart Berry · Citrus Zest · Floral Musk · Aquatic Clean</div>
+        <div class="sp-flip">
+          <div class="sp-flip-inner">
+            <div class="sp-flip-front">
+              <img class="ab-freshener-img" src="assets/Jamaica.png" alt="Jamaica"/>
+            </div>
+            <div class="sp-flip-back">
+              <div class="ab-info-title">Jamaica</div>
+              <div class="ab-info-label">Smells Like</div>
+              <div class="ab-info-text">Bright hibiscus flowers, tart berry, citrus zest, and a clean floral finish.</div>
+              <div class="ab-info-label">Key Ingredients</div>
+              <div class="ab-info-text">Hibiscus · Tart Berry · Citrus Zest · Floral Musk</div>
+            </div>
+          </div>
         </div>
-        <img class="ab-freshener-img" src="assets/Jamaica.png" alt="Jamaica"/>
         <div class="ab-glow-pool"></div>
         <div class="ab-freshener-name">Jamaica</div>
+        <div class="sp-flip-hint">Tap to flip</div>
       </div>
       <!-- PINA COLADA -->
       <div class="ab-freshener-card" data-tilt data-scent="pina">
         <div class="ab-hang-string"></div><div class="ab-hang-knot"></div>
-        <div class="ab-info-icon">i</div>
-        <div class="ab-info-popup">
-          <div class="ab-info-title">Piña Colada</div>
-          <div class="ab-info-label">Smells Like</div>
-          <div class="ab-info-text">Ripe golden pineapple, rich coconut cream, and a warm tropical breeze with vanilla undertones.</div>
-          <div class="ab-info-label">Key Ingredients</div>
-          <div class="ab-info-text">Pineapple Extract · Coconut Cream · Tropical Floral · Vanilla · Sweet Musk</div>
+        <div class="sp-flip">
+          <div class="sp-flip-inner">
+            <div class="sp-flip-front">
+              <img class="ab-freshener-img" src="assets/Pina Colada.png" alt="Pina Colada"/>
+            </div>
+            <div class="sp-flip-back">
+              <div class="ab-info-title">Piña Colada</div>
+              <div class="ab-info-label">Smells Like</div>
+              <div class="ab-info-text">Ripe golden pineapple, rich coconut cream, and a warm tropical breeze.</div>
+              <div class="ab-info-label">Key Ingredients</div>
+              <div class="ab-info-text">Pineapple · Coconut Cream · Tropical Floral · Vanilla</div>
+            </div>
+          </div>
         </div>
-        <img class="ab-freshener-img" src="assets/Pina Colada.png" alt="Pina Colada"/>
         <div class="ab-glow-pool"></div>
         <div class="ab-freshener-name">Piña Colada</div>
+        <div class="sp-flip-hint">Tap to flip</div>
       </div>
     </div>
   </div>
@@ -2483,6 +2693,21 @@ body.day-mode {
     <li><a href="#" data-section="about" onclick="navClick(event,'about')">About</a></li>
     <li><a href="#" data-section="contact" onclick="navClick(event,'contact')">Contact</a></li>
   </ul>
+  <!-- ── CART ── -->
+  <div id="ss-cart">
+    <button id="ss-cart-btn" onclick="ssCart.toggle()" title="Cart">
+      &#x1F6D2;<span id="ss-cart-count">0</span>
+    </button>
+    <div id="ss-cart-panel">
+      <div class="ss-cart-title">Your Order</div>
+      <div id="ss-cart-items"></div>
+      <div id="ss-cart-empty">Cart is empty — go grab a scent.</div>
+      <div id="ss-cart-foot">
+        <div id="ss-cart-total-row">Subtotal <span id="ss-cart-total">$0.00</span></div>
+        <button id="ss-cart-checkout" onclick="ssCart.checkout(event)">Checkout &rarr;</button>
+      </div>
+    </div>
+  </div>
   <!-- ── MUSIC PLAYER ── -->
   <div id="ss-player">
     <span id="ss-note">♪</span>
@@ -2526,12 +2751,12 @@ body.day-mode {
   <div class="hero-fog"></div>
 
   <!-- EXCLUSIVE DEALS TAB — above girl & lowrider -->
-  <div id="deals-tab" style="position:absolute;right:5%;bottom:calc(63% + 70px);z-index:10;width:300px;">
+  <div id="deals-tab" style="position:absolute;left:50%;transform:translateX(-50%);bottom:calc(63% + 70px);z-index:10;width:300px;">
 
     <!-- tab header label -->
     <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;">
       <div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(212,162,76,.4));"></div>
-      <span style="font-family:'Brotheric',serif;font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--amber);opacity:.8;">Exclusive Deals</span>
+      <span style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--amber);opacity:.8;">Exclusive Deals</span>
       <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(212,162,76,.4),transparent);"></div>
     </div>
 
@@ -2554,7 +2779,7 @@ body.day-mode {
 
         <!-- slide content -->
         <div style="flex:1;text-align:center;">
-          <div id="deal-label" style="font-family:'Brotheric',serif;font-size:.5rem;letter-spacing:.3em;
+          <div id="deal-label" style="font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.3em;
             text-transform:uppercase;color:var(--amber);opacity:.75;margin-bottom:.2rem;">Limited Time</div>
           <div id="deal-text" style="font-family:'Cinzel',serif;font-weight:700;font-size:.72rem;
             color:var(--cream);letter-spacing:.06em;line-height:1.3;margin-bottom:.4rem;">
@@ -2583,9 +2808,17 @@ body.day-mode {
     </div>
   </div>
 
+  <!-- CHICANO BUILDING — backdrop behind lowrider, bottom-right -->
+  <div id="hero-building-wrap" style="position:absolute;right:-2%;bottom:0;width:min(62vw,780px);z-index:2;pointer-events:none;transform:translateY(-100px);">
+    <img src="New Assets/ChicanoBuilding.png" alt=""
+      style="width:100%;display:block;object-fit:contain;object-position:bottom right;opacity:.85;
+      filter:drop-shadow(0 0 30px rgba(0,0,0,.6));
+      -webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 18%);mask-image:linear-gradient(180deg,transparent 0%,#000 18%);"/>
+  </div>
+
   <!-- LOWRIDER — behind character, bottom-right -->
-  <div style="position:absolute;right:-2%;bottom:0;width:min(55vw,700px);z-index:3;pointer-events:none;transform:translateX(-100px);">
-    <img src="assets/lowrider.png" alt="Lowrider"
+  <div id="hero-lowrider-wrap" style="position:absolute;right:-2%;bottom:0;width:min(55vw,700px);z-index:3;pointer-events:none;transform:translateX(-100px);">
+    <img src="New Assets/LOWRIDER2.png" alt="Lowrider" id="hero-lowrider" title="Hit the switches"
       style="width:100%;display:block;object-fit:contain;object-position:bottom right;filter:drop-shadow(0 0 40px rgba(30,94,200,.25)) drop-shadow(0 20px 60px rgba(0,0,0,.8));"/>
   </div>
 
@@ -2601,7 +2834,7 @@ body.day-mode {
     <!-- header -->
     <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.35rem;">
       <div style="width:28px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));"></div>
-      <span style="font-family:'Brotheric',serif;font-size:.58rem;letter-spacing:.38em;text-transform:uppercase;color:var(--amber);opacity:.85;">✦ Trailer</span>
+      <span style="font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.38em;text-transform:uppercase;color:var(--amber);opacity:.85;">✦ Trailer</span>
       <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--gold),transparent);"></div>
     </div>
     <div style="font-family:'RetroVintage',serif;font-size:clamp(1.2rem,2.4vw,1.9rem);color:var(--cream);margin-bottom:.75rem;text-shadow:0 0 22px rgba(212,162,76,.3);line-height:1.1;">Check Out Our Brand</div>
@@ -2639,7 +2872,7 @@ body.day-mode {
 
     <!-- footer label — Old English, audio reactive -->
     <div style="text-align:center;margin-top:.5rem;">
-      <span id="audio-react-text" style="font-family:'Brotheric',serif;font-size:1rem;
+      <span id="audio-react-text" style="font-family:'Cinzel',serif;font-size:1rem;
         color:var(--cream);letter-spacing:.08em;
         text-shadow:0 0 8px rgba(212,162,76,.4);
         transition:text-shadow .1s ease, color .1s ease;">
@@ -2769,13 +3002,13 @@ body.day-mode {
 
       <div class="product-card">
         <canvas class="card-smoke-canvas"></canvas>
-        <div class="card-img-wrap">
-          <div class="img-ph" style="height:100%;border:none"><div class="img-ph-icon">🖼</div><div class="img-ph-label">PRODUCT 1<br/>Sunset Boulevard</div><div class="img-ph-size">280×220px</div></div>
+        <div class="card-img-wrap bg-wood">
+          <img class="card-img freshener" src="New Assets/Horchata.png" alt="Horchata air freshener"/>
           <div class="rarity-badge legendary">Legendary</div>
         </div>
         <div class="card-body">
-          <div class="card-scent">Sunset Boulevard</div>
-          <div class="card-desc">Warm sandalwood and amber musk — the smell of cruising Whittier on a Friday night with the windows down.</div>
+          <div class="card-scent">Horchata</div>
+          <div class="card-desc">Cold sweet rice milk with cinnamon bark, soft vanilla, and a creamy almond finish — abuela's pitcher on a summer afternoon.</div>
           <div class="card-footer">
             <span class="card-price">$14.99</span>
             <button class="btn-cart">Add to Cart</button>
@@ -2785,79 +3018,79 @@ body.day-mode {
 
       <div class="product-card">
         <canvas class="card-smoke-canvas"></canvas>
-        <div class="card-img-wrap">
-          <div class="img-ph" style="height:100%;border:none"><div class="img-ph-icon">🖼</div><div class="img-ph-label">PRODUCT 2<br/>Abuela's Garden</div><div class="img-ph-size">280×220px</div></div>
-          <div class="rarity-badge rare">Rare</div>
-        </div>
-        <div class="card-body">
-          <div class="card-scent">Abuela's Garden</div>
-          <div class="card-desc">Soft rose and jasmine — Sunday mornings after mass, carnitas in the air, the whole family together.</div>
-          <div class="card-footer">
-            <span class="card-price">$12.99</span>
-            <button class="btn-cart">Add to Cart</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="product-card">
-        <canvas class="card-smoke-canvas"></canvas>
-        <div class="card-img-wrap">
-          <div class="img-ph" style="height:100%;border:none"><div class="img-ph-icon">🖼</div><div class="img-ph-label">PRODUCT 3<br/>First Paint Job</div><div class="img-ph-size">280×220px</div></div>
-          <div class="rarity-badge limited">Limited</div>
-        </div>
-        <div class="card-body">
-          <div class="card-scent">First Paint Job</div>
-          <div class="card-desc">Fresh lacquer, clean leather, chrome polish — the pride you feel when your build finally hits the street.</div>
-          <div class="card-footer">
-            <span class="card-price">$15.99</span>
-            <button class="btn-cart">Add to Cart</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="product-card">
-        <canvas class="card-smoke-canvas"></canvas>
-        <div class="card-img-wrap">
-          <div class="img-ph" style="height:100%;border:none"><div class="img-ph-icon">🖼</div><div class="img-ph-label">PRODUCT 4<br/>Midnight Hydraulics</div><div class="img-ph-size">280×220px</div></div>
-          <div class="rarity-badge">Standard</div>
-        </div>
-        <div class="card-body">
-          <div class="card-scent">Midnight Hydraulics</div>
-          <div class="card-desc">Cool night air mixed with motor oil and cedar — three-wheel motion under the streetlights.</div>
-          <div class="card-footer">
-            <span class="card-price">$11.99</span>
-            <button class="btn-cart">Add to Cart</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="product-card">
-        <canvas class="card-smoke-canvas"></canvas>
-        <div class="card-img-wrap">
-          <div class="img-ph" style="height:100%;border:none"><div class="img-ph-icon">🖼</div><div class="img-ph-label">PRODUCT 5<br/>Oldies Night</div><div class="img-ph-size">280×220px</div></div>
-          <div class="rarity-badge rare">Rare</div>
-        </div>
-        <div class="card-body">
-          <div class="card-scent">Oldies Night</div>
-          <div class="card-desc">Vanilla and cool water — slow jam on the radio, parked at the lake, memories that never leave you.</div>
-          <div class="card-footer">
-            <span class="card-price">$12.99</span>
-            <button class="btn-cart">Add to Cart</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="product-card">
-        <canvas class="card-smoke-canvas"></canvas>
-        <div class="card-img-wrap">
-          <div class="img-ph" style="height:100%;border:none"><div class="img-ph-icon">🖼</div><div class="img-ph-label">PRODUCT 6<br/>Car Show Sunday</div><div class="img-ph-size">280×220px</div></div>
+        <div class="card-img-wrap bg-marble">
+          <img class="card-img freshener" src="New Assets/Fresas_Crema.png" alt="Fresas con Crema air freshener"/>
           <div class="rarity-badge legendary">Legendary</div>
         </div>
         <div class="card-body">
-          <div class="card-scent">Car Show Sunday</div>
-          <div class="card-desc">Rich oud, dark patchouli, and a hit of exhaust smoke — the day your ride won best in show.</div>
+          <div class="card-scent">Fresas con Crema</div>
+          <div class="card-desc">Ripe strawberries folded into sweet cream — the cup you begged for at the paletería after school.</div>
           <div class="card-footer">
-            <span class="card-price">$16.99</span>
+            <span class="card-price">$14.99</span>
+            <button class="btn-cart">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <canvas class="card-smoke-canvas"></canvas>
+        <div class="card-img-wrap bg-wood">
+          <img class="card-img freshener" src="New Assets/Jamaica.png" alt="Jamaica air freshener"/>
+          <div class="rarity-badge rare">Rare</div>
+        </div>
+        <div class="card-body">
+          <div class="card-scent">Jamaica</div>
+          <div class="card-desc">Bright hibiscus flowers, tart berry, and citrus zest — agua fresca poured over ice at the family cookout.</div>
+          <div class="card-footer">
+            <span class="card-price">$12.99</span>
+            <button class="btn-cart">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <canvas class="card-smoke-canvas"></canvas>
+        <div class="card-img-wrap bg-marble">
+          <img class="card-img freshener" src="New Assets/Mango_Chile.png" alt="Mango Chile air freshener"/>
+          <div class="rarity-badge limited">Limited</div>
+        </div>
+        <div class="card-body">
+          <div class="card-scent">Mango Chile</div>
+          <div class="card-desc">Juicy ripe mango dusted with chile and lime — straight off the fruit cart, cup and all.</div>
+          <div class="card-footer">
+            <span class="card-price">$13.99</span>
+            <button class="btn-cart">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <canvas class="card-smoke-canvas"></canvas>
+        <div class="card-img-wrap bg-wood">
+          <img class="card-img freshener" src="New Assets/Melon_Pina.png" alt="Melon Pina air freshener"/>
+          <div class="rarity-badge rare">Rare</div>
+        </div>
+        <div class="card-body">
+          <div class="card-scent">Melón Piña</div>
+          <div class="card-desc">Sweet cantaloupe and golden pineapple — a fresh-cut fruit bowl riding shotgun on a hot day.</div>
+          <div class="card-footer">
+            <span class="card-price">$12.99</span>
+            <button class="btn-cart">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <canvas class="card-smoke-canvas"></canvas>
+        <div class="card-img-wrap bg-marble">
+          <img class="card-img freshener" src="New Assets/Sandia.png" alt="Sandia air freshener"/>
+          <div class="rarity-badge rare">Rare</div>
+        </div>
+        <div class="card-body">
+          <div class="card-scent">Sandía</div>
+          <div class="card-desc">Crisp watermelon with a cool aquatic finish — summer at the park, seeds and all.</div>
+          <div class="card-footer">
+            <span class="card-price">$12.99</span>
             <button class="btn-cart">Add to Cart</button>
           </div>
         </div>
@@ -3094,47 +3327,69 @@ body.day-mode {
     </div>
 
     <div class="gift-grid">
+      <!-- BUNDLE 1 — Aguas Frescas Trio: Horchata $14.99 + Jamaica $12.99 + Melón Piña $12.99 = $40.97 → $35.99 (12% off) -->
       <div class="gift-card">
         <div class="gift-card-header"></div>
         <div class="gift-card-body">
-          <div class="gift-icon">🎂</div>
-          <div class="gift-name">Birthday Pack</div>
-          <div class="gift-desc">Three signature scents in premium gift packaging with a personalized message card. The perfect birthday flex.</div>
-          <div class="gift-price">$39.99</div>
+          <div class="gift-flavors">
+            <img src="New Assets/Horchata.png" alt="Horchata"/>
+            <img src="New Assets/Jamaica.png" alt="Jamaica"/>
+            <img src="New Assets/Melon_Pina.png" alt="Melon Pina"/>
+          </div>
+          <div class="gift-name">Aguas Frescas Trio</div>
+          <div class="gift-desc">Horchata, Jamaica &amp; Melón Piña — the full aguas frescas stand hanging from your mirror. Gift-boxed with a message card.</div>
+          <div class="gift-price"><span class="gift-orig">$40.97</span> $35.99 <span class="gift-save">Save 12%</span></div>
           <button class="btn-gift">Add to Cart</button>
         </div>
       </div>
 
+      <!-- BUNDLE 2 — Fruit Cart Pack: Mango Chile $13.99 + Sandía $12.99 + Melón Piña $12.99 = $39.97 → $34.99 (12% off) -->
       <div class="gift-card">
         <div class="gift-card-header"></div>
         <div class="gift-card-body">
-          <div class="gift-icon">🏁</div>
-          <div class="gift-name">Car Club Pack</div>
-          <div class="gift-desc">Six fresheners with car culture artwork. Perfect for giveaways at shows, club events, or cruises.</div>
-          <div class="gift-price">$59.99</div>
+          <div class="gift-flavors">
+            <img src="New Assets/Mango_Chile.png" alt="Mango Chile"/>
+            <img src="New Assets/Sandia.png" alt="Sandia"/>
+            <img src="New Assets/Melon_Pina.png" alt="Melon Pina"/>
+          </div>
+          <div class="gift-name">Fruit Cart Pack</div>
+          <div class="gift-desc">Mango Chile, Sandía &amp; Melón Piña — everything the frutero yells about, boxed for gifting.</div>
+          <div class="gift-price"><span class="gift-orig">$39.97</span> $34.99 <span class="gift-save">Save 12%</span></div>
           <button class="btn-gift">Add to Cart</button>
         </div>
       </div>
 
+      <!-- BUNDLE 3 — La Dulce Vida Duo: Fresas con Crema $14.99 + Horchata $14.99 = $29.98 → $25.99 (13% off) -->
       <div class="gift-card">
         <div class="gift-card-header"></div>
         <div class="gift-card-body">
-          <div class="gift-icon">✂️</div>
-          <div class="gift-name">Barber Shop Bundle</div>
-          <div class="gift-desc">Retail-ready display pack for shops. 12 mixed scents with branded display header card.</div>
-          <div class="gift-price">$89.99</div>
-          <button class="btn-gift">Order for Shop</button>
+          <div class="gift-flavors">
+            <img src="New Assets/Fresas_Crema.png" alt="Fresas con Crema"/>
+            <img src="New Assets/Horchata.png" alt="Horchata"/>
+          </div>
+          <div class="gift-name">La Dulce Vida Duo</div>
+          <div class="gift-desc">Fresas con Crema &amp; Horchata — the two sweetest memories of the paletería, paired together.</div>
+          <div class="gift-price"><span class="gift-orig">$29.98</span> $25.99 <span class="gift-save">Save 13%</span></div>
+          <button class="btn-gift">Add to Cart</button>
         </div>
       </div>
 
+      <!-- BUNDLE 4 — Full Collection: all 6 = $81.94 → $69.99 (15% off) -->
       <div class="gift-card">
         <div class="gift-card-header"></div>
         <div class="gift-card-body">
-          <div class="gift-icon">🎄</div>
-          <div class="gift-name">Holiday Box Set</div>
-          <div class="gift-desc">Full collection boxed set with gold foil packaging. Limited holiday edition — drops every December.</div>
-          <div class="gift-price">$74.99</div>
-          <button class="btn-gift">Notify Me</button>
+          <div class="gift-flavors">
+            <img src="New Assets/Horchata.png" alt="Horchata"/>
+            <img src="New Assets/Fresas_Crema.png" alt="Fresas con Crema"/>
+            <img src="New Assets/Jamaica.png" alt="Jamaica"/>
+            <img src="New Assets/Mango_Chile.png" alt="Mango Chile"/>
+            <img src="New Assets/Melon_Pina.png" alt="Melon Pina"/>
+            <img src="New Assets/Sandia.png" alt="Sandia"/>
+          </div>
+          <div class="gift-name">The Full Collection</div>
+          <div class="gift-desc">All six scents in one premium boxed set — every flavor, every memory. The ultimate gift for the culture.</div>
+          <div class="gift-price"><span class="gift-orig">$81.94</span> $69.99 <span class="gift-save">Save 15%</span></div>
+          <button class="btn-gift">Add to Cart</button>
         </div>
       </div>
     </div>
@@ -3247,9 +3502,9 @@ body.day-mode {
       </div>
       <!-- text -->
       <div style="padding:1.2rem 1.3rem 1.5rem;">
-        <div style="font-family:'Brotheric',serif;font-size:.55rem;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);opacity:.75;margin-bottom:.4rem;">01 — Who I Am</div>
-        <h3 style="font-family:'RetroVintage',serif;font-size:1.15rem;color:var(--cream);margin:0 0 .6rem;line-height:1.2;">Me & My Family</h3>
-        <p style="font-family:'Cormorant Garamond',serif;font-size:.88rem;color:var(--cream);opacity:.75;line-height:1.6;margin:0;">My love for Chicano culture started at a young age. I grew up flipping through <em>Lowrider</em> magazines, admiring the artwork, the cars, the bikes, the music — everything that made our culture unique. I spent countless hours drawing little cholo characters, and when the Homies collectibles came out, <em>olvídate</em> — I was hooked. Like many youngsters, I ran with the homies, got into trouble, and experienced the streets firsthand. Those years became part of my story, but they didn't define my future.</p>
+        <div style="font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);opacity:.75;margin-bottom:.6rem;">01 — Who I Am</div>
+        <h3 style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--cream);margin:0 0 .75rem;line-height:1.3;">Me & My Family</h3>
+        <p style="font-family:'Barlow',sans-serif;font-size:1rem;color:var(--cream);opacity:.85;line-height:1.75;margin:0;">My love for Chicano culture started at a young age. I grew up flipping through <em>Lowrider</em> magazines, admiring the artwork, the cars, the bikes, the music — everything that made our culture unique. I spent countless hours drawing little cholo characters, and when the Homies collectibles came out, <em>olvídate</em> — I was hooked. Like many youngsters, I ran with the homies, got into trouble, and experienced the streets firsthand. Those years became part of my story, but they didn't define my future.</p>
       </div>
     </div>
 
@@ -3263,9 +3518,9 @@ body.day-mode {
       </div>
       <!-- text -->
       <div style="padding:1.2rem 1.3rem 1.5rem;">
-        <div style="font-family:'Brotheric',serif;font-size:.55rem;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);opacity:.75;margin-bottom:.4rem;">02 — My Roots</div>
-        <h3 style="font-family:'RetroVintage',serif;font-size:1.15rem;color:var(--cream);margin:0 0 .6rem;line-height:1.2;">Culture & Identity</h3>
-        <p style="font-family:'Cormorant Garamond',serif;font-size:.88rem;color:var(--cream);opacity:.75;line-height:1.6;margin:0;">The biggest reason was my father. He never gave up on me. Even when we argued, he kept trying to steer me away from that life. He believed I was capable of more — taught me discipline, respect, and the value of earning an honest living. As I got older, I grew out of the <em>mocoso</em> stage and into the man I wanted to become. Today, I'm a husband, a father, a hardworking man, and an entrepreneur. But one thing never changed — my love for Chicano culture.</p>
+        <div style="font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);opacity:.75;margin-bottom:.6rem;">02 — My Roots</div>
+        <h3 style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--cream);margin:0 0 .75rem;line-height:1.3;">Culture & Identity</h3>
+        <p style="font-family:'Barlow',sans-serif;font-size:1rem;color:var(--cream);opacity:.85;line-height:1.75;margin:0;">The biggest reason was my father. He never gave up on me. Even when we argued, he kept trying to steer me away from that life. He believed I was capable of more — taught me discipline, respect, and the value of earning an honest living. As I got older, I grew out of the <em>mocoso</em> stage and into the man I wanted to become. Today, I'm a husband, a father, a hardworking man, and an entrepreneur. But one thing never changed — my love for Chicano culture.</p>
       </div>
     </div>
 
@@ -3281,9 +3536,9 @@ body.day-mode {
       </div>
       <!-- text -->
       <div style="padding:1.2rem 1.3rem 1.5rem;">
-        <div style="font-family:'Brotheric',serif;font-size:.55rem;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);opacity:.75;margin-bottom:.4rem;">03 — The Why</div>
-        <h3 style="font-family:'RetroVintage',serif;font-size:1.15rem;color:var(--cream);margin:0 0 .6rem;line-height:1.2;">Why Street Scentz</h3>
-        <p style="font-family:'Cormorant Garamond',serif;font-size:.88rem;color:var(--cream);opacity:.75;line-height:1.6;margin:0;">That's why I created <strong style="color:var(--gold);">Street Scentz</strong>. It's more than an air freshener company — it's a tribute to our raza, our memories, and the culture that helped shape us. From <strong>Horchata</strong> and <strong>Fresas Con Crema</strong> to every future collection, each design tells a story through artwork, nostalgia, and culture. My hope is that every time you catch one of our scents, it reminds you of where you came from, the people you love, and the pride of being part of a culture rich with history, family, and heart. <em>The Smell That Hits Home.</em></p>
+        <div style="font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);opacity:.75;margin-bottom:.6rem;">03 — The Why</div>
+        <h3 style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--cream);margin:0 0 .75rem;line-height:1.3;">Why Street Scentz</h3>
+        <p style="font-family:'Barlow',sans-serif;font-size:1rem;color:var(--cream);opacity:.85;line-height:1.75;margin:0;">That's why I created <strong style="color:var(--gold);">Street Scentz</strong>. It's more than an air freshener company — it's a tribute to our raza, our memories, and the culture that helped shape us. From <strong>Horchata</strong> and <strong>Fresas Con Crema</strong> to every future collection, each design tells a story through artwork, nostalgia, and culture. My hope is that every time you catch one of our scents, it reminds you of where you came from, the people you love, and the pride of being part of a culture rich with history, family, and heart. <em>The Smell That Hits Home.</em></p>
       </div>
     </div>
 
@@ -3295,13 +3550,13 @@ body.day-mode {
     <!-- thin rule -->
     <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.4rem;width:70%;max-width:700px;margin-left:auto;margin-right:auto;">
       <div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,#fff);opacity:.15;"></div>
-      <span style="font-family:'Brotheric',serif;font-size:.5rem;letter-spacing:.5em;text-transform:uppercase;color:#fff;opacity:.3;">The Founder</span>
+      <span style="font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.5em;text-transform:uppercase;color:#fff;opacity:.3;">The Founder</span>
       <div style="flex:1;height:1px;background:linear-gradient(90deg,#fff,transparent);opacity:.15;"></div>
     </div>
 
     <!-- main title -->
     <h2 style="
-      font-family:'RetroVintage',serif;
+      font-family:'Cinzel',serif;
       font-size:clamp(3rem,8vw,7rem);
       font-weight:900;
       color:#fff;
@@ -3339,8 +3594,8 @@ body.day-mode {
 
   <!-- header -->
   <div style="position:relative;z-index:2;text-align:center;margin-bottom:3rem;">
-    <div style="font-family:'Brotheric',serif;font-size:.6rem;letter-spacing:.45em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:.6rem;">Est. 2021</div>
-    <h2 style="font-family:'RetroVintage',serif;font-size:clamp(2.2rem,5vw,4rem);color:var(--cream);letter-spacing:.1em;text-shadow:0 0 40px rgba(var(--gold-rgb),.3);margin:0;">Our Story</h2>
+    <div style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.45em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:.6rem;">Est. 2021</div>
+    <h2 style="font-family:'Cinzel',serif;font-size:clamp(2.2rem,5vw,4rem);color:var(--cream);letter-spacing:.1em;text-shadow:0 0 40px rgba(var(--gold-rgb),.3);margin:0;">Our Story</h2>
     <div style="width:80px;height:1px;margin:.8rem auto 0;background:linear-gradient(90deg,transparent,var(--gold),transparent);"></div>
   </div>
 
@@ -4337,6 +4592,7 @@ function _initScentVideo_PLACEHOLDER(){
   const cards = document.querySelectorAll('.ab-freshener-card[data-tilt]');
   cards.forEach(card=>{
     card.addEventListener('mousemove',e=>{
+      if(card.classList.contains('flipped')) return;
       const r  = card.getBoundingClientRect();
       const dx = (e.clientX - (r.left+r.width/2))  / (r.width/2);
       const dy = (e.clientY - (r.top +r.height/2)) / (r.height/2);
@@ -4346,9 +4602,11 @@ function _initScentVideo_PLACEHOLDER(){
       card.style.transform='perspective(700px) rotateX(0deg) rotateY(0deg) scale(1)';
     });
     card.addEventListener('click',()=>{
-      const already = card.classList.contains('ab-selected');
-      cards.forEach(c=>c.classList.remove('ab-selected'));
-      if(!already) card.classList.add('ab-selected');
+      const already = card.classList.contains('flipped');
+      cards.forEach(c=>c.classList.remove('flipped'));
+      if(!already) card.classList.add('flipped');
+      // reset tilt so the flip reads cleanly
+      card.style.transform='perspective(700px) rotateX(0deg) rotateY(0deg) scale(1)';
     });
   });
 })();
@@ -4749,6 +5007,146 @@ const ssPlayer = (function(){
     next(){ load(idx+1); if(playing){ audio.play().catch(()=>{}); } },
     _pause(){ if(playing){ audio.pause(); } },
     _resume(){ if(playing){ audio.play().catch(()=>{}); muteCommercial(true); } }
+  };
+})();
+
+/* ══════════ HERO LOWRIDER — hit the switches (desktop) ══════════ */
+(() => {
+  const lr = document.getElementById('hero-lowrider');
+  if(!lr) return;
+  lr.addEventListener('click', () => {
+    if(window.innerWidth <= 480) return;
+    if(lr.classList.contains('pumping')) return;
+    lr.classList.add('pumping');
+    lr.addEventListener('animationend', () => lr.classList.remove('pumping'), { once:true });
+  });
+})();
+
+/* ══════════ SHOPPING CART ══════════ */
+const ssCart = (() => {
+  let items = [];
+  try { items = JSON.parse(localStorage.getItem('ss-cart') || '[]'); } catch(e){ items = []; }
+
+  const panel = document.getElementById('ss-cart-panel');
+  const countEl = document.getElementById('ss-cart-count');
+  const itemsEl = document.getElementById('ss-cart-items');
+  const emptyEl = document.getElementById('ss-cart-empty');
+  const footEl = document.getElementById('ss-cart-foot');
+  const totalEl = document.getElementById('ss-cart-total');
+
+  function save(){ localStorage.setItem('ss-cart', JSON.stringify(items)); }
+
+  function render(){
+    const count = items.reduce((n,i)=>n+i.qty,0);
+    countEl.textContent = count;
+    countEl.classList.toggle('empty', count===0);
+    emptyEl.style.display = items.length ? 'none' : 'block';
+    footEl.style.display = items.length ? 'block' : 'none';
+    itemsEl.innerHTML = '';
+    items.forEach((it,i)=>{
+      const row = document.createElement('div');
+      row.className = 'ss-cart-item';
+      const img = document.createElement('img');
+      img.src = it.img; img.alt = it.name;
+      const info = document.createElement('div');
+      info.className = 'ss-cart-item-info';
+      const nm = document.createElement('div');
+      nm.className = 'ss-cart-item-name'; nm.textContent = it.name;
+      const pr = document.createElement('div');
+      pr.className = 'ss-cart-item-price';
+      pr.textContent = '$' + (it.price * it.qty).toFixed(2);
+      info.append(nm, pr);
+      const qty = document.createElement('div');
+      qty.className = 'ss-cart-qty';
+      const minus = document.createElement('button');
+      minus.textContent = '−';
+      minus.onclick = ()=>{ it.qty>1 ? it.qty-- : items.splice(i,1); save(); render(); };
+      const q = document.createElement('span'); q.textContent = it.qty;
+      const plus = document.createElement('button');
+      plus.textContent = '+';
+      plus.onclick = ()=>{ it.qty++; save(); render(); };
+      qty.append(minus, q, plus);
+      const rm = document.createElement('button');
+      rm.className = 'ss-cart-remove'; rm.innerHTML = '&#x2715;'; rm.title = 'Remove';
+      rm.onclick = ()=>{ items.splice(i,1); save(); render(); };
+      row.append(img, info, qty, rm);
+      itemsEl.appendChild(row);
+    });
+    totalEl.textContent = '$' + items.reduce((s,i)=>s+i.price*i.qty,0).toFixed(2);
+  }
+
+  function flyToCart(srcImg){
+    const btn = document.getElementById('ss-cart-btn');
+    if(!srcImg || !btn) return;
+    const from = srcImg.getBoundingClientRect();
+    const to = btn.getBoundingClientRect();
+    const clone = srcImg.cloneNode();
+    clone.className = 'cart-fly';
+    clone.style.cssText = `top:${from.top}px;left:${from.left}px;width:${from.width}px;height:${from.height}px;opacity:1;`;
+    document.body.appendChild(clone);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      clone.style.top = (to.top + to.height/2 - 14) + 'px';
+      clone.style.left = (to.left + to.width/2 - 14) + 'px';
+      clone.style.width = '28px';
+      clone.style.height = '28px';
+      clone.style.opacity = '.25';
+      clone.style.transform = 'rotate(18deg)';
+    }));
+    setTimeout(()=>{
+      clone.remove();
+      btn.style.boxShadow = '0 0 20px rgba(74,144,226,.6)';
+      countEl.classList.add('pop');
+      setTimeout(()=>{ btn.style.boxShadow=''; countEl.classList.remove('pop'); }, 450);
+    }, 720);
+  }
+
+  function add(name, price, img, srcImg){
+    const found = items.find(i=>i.name===name);
+    if(found) found.qty++;
+    else items.push({name, price, img, qty:1});
+    save(); render();
+    flyToCart(srcImg);
+  }
+
+  // wire every Add to Cart button (shop cards + gift bundles)
+  document.querySelectorAll('.btn-cart').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const card = btn.closest('.product-card');
+      const name = card.querySelector('.card-scent')?.textContent.trim() || 'Item';
+      const price = parseFloat((card.querySelector('.card-price')?.textContent||'0').replace(/[^0-9.]/g,'')) || 0;
+      const imgEl = card.querySelector('.card-img');
+      add(name, price, imgEl?.getAttribute('src') || '', imgEl);
+    });
+  });
+  document.querySelectorAll('.btn-gift').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const card = btn.closest('.gift-card');
+      if(!card) return;
+      const name = card.querySelector('.gift-name')?.textContent.trim() || 'Bundle';
+      const priceEl = card.querySelector('.gift-price');
+      let price = 0;
+      if(priceEl){
+        const clone = priceEl.cloneNode(true);
+        clone.querySelectorAll('.gift-orig,.gift-save').forEach(el=>el.remove());
+        price = parseFloat(clone.textContent.replace(/[^0-9.]/g,'')) || 0;
+      }
+      const imgEl = card.querySelector('.gift-flavors img');
+      add(name, price, imgEl?.getAttribute('src') || '', imgEl);
+    });
+  });
+
+  // close when clicking outside
+  document.addEventListener('click', e=>{
+    if(!e.target.closest('#ss-cart') && !e.target.closest('.btn-cart') && !e.target.closest('.btn-gift')){
+      panel.classList.remove('open');
+    }
+  });
+
+  render();
+
+  return {
+    toggle(){ panel.classList.toggle('open'); },
+    checkout(e){ panel.classList.remove('open'); navClick(e, 'checkout'); }
   };
 })();
 
