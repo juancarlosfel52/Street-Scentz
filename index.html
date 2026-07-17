@@ -1723,8 +1723,10 @@ footer{
   #ss-cta-bar{display:flex!important;}
 
   /* HERO SCENE — building + lowrider fit small screens */
-  #hero-building-wrap{width:82vw!important;right:-6%!important;transform:translateY(-36px)!important;}
-  #hero-lowrider-wrap{width:76vw!important;right:-4%!important;transform:translateX(-18px)!important;}
+  #hero-building-wrap{width:72vw!important;transform:translateX(-40px) translateY(-60px) scale(1.1)!important;}
+  #hero-lowrider-wrap{width:62vw!important;transform:translateX(-80px) translateY(10px) perspective(800px) rotateY(-8deg) scale(.9)!important;}
+  #hero-girl-wrap{width:38vw!important;transform:translateX(-20px) scale(.8)!important;}
+  #hero-ctrl-toggle,#hero-ctrl{display:none!important;}
 
   /* DEALS TAB — fit viewport */
   #deals-tab{width:min(300px,88vw)!important;}
@@ -3006,7 +3008,7 @@ body.day-mode {
   </div>
 
   <!-- CHICANO BUILDING — backdrop behind lowrider, bottom-right -->
-  <div id="hero-building-wrap" style="position:absolute;right:-2%;bottom:0;width:min(62vw,780px);z-index:2;pointer-events:none;transform:translateY(-100px) perspective(800px) rotateY(-6deg);">
+  <div id="hero-building-wrap" style="position:absolute;right:-2%;bottom:0;width:765px;z-index:2;pointer-events:none;transform:translateX(-190px) translateY(-190px) perspective(800px) rotateX(0deg) rotateY(-6deg) rotateZ(0deg) scale(1.49);">
     <img src="New Assets/ChicanoBuilding.png" alt=""
       style="width:100%;display:block;object-fit:contain;object-position:bottom right;opacity:.85;
       filter:drop-shadow(0 0 30px rgba(0,0,0,.6));
@@ -3014,7 +3016,7 @@ body.day-mode {
   </div>
 
   <!-- LOWRIDER — behind character, bottom-right -->
-  <div id="hero-lowrider-wrap" style="position:absolute;right:-2%;bottom:0;width:min(55vw,700px);z-index:3;pointer-events:none;transform:translateX(-100px) perspective(800px) rotateY(-8deg) rotateX(2deg);">
+  <div id="hero-lowrider-wrap" style="position:absolute;right:-2%;bottom:0;width:665px;z-index:3;pointer-events:none;transform:translateX(-346px) translateY(16px) perspective(800px) rotateX(-3deg) rotateY(-12deg) rotateZ(2deg) scale(1.13);">
     <img src="New Assets/LOWRIDER3.png" alt="Lowrider" id="hero-lowrider"
       style="width:100%;display:block;object-fit:contain;object-position:bottom right;filter:drop-shadow(0 0 40px rgba(30,94,200,.25)) drop-shadow(0 20px 60px rgba(0,0,0,.8));"/>
     <!-- ground shadow -->
@@ -3024,7 +3026,7 @@ body.day-mode {
   </div>
 
   <!-- FEMALE CHARACTER — front, anchored to bottom so crop is hidden -->
-  <div id="hero-girl-wrap" style="position:absolute;right:8%;bottom:0;width:min(28vw,360px);z-index:4;pointer-events:none;">
+  <div id="hero-girl-wrap" style="position:absolute;right:8%;bottom:0;width:360px;z-index:4;pointer-events:none;transform:translateX(-66px) translateY(0px) perspective(800px) rotateX(-8deg) rotateY(-2deg) rotateZ(-1deg) scale(0.87);">
     <img src="New Assets/Clovis_Girl2.png" alt="Street Scentz"
       style="width:100%;display:block;object-fit:contain;object-position:bottom center;filter:drop-shadow(0 0 30px rgba(74,144,226,.2)) drop-shadow(0 10px 40px rgba(0,0,0,.9));"/>
   </div>
@@ -5353,9 +5355,9 @@ const ssCart = (() => {
 /* ══════════ HERO CONTROL PANEL ══════════ */
 (() => {
   const ASSETS = [
-    { id:'hero-lowrider-wrap', label:'Lowrider', defaults:{x:-100,y:0,z:3,w:700,r:8,ry:-8,rx:2} },
-    { id:'hero-girl-wrap',     label:'Girl',     defaults:{x:0,y:0,z:4,w:360,r:0,ry:0,rx:0} },
-    { id:'hero-building-wrap', label:'Building',  defaults:{x:0,y:-100,z:2,w:780,r:0,ry:-6,rx:0} },
+    { id:'hero-lowrider-wrap', label:'Lowrider', defaults:{x:-346,y:16,z:3,w:665,r:113,ry:-12,rx:-3,rz:2} },
+    { id:'hero-girl-wrap',     label:'Girl',     defaults:{x:-66,y:0,z:4,w:360,r:87,ry:-2,rx:-8,rz:-1} },
+    { id:'hero-building-wrap', label:'Building',  defaults:{x:-190,y:-190,z:2,w:765,r:149,ry:-6,rx:0,rz:0} },
   ];
   const SLIDERS = [
     { key:'x', label:'X', min:-600, max:600, step:1, unit:'px' },
@@ -5370,7 +5372,7 @@ const ssCart = (() => {
   const state = {};
   ASSETS.forEach(a => {
     state[a.id] = { x:a.defaults.x, y:a.defaults.y, w:a.defaults.w,
-      r:100, ry:a.defaults.ry||0, rx:a.defaults.rx||0, rz:0 };
+      r:a.defaults.r||100, ry:a.defaults.ry||0, rx:a.defaults.rx||0, rz:a.defaults.rz||0 };
   });
 
   function apply(id){
