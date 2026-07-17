@@ -82,8 +82,11 @@ body{
 }
 #garage-scene .gb-img{
   position:absolute;inset:0;
-  background:url('New Assets/Garage.png') center/cover no-repeat;
+  background-size:cover;background-position:center;background-repeat:no-repeat;
+  transition:opacity 1.8s ease;
 }
+#garage-scene .gb-img.active{opacity:1;}
+#garage-scene .gb-img.fade{opacity:0;}
 /* vignette */
 #garage-scene .gb-vignette{
   position:absolute;inset:0;
@@ -2568,7 +2571,8 @@ body.day-mode {
 
 <!-- ══ GARAGE SCENE — fixed bg + vignette + lights ══ -->
 <div id="garage-scene">
-  <div class="gb-img"></div>
+  <div class="gb-img active" id="gb-img-a"></div>
+  <div class="gb-img fade" id="gb-img-b"></div>
   <div class="gb-tint"></div>
   <div class="gb-vignette"></div>
   <!-- ceiling pendants -->
@@ -5339,6 +5343,43 @@ const ssCart = (() => {
     toggle(){ panel.classList.toggle('open'); },
     checkout(e){ panel.classList.remove('open'); navClick(e, 'checkout'); }
   };
+})();
+
+/* ══════════ BACKGROUND CYCLE — 20s crossfade ══════════ */
+(() => {
+  const BGs = [
+    "New Assets/Garage.png",
+    "New Assets/HEROBG (1).png",
+    "New Assets/HEROBG (2).png",
+    "New Assets/HEROBG (3).png"
+  ];
+  // preload
+  BGs.forEach(src => { const i = new Image(); i.src = src; });
+
+  const a = document.getElementById('gb-img-a');
+  const b = document.getElementById('gb-img-b');
+  if(!a || !b) return;
+  let idx = 0;
+  a.style.backgroundImage = `url('${BGs[0]}')`;
+
+  setInterval(() => {
+    idx = (idx + 1) % BGs.length;
+    const next = BGs[idx];
+    // load next into the hidden layer, then crossfade
+    b.style.backgroundImage = `url('${next}')`;
+    b.classList.remove('fade');
+    b.classList.add('active');
+    a.classList.remove('active');
+    a.classList.add('fade');
+    // after transition, swap: move new image to A, reset B
+    setTimeout(() => {
+      a.style.backgroundImage = `url('${next}')`;
+      a.classList.remove('fade');
+      a.classList.add('active');
+      b.classList.remove('active');
+      b.classList.add('fade');
+    }, 2000);
+  }, 20000);
 })();
 
 /* ══════════ LOWRIDER PUMP — click ══════════ */
