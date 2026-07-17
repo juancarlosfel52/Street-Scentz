@@ -66,12 +66,139 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;font-size:16px}
 body{
-  background:var(--black);
+  background:transparent;
   color:var(--cream);
   font-family:'Barlow',sans-serif;
   font-weight:300;
   overflow-x:hidden;
   cursor:default;
+}
+
+/* ═══════════════════════════════════════════
+   GARAGE BACKGROUND SCENE
+═══════════════════════════════════════════ */
+#garage-scene{
+  position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none;
+}
+#garage-scene .gb-img{
+  position:absolute;inset:0;
+  background:url('New Assets/Garage.png') center/cover no-repeat;
+}
+/* vignette */
+#garage-scene .gb-vignette{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 90% 90% at 50% 50%, transparent 30%, rgba(0,0,0,.72) 100%),
+    linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.08) 25%,rgba(0,0,0,.08) 75%,rgba(0,0,0,.65) 100%);
+}
+/* overall dark tint so content stays readable */
+#garage-scene .gb-tint{
+  position:absolute;inset:0;
+  background:rgba(5,6,12,.52);
+}
+
+/* ── LIGHT GLOWS ── */
+.g-light{position:absolute;border-radius:50%;pointer-events:none;}
+
+/* Pendant 1 — left ceiling lamp (warm white) */
+#gl-pend1{
+  left:29%;top:6%;
+  width:180px;height:180px;
+  margin:-90px 0 0 -90px;
+  background:radial-gradient(circle,rgba(255,240,200,.55) 0%,rgba(255,220,120,.18) 35%,transparent 70%);
+  animation:glFlicker1 6s ease-in-out infinite;
+}
+/* Pendant 2 — right ceiling lamp (warm white) */
+#gl-pend2{
+  left:60%;top:10%;
+  width:160px;height:160px;
+  margin:-80px 0 0 -80px;
+  background:radial-gradient(circle,rgba(255,240,200,.48) 0%,rgba(255,220,120,.15) 35%,transparent 70%);
+  animation:glFlicker2 7.4s ease-in-out infinite;
+}
+/* "Respect" neon — red, top-left */
+#gl-respect{
+  left:6.6%;top:9%;
+  width:130px;height:70px;
+  margin:-35px 0 0 -65px;
+  background:radial-gradient(ellipse,rgba(255,40,40,.6) 0%,rgba(220,20,20,.22) 45%,transparent 75%);
+  animation:glNeonRed 4.2s ease-in-out infinite;
+}
+/* "Impala" neon — red/orange, mid-left */
+#gl-impala{
+  left:27%;top:30%;
+  width:110px;height:60px;
+  margin:-30px 0 0 -55px;
+  background:radial-gradient(ellipse,rgba(255,80,30,.55) 0%,rgba(220,50,10,.2) 45%,transparent 72%);
+  animation:glNeonOrange 5.1s ease-in-out infinite;
+}
+/* Blue circle neon — mid-left */
+#gl-circle{
+  left:32%;top:30%;
+  width:90px;height:90px;
+  margin:-45px 0 0 -45px;
+  background:radial-gradient(circle,rgba(30,120,255,.55) 0%,rgba(20,90,220,.2) 40%,transparent 70%);
+  animation:glNeonBlue 3.8s ease-in-out infinite;
+}
+/* "Low & Slow" neon — cyan/teal, top-right */
+#gl-lowslow{
+  left:85%;top:13%;
+  width:140px;height:60px;
+  margin:-30px 0 0 -70px;
+  background:radial-gradient(ellipse,rgba(20,200,240,.52) 0%,rgba(10,150,220,.18) 45%,transparent 72%);
+  animation:glNeonBlue 5.7s ease-in-out infinite;
+}
+/* Orange work lamp — left shelves */
+#gl-shelf{
+  left:9%;top:34%;
+  width:80px;height:80px;
+  margin:-40px 0 0 -40px;
+  background:radial-gradient(circle,rgba(255,140,30,.45) 0%,rgba(200,90,10,.15) 45%,transparent 70%);
+  animation:glFlicker2 8.2s ease-in-out infinite;
+}
+
+/* ── FLICKER KEYFRAMES ── */
+@keyframes glFlicker1{
+  0%,100%{opacity:1;}
+  4%{opacity:.7;}
+  5%{opacity:1;}
+  52%{opacity:.85;}
+  53%{opacity:1;}
+  78%{opacity:.6;}
+  79%{opacity:.9;}
+  80%{opacity:1;}
+}
+@keyframes glFlicker2{
+  0%,100%{opacity:1;}
+  15%{opacity:.65;}
+  16%{opacity:1;}
+  60%{opacity:.8;}
+  61%{opacity:1;}
+  90%{opacity:.5;}
+  91%{opacity:1;}
+}
+@keyframes glNeonRed{
+  0%,100%{opacity:1;filter:blur(0px);}
+  20%{opacity:.5;filter:blur(1px);}
+  21%{opacity:1;filter:blur(0px);}
+  65%{opacity:.7;filter:blur(.5px);}
+  66%{opacity:1;filter:blur(0px);}
+}
+@keyframes glNeonOrange{
+  0%,100%{opacity:1;}
+  35%{opacity:.6;}
+  36%{opacity:1;}
+  70%{opacity:.75;}
+  71%{opacity:1;}
+}
+@keyframes glNeonBlue{
+  0%,100%{opacity:1;filter:blur(0px);}
+  10%{opacity:.55;filter:blur(1px);}
+  11%{opacity:1;filter:blur(0px);}
+  55%{opacity:.7;}
+  56%{opacity:1;}
+  88%{opacity:.4;filter:blur(1.5px);}
+  89%{opacity:.95;filter:blur(0px);}
 }
 
 /* ── SCROLLBAR ── */
@@ -158,6 +285,7 @@ body{
   display:block;min-height:100vh;
   position:relative;overflow:hidden;
   z-index:1;
+  background:transparent;
 }
 
 /* section background */
@@ -167,7 +295,7 @@ body{
 }
 .section-bg::before{
   content:'';position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(11,10,10,.65) 0%,rgba(11,10,10,.82) 100%);
+  background:linear-gradient(180deg,rgba(5,6,12,.52) 0%,rgba(5,6,12,.65) 100%);
 }
 .section-bg::after{
   content:'';position:absolute;inset:0;
@@ -2384,6 +2512,24 @@ body.day-mode {
 </style>
 </head>
 <body>
+
+<!-- ══ GARAGE SCENE — fixed bg + vignette + lights ══ -->
+<div id="garage-scene">
+  <div class="gb-img"></div>
+  <div class="gb-tint"></div>
+  <div class="gb-vignette"></div>
+  <!-- ceiling pendants -->
+  <div class="g-light" id="gl-pend1"></div>
+  <div class="g-light" id="gl-pend2"></div>
+  <!-- neons -->
+  <div class="g-light" id="gl-respect"></div>
+  <div class="g-light" id="gl-impala"></div>
+  <div class="g-light" id="gl-circle"></div>
+  <div class="g-light" id="gl-lowslow"></div>
+  <!-- work lamp -->
+  <div class="g-light" id="gl-shelf"></div>
+</div>
+
 <div class="bandana-bg"></div>
 
 <!-- FEATURE 2: Cursor freshener -->
@@ -2897,7 +3043,7 @@ body.day-mode {
 </section>
 
 <!-- ════════════════ PROMO BUNDLE STRIP ════════════════ -->
-<section id="section-promo" class="section-wrap" style="min-height:auto;padding:80px 0 100px;background:linear-gradient(180deg,#0B0A0A 0%,#130f07 40%,#0B0A0A 100%);overflow:visible;">
+<section id="section-promo" class="section-wrap" style="min-height:auto;padding:80px 0 100px;background:transparent;overflow:visible;">
 
   <!-- ambient spotlight -->
   <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
@@ -3586,7 +3732,7 @@ body.day-mode {
 </section>
 
 <!-- ════════════════ OUR STORY ════════════════ -->
-<section id="section-story" class="section-wrap" style="background:linear-gradient(180deg,#0B0A0A 0%,#120d04 50%,#0B0A0A 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 0;">
+<section id="section-story" class="section-wrap" style="background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 0;">
 
   <!-- ambient glow -->
   <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;border-radius:50%;
