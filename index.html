@@ -618,6 +618,8 @@ body{
   background:
     radial-gradient(ellipse 80% 50% at 20% 50%, rgba(30,94,200,.05) 0%, transparent 55%),
     linear-gradient(160deg, rgba(5,6,12,.3) 0%, rgba(5,6,12,.28) 50%, rgba(5,6,12,.3) 100%);
+  min-height:auto!important;
+  padding:60px 0 80px;
 }
 
 .promo-area{
@@ -903,20 +905,16 @@ body{
   border-left:2px solid rgba(74,144,226,.3);
 }
 
-/* ── STORY CARDS — horizontal scroll ── */
+/* ── STORY CARDS — 3-col grid ── */
 .founder-cards{
   position:relative;z-index:2;
   max-width:1100px;margin:3rem auto 0;padding:0 2.5rem;
 }
 .fc-track{
-  display:flex;gap:1.2rem;
-  overflow-x:auto;scroll-snap-type:x mandatory;
-  scrollbar-width:none;-ms-overflow-style:none;
-  padding-bottom:12px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;
 }
-.fc-track::-webkit-scrollbar{display:none;}
 .fc-card{
-  position:relative;flex:0 0 340px;scroll-snap-align:start;
+  position:relative;
   background:rgba(6,8,16,.72);backdrop-filter:blur(10px);
   border:1px solid rgba(74,144,226,.18);border-radius:10px;
   padding:0;overflow:hidden;
@@ -942,7 +940,7 @@ body{
 }
 .fc-card-text{padding:1.4rem 1.5rem 1.6rem;}
 .fc-photo{
-  width:100%;height:200px;background:rgba(0,0,0,.45);
+  width:100%;aspect-ratio:4/3;background:rgba(0,0,0,.45);
   border-bottom:1px solid rgba(74,144,226,.12);
   overflow:hidden;display:flex;align-items:center;justify-content:center;
   flex-direction:column;gap:6px;position:relative;
@@ -953,7 +951,7 @@ body{
   text-transform:uppercase;color:var(--cream);opacity:.3;
 }
 .fc-photo img{
-  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;
 }
 
 /* ── TIMELINE — horizontal scroll ── */
@@ -1723,7 +1721,8 @@ footer{
   .ff-title{font-size:clamp(2rem,10vw,3.5rem)!important;}
 
   /* FOUNDER CARDS — tighter */
-  .fc-card{flex:0 0 280px!important;}
+  .fc-track{grid-template-columns:1fr!important;}
+  .fc-card{width:100%!important;}
   .fc-card-text{padding:1rem 1.1rem 1.2rem!important;}
   .fc-body{font-size:.85rem!important;}
   .founder-cards,.founder-timeline{padding:0 1rem!important;}
@@ -1839,7 +1838,7 @@ footer{
 
 /* ── SECTION VIDEO CARDS ── */
 .section-video-card{
-  position:relative;max-width:500px;margin:0 auto 2.5rem;
+  position:relative;max-width:800px;margin:0 auto 2.5rem;
   border-radius:10px;overflow:hidden;
   border:1px solid rgba(74,144,226,.3);
   box-shadow:0 12px 48px rgba(0,0,0,.7),0 0 20px rgba(74,144,226,.1);
@@ -3362,6 +3361,60 @@ body.day-mode {
   </div>
 </section>
 
+<!-- ════════════════ GIFTING ════════════════ -->
+<section id="section-gifting" class="section-wrap">
+  <div class="section-bg" style="background-image:var(--bg-gifting)"></div>
+  <div class="section-content">
+    <div class="sec-header">
+      <div class="sec-eyebrow">Give the Culture</div>
+      <h2 class="sec-title">GIFT <span>SETS</span></h2>
+      <div class="sec-divider"></div>
+      <p class="sec-desc">Premium gift sets for the people who matter. Every pack wrapped in culture.</p>
+    </div>
+    <div class="section-video-card">
+      <video class="section-vid" muted loop playsinline preload="none"><source src="New Assets/Vendor_Commercial.mp4" type="video/mp4"></video>
+    </div>
+    <div class="gift-grid">
+      <div class="gift-card"><div class="gift-card-header"></div><div class="gift-card-body">
+        <div class="gift-flavors"><img src="New Assets/Horchata.png" alt="Horchata"/><img src="New Assets/Jamaica.png" alt="Jamaica"/><img src="New Assets/Melon_Pina.png" alt="Melon Pina"/></div>
+        <div class="gift-name">Aguas Frescas Trio</div><div class="gift-desc">Horchata, Jamaica &amp; Melón Piña — the full aguas frescas stand hanging from your mirror.</div>
+        <div class="gift-price"><span class="gift-orig">$26.97</span> $23.99 <span class="gift-save">Save 11%</span></div><button class="btn-gift">Add to Cart</button>
+      </div></div>
+      <div class="gift-card"><div class="gift-card-header"></div><div class="gift-card-body">
+        <div class="gift-flavors"><img src="New Assets/Mango_Chile.png" alt="Mango Chile"/><img src="New Assets/Sandia.png" alt="Sandia"/><img src="New Assets/Melon_Pina.png" alt="Melon Pina"/></div>
+        <div class="gift-name">Fruit Cart Pack</div><div class="gift-desc">Mango Chile, Sandía &amp; Melón Piña — everything the frutero yells about, boxed for gifting.</div>
+        <div class="gift-price"><span class="gift-orig">$26.97</span> $23.99 <span class="gift-save">Save 11%</span></div><button class="btn-gift">Add to Cart</button>
+      </div></div>
+      <div class="gift-card"><div class="gift-card-header"></div><div class="gift-card-body">
+        <div class="gift-flavors"><img src="New Assets/Fresas_Crema.png" alt="Fresas con Crema"/><img src="New Assets/Horchata.png" alt="Horchata"/></div>
+        <div class="gift-name">La Dulce Vida Duo</div><div class="gift-desc">Fresas con Crema &amp; Horchata — the two sweetest memories of the paletería, paired together.</div>
+        <div class="gift-price"><span class="gift-orig">$17.98</span> $14.99 <span class="gift-save">Save 17%</span></div><button class="btn-gift">Add to Cart</button>
+      </div></div>
+      <div class="gift-card"><div class="gift-card-header"></div><div class="gift-card-body">
+        <div class="gift-flavors"><img src="New Assets/Horchata.png" alt="Horchata"/><img src="New Assets/Fresas_Crema.png" alt="Fresas con Crema"/><img src="New Assets/Jamaica.png" alt="Jamaica"/><img src="New Assets/Mango_Chile.png" alt="Mango Chile"/><img src="New Assets/Melon_Pina.png" alt="Melon Pina"/><img src="New Assets/Sandia.png" alt="Sandia"/></div>
+        <div class="gift-name">The Full Collection</div><div class="gift-desc">All six scents in one premium boxed set — every flavor, every memory.</div>
+        <div class="gift-price"><span class="gift-orig">$53.94</span> $44.99 <span class="gift-save">Save 17%</span></div><button class="btn-gift">Add to Cart</button>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE 3: TESTIMONIALS TICKER -->
+<div id="testimonials-ticker">
+  <div class="ticker-track">
+    <span class="ticker-item">⭐⭐⭐⭐⭐ "Smells exactly like the streets I grew up on" — @lowrider_mike</span><span class="ticker-divider">✦</span>
+    <span class="ticker-item">⭐⭐⭐⭐⭐ "My whole car smells like churros now, no complaints" — @cruising_maria</span><span class="ticker-divider">✦</span>
+    <span class="ticker-item">⭐⭐⭐⭐⭐ "Horchata scent is unreal, takes me back every time" — @eastside_rafa</span><span class="ticker-divider">✦</span>
+    <span class="ticker-item">⭐⭐⭐⭐⭐ "Been buying these since day one, never switching" — @la_vida_loca_ss</span><span class="ticker-divider">✦</span>
+    <span class="ticker-item">⭐⭐⭐⭐⭐ "Jamaica is the one. Period." — @the_real_chula</span><span class="ticker-divider">✦</span>
+    <span class="ticker-item">⭐⭐⭐⭐⭐ "Smells exactly like the streets I grew up on" — @lowrider_mike</span><span class="ticker-divider">✦</span>
+    <span class="ticker-item">⭐⭐⭐⭐⭐ "My whole car smells like churros now, no complaints" — @cruising_maria</span><span class="ticker-divider">✦</span>
+    <span class="ticker-item">⭐⭐⭐⭐⭐ "Horchata scent is unreal, takes me back every time" — @eastside_rafa</span><span class="ticker-divider">✦</span>
+    <span class="ticker-item">⭐⭐⭐⭐⭐ "Been buying these since day one, never switching" — @la_vida_loca_ss</span><span class="ticker-divider">✦</span>
+    <span class="ticker-item">⭐⭐⭐⭐⭐ "Jamaica is the one. Period." — @the_real_chula</span><span class="ticker-divider">✦</span>
+  </div>
+</div>
+
 <!-- ════════════════ DISCOUNTS ════════════════ -->
 <section id="section-discounts" class="section-wrap">
   <div class="section-bg" style="background-image:var(--bg-discounts)"></div>
@@ -3446,65 +3499,6 @@ body.day-mode {
     </div>
   </div>
 </section>
-
-<!-- ════════════════ GIFTING ════════════════ -->
-<section id="section-gifting" class="section-wrap">
-  <div class="section-bg" style="background-image:var(--bg-gifting)"></div>
-  <div class="section-content">
-    <div class="sec-header">
-      <div class="sec-eyebrow">Give the Culture</div>
-      <h2 class="sec-title">GIFT <span>SETS</span></h2>
-      <div class="sec-divider"></div>
-      <p class="sec-desc">Premium gift sets for the people who matter. Every pack wrapped in culture.</p>
-    </div>
-    <div class="gift-grid">
-      <div class="gift-card"><div class="gift-card-header"></div><div class="gift-card-body">
-        <div class="gift-flavors"><img src="New Assets/Horchata.png" alt="Horchata"/><img src="New Assets/Jamaica.png" alt="Jamaica"/><img src="New Assets/Melon_Pina.png" alt="Melon Pina"/></div>
-        <div class="gift-name">Aguas Frescas Trio</div>
-        <div class="gift-desc">Horchata, Jamaica &amp; Melón Piña — the full aguas frescas stand hanging from your mirror.</div>
-        <div class="gift-price"><span class="gift-orig">$26.97</span> $23.99 <span class="gift-save">Save 11%</span></div>
-        <button class="btn-gift">Add to Cart</button>
-      </div></div>
-      <div class="gift-card"><div class="gift-card-header"></div><div class="gift-card-body">
-        <div class="gift-flavors"><img src="New Assets/Mango_Chile.png" alt="Mango Chile"/><img src="New Assets/Sandia.png" alt="Sandia"/><img src="New Assets/Melon_Pina.png" alt="Melon Pina"/></div>
-        <div class="gift-name">Fruit Cart Pack</div>
-        <div class="gift-desc">Mango Chile, Sandía &amp; Melón Piña — everything the frutero yells about, boxed for gifting.</div>
-        <div class="gift-price"><span class="gift-orig">$26.97</span> $23.99 <span class="gift-save">Save 11%</span></div>
-        <button class="btn-gift">Add to Cart</button>
-      </div></div>
-      <div class="gift-card"><div class="gift-card-header"></div><div class="gift-card-body">
-        <div class="gift-flavors"><img src="New Assets/Fresas_Crema.png" alt="Fresas con Crema"/><img src="New Assets/Horchata.png" alt="Horchata"/></div>
-        <div class="gift-name">La Dulce Vida Duo</div>
-        <div class="gift-desc">Fresas con Crema &amp; Horchata — the two sweetest memories of the paletería, paired together.</div>
-        <div class="gift-price"><span class="gift-orig">$17.98</span> $14.99 <span class="gift-save">Save 17%</span></div>
-        <button class="btn-gift">Add to Cart</button>
-      </div></div>
-      <div class="gift-card"><div class="gift-card-header"></div><div class="gift-card-body">
-        <div class="gift-flavors"><img src="New Assets/Horchata.png" alt="Horchata"/><img src="New Assets/Fresas_Crema.png" alt="Fresas con Crema"/><img src="New Assets/Jamaica.png" alt="Jamaica"/><img src="New Assets/Mango_Chile.png" alt="Mango Chile"/><img src="New Assets/Melon_Pina.png" alt="Melon Pina"/><img src="New Assets/Sandia.png" alt="Sandia"/></div>
-        <div class="gift-name">The Full Collection</div>
-        <div class="gift-desc">All six scents in one premium boxed set — every flavor, every memory. The ultimate gift for the culture.</div>
-        <div class="gift-price"><span class="gift-orig">$53.94</span> $44.99 <span class="gift-save">Save 17%</span></div>
-        <button class="btn-gift">Add to Cart</button>
-      </div></div>
-    </div>
-  </div>
-</section>
-
-<!-- FEATURE 3: TESTIMONIALS TICKER -->
-<div id="testimonials-ticker">
-  <div class="ticker-track">
-    <span class="ticker-item">⭐⭐⭐⭐⭐ "Smells exactly like the streets I grew up on" — @lowrider_mike</span><span class="ticker-divider">✦</span>
-    <span class="ticker-item">⭐⭐⭐⭐⭐ "My whole car smells like churros now, no complaints" — @cruising_maria</span><span class="ticker-divider">✦</span>
-    <span class="ticker-item">⭐⭐⭐⭐⭐ "Horchata scent is unreal, takes me back every time" — @eastside_rafa</span><span class="ticker-divider">✦</span>
-    <span class="ticker-item">⭐⭐⭐⭐⭐ "Been buying these since day one, never switching" — @la_vida_loca_ss</span><span class="ticker-divider">✦</span>
-    <span class="ticker-item">⭐⭐⭐⭐⭐ "Jamaica is the one. Period." — @the_real_chula</span><span class="ticker-divider">✦</span>
-    <span class="ticker-item">⭐⭐⭐⭐⭐ "Smells exactly like the streets I grew up on" — @lowrider_mike</span><span class="ticker-divider">✦</span>
-    <span class="ticker-item">⭐⭐⭐⭐⭐ "My whole car smells like churros now, no complaints" — @cruising_maria</span><span class="ticker-divider">✦</span>
-    <span class="ticker-item">⭐⭐⭐⭐⭐ "Horchata scent is unreal, takes me back every time" — @eastside_rafa</span><span class="ticker-divider">✦</span>
-    <span class="ticker-item">⭐⭐⭐⭐⭐ "Been buying these since day one, never switching" — @la_vida_loca_ss</span><span class="ticker-divider">✦</span>
-    <span class="ticker-item">⭐⭐⭐⭐⭐ "Jamaica is the one. Period." — @the_real_chula</span><span class="ticker-divider">✦</span>
-  </div>
-</div>
 
 <!-- ════════════════ CHECKOUT ════════════════ -->
 <section id="section-checkout" class="section-wrap">
