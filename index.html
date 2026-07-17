@@ -903,18 +903,24 @@ body{
   border-left:2px solid rgba(74,144,226,.3);
 }
 
-/* ── STORY CARDS — alternating left/right ── */
+/* ── STORY CARDS — horizontal scroll ── */
 .founder-cards{
   position:relative;z-index:2;
-  max-width:900px;margin:4rem auto 0;padding:0 2.5rem;
+  max-width:1100px;margin:3rem auto 0;padding:0 2.5rem;
 }
+.fc-track{
+  display:flex;gap:1.2rem;
+  overflow-x:auto;scroll-snap-type:x mandatory;
+  scrollbar-width:none;-ms-overflow-style:none;
+  padding-bottom:12px;
+}
+.fc-track::-webkit-scrollbar{display:none;}
 .fc-card{
-  position:relative;
+  position:relative;flex:0 0 340px;scroll-snap-align:start;
   background:rgba(6,8,16,.72);backdrop-filter:blur(10px);
   border:1px solid rgba(74,144,226,.18);border-radius:10px;
-  padding:2.2rem 2.5rem;margin-bottom:2.5rem;
+  padding:0;overflow:hidden;
   box-shadow:0 8px 40px rgba(0,0,0,.5),0 0 14px rgba(74,144,226,.04);
-  display:grid;grid-template-columns:200px 1fr;gap:2rem;align-items:start;
   transition:transform .3s,box-shadow .3s,border-color .3s;
 }
 .fc-card:hover{
@@ -922,8 +928,6 @@ body{
   box-shadow:0 16px 50px rgba(0,0,0,.6),0 0 20px rgba(74,144,226,.1);
   border-color:rgba(74,144,226,.35);
 }
-.fc-card:nth-child(even){direction:rtl;}
-.fc-card:nth-child(even) > *{direction:ltr;}
 .fc-num{
   font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.18em;
   text-transform:uppercase;color:var(--gold);opacity:.6;margin-bottom:.5rem;
@@ -936,9 +940,10 @@ body{
   font-family:'Barlow',sans-serif;font-size:.95rem;color:var(--cream);
   opacity:.85;line-height:1.75;margin:0;
 }
+.fc-card-text{padding:1.4rem 1.5rem 1.6rem;}
 .fc-photo{
-  width:100%;aspect-ratio:4/5;background:rgba(0,0,0,.45);
-  border:1px solid rgba(74,144,226,.12);border-radius:8px;
+  width:100%;height:200px;background:rgba(0,0,0,.45);
+  border-bottom:1px solid rgba(74,144,226,.12);
   overflow:hidden;display:flex;align-items:center;justify-content:center;
   flex-direction:column;gap:6px;position:relative;
 }
@@ -1023,9 +1028,7 @@ body{
 @media(max-width:768px){
   .founder-intro{grid-template-columns:1fr;gap:2rem;padding:0 1.2rem;}
   .founder-photo{max-width:300px;margin:0 auto;}
-  .fc-card{grid-template-columns:1fr;gap:1rem;padding:1.5rem 1.3rem;}
-  .fc-card:nth-child(even){direction:ltr;}
-  .fc-photo{max-width:200px;margin:0 auto;}
+  .fc-card{flex:0 0 280px;}
   .ft-entry{flex:0 0 170px;}
   .founder-cards,.founder-timeline{padding:0 1.2rem 2rem;}
 }
@@ -2063,45 +2066,6 @@ body, .section-bg, .nav-logo, .sec-title span, .card-scent, .ab-quote p {
 ═══════════════════════════════════════════ */
 #timeline-track::-webkit-scrollbar { display: none; }
 #timeline-track { scrollbar-width: none; }
-.timeline-card {
-  min-width: 260px;
-  flex-shrink: 0;
-  scroll-snap-align: start;
-  background: rgba(0,0,0,0.5);
-  border: 1px solid rgba(var(--gold-rgb),0.25);
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-right: 1.5rem;
-  cursor: grab;
-  user-select: none;
-  transition: border-color 0.4s, transform 0.2s;
-}
-.timeline-card:hover { border-color: rgba(var(--gold-rgb),0.55); transform: translateY(-3px); }
-.timeline-year {
-  font-family: 'Cinzel', serif;
-  font-size: 2rem;
-  font-weight: 900;
-  color: var(--gold);
-  line-height: 1;
-  transition: color 0.4s;
-}
-.timeline-label {
-  font-family: 'Cinzel', serif;
-  font-size: .75rem;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--amber);
-  margin: .4rem 0 .7rem;
-  transition: color 0.4s;
-}
-.timeline-desc {
-  font-family: 'Barlow', sans-serif;
-  font-size: .9rem;
-  line-height: 1.7;
-  color: var(--cream);
-  opacity: .85;
-  transition: color 0.4s;
-}
 
 /* ═══════════════════════════════════════════
    FEATURE 6 — NIGHT / DAY MODE
@@ -3627,43 +3591,45 @@ body.day-mode {
 
   <!-- ── STORY CARDS — alternating layout ── -->
   <div class="founder-cards">
+    <div class="fc-track">
 
-    <div class="fc-card">
-      <div class="fc-photo">
-        <span class="fp-placeholder">👤</span>
-        <span class="fp-label">Photo — early days</span>
+      <div class="fc-card">
+        <div class="fc-photo">
+          <span class="fp-placeholder">👤</span>
+          <span class="fp-label">Photo — early days</span>
+        </div>
+        <div class="fc-card-text">
+          <div class="fc-num">01 — Who I Am</div>
+          <h3 class="fc-title">Me &amp; My Family</h3>
+          <p class="fc-body">My love for Chicano culture started at a young age. I grew up flipping through <em>Lowrider</em> magazines, admiring the artwork, the cars, the bikes, the music — everything that made our culture unique. I spent countless hours drawing little cholo characters, and when the Homies collectibles came out, <em>olvídate</em> — I was hooked.</p>
+        </div>
       </div>
-      <div>
-        <div class="fc-num">01 — Who I Am</div>
-        <h3 class="fc-title">Me &amp; My Family</h3>
-        <p class="fc-body">My love for Chicano culture started at a young age. I grew up flipping through <em>Lowrider</em> magazines, admiring the artwork, the cars, the bikes, the music — everything that made our culture unique. I spent countless hours drawing little cholo characters, and when the Homies collectibles came out, <em>olvídate</em> — I was hooked. Like many youngsters, I ran with the homies, got into trouble, and experienced the streets firsthand. Those years became part of my story, but they didn't define my future.</p>
+
+      <div class="fc-card">
+        <div class="fc-photo">
+          <span class="fp-placeholder">👤</span>
+          <span class="fp-label">Photo — roots</span>
+        </div>
+        <div class="fc-card-text">
+          <div class="fc-num">02 — My Roots</div>
+          <h3 class="fc-title">Culture &amp; Identity</h3>
+          <p class="fc-body">The biggest reason was my father. He never gave up on me. He believed I was capable of more — taught me discipline, respect, and the value of earning an honest living. Today, I'm a husband, a father, and an entrepreneur. But one thing never changed — my love for Chicano culture.</p>
+        </div>
       </div>
+
+      <div class="fc-card">
+        <div class="fc-photo">
+          <span class="fp-placeholder">🚗</span>
+          <span class="fp-label">Photo — brand</span>
+        </div>
+        <div class="fc-card-text">
+          <div class="fc-num">03 — The Why</div>
+          <h3 class="fc-title">Why Street Scentz</h3>
+          <p class="fc-body">That's why I created <strong style="color:var(--gold);">Street Scentz</strong>. It's a tribute to our raza, our memories, and the culture that shaped us. Each design tells a story through artwork, nostalgia, and culture. <em>The Smell That Hits Home.</em></p>
+        </div>
+      </div>
+
     </div>
-
-    <div class="fc-card">
-      <div class="fc-photo">
-        <span class="fp-placeholder">👤</span>
-        <span class="fp-label">Photo — roots</span>
-      </div>
-      <div>
-        <div class="fc-num">02 — My Roots</div>
-        <h3 class="fc-title">Culture &amp; Identity</h3>
-        <p class="fc-body">The biggest reason was my father. He never gave up on me. Even when we argued, he kept trying to steer me away from that life. He believed I was capable of more — taught me discipline, respect, and the value of earning an honest living. As I got older, I grew out of the <em>mocoso</em> stage and into the man I wanted to become. Today, I'm a husband, a father, a hardworking man, and an entrepreneur. But one thing never changed — my love for Chicano culture.</p>
-      </div>
-    </div>
-
-    <div class="fc-card">
-      <div class="fc-photo">
-        <span class="fp-placeholder">🚗</span>
-        <span class="fp-label">Photo — brand</span>
-      </div>
-      <div>
-        <div class="fc-num">03 — The Why</div>
-        <h3 class="fc-title">Why Street Scentz</h3>
-        <p class="fc-body">That's why I created <strong style="color:var(--gold);">Street Scentz</strong>. It's more than an air freshener company — it's a tribute to our raza, our memories, and the culture that helped shape us. From <strong>Horchata</strong> and <strong>Fresas Con Crema</strong> to every future collection, each design tells a story through artwork, nostalgia, and culture. My hope is that every time you catch one of our scents, it reminds you of where you came from, the people you love, and the pride of being part of a culture rich with history, family, and heart. <em>The Smell That Hits Home.</em></p>
-      </div>
-    </div>
-
   </div>
 
   <!-- ── HORIZONTAL TIMELINE ── -->
@@ -3725,57 +3691,6 @@ body.day-mode {
 </section>
 
 <!-- ════════════════ OUR STORY ════════════════ -->
-<section id="section-story" class="section-wrap" style="background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 0;">
-
-  <!-- ambient glow -->
-  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;border-radius:50%;
-    background:radial-gradient(ellipse,rgba(var(--gold-rgb),.06) 0%,transparent 70%);pointer-events:none;"></div>
-
-  <!-- header -->
-  <div style="position:relative;z-index:2;text-align:center;margin-bottom:3rem;">
-    <div style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.45em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:.6rem;">Est. 2021</div>
-    <h2 style="font-family:'Cinzel',serif;font-size:clamp(2.2rem,5vw,4rem);color:var(--cream);letter-spacing:.1em;text-shadow:0 0 40px rgba(var(--gold-rgb),.3);margin:0;">Our Story</h2>
-    <div style="width:80px;height:1px;margin:.8rem auto 0;background:linear-gradient(90deg,transparent,var(--gold),transparent);"></div>
-  </div>
-
-  <!-- cards grid -->
-  <div id="timeline-track" style="position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;width:90%;max-width:1100px;">
-
-    <div class="timeline-card" style="position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5;"></div>
-      <div class="timeline-year">2021</div>
-      <div class="timeline-label">The Idea</div>
-      <div class="timeline-desc">Started mixing scents in East LA, trying to bottle the feeling of the block</div>
-    </div>
-
-    <div class="timeline-card" style="position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5;"></div>
-      <div class="timeline-year">2022</div>
-      <div class="timeline-label">First Drop</div>
-      <div class="timeline-desc">Dropped 50 units of Churro at a lowrider show. Sold out in 2 hours</div>
-    </div>
-
-    <div class="timeline-card" style="position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5;"></div>
-      <div class="timeline-year">2023</div>
-      <div class="timeline-label">Going Viral</div>
-      <div class="timeline-desc">Jamaica hit TikTok. 200k views overnight. The streets were talking</div>
-    </div>
-
-    <div class="timeline-card" style="position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5;"></div>
-      <div class="timeline-year">2024</div>
-      <div class="timeline-label">Street Certified</div>
-      <div class="timeline-desc">Now in 3 states, 12 shops, and still hand-crafted with love</div>
-    </div>
-
-  </div>
-
-  <!-- connecting line between cards -->
-  <div style="position:absolute;top:50%;left:5%;right:5%;height:1px;z-index:1;pointer-events:none;
-    background:linear-gradient(90deg,transparent,rgba(var(--gold-rgb),.2) 15%,rgba(var(--gold-rgb),.2) 85%,transparent);"></div>
-
-</section>
 
 <!-- ════════════════ CONTACT ════════════════ -->
 <section id="section-contact" class="section-wrap">
