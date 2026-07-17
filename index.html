@@ -846,116 +846,186 @@ body{
 .custom-note-input:focus{border-color:rgba(var(--gold-rgb),.5)}
 
 /* ═══════════════════════════════════════════
-   ABOUT
+   ABOUT — AAA FOUNDER REDESIGN
 ═══════════════════════════════════════════ */
 #section-about{
-  background:
-    radial-gradient(ellipse 60% 80% at 15% 50%, rgba(142,90,34,.05) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 40% at 85% 20%, rgba(30,94,200,.03) 0%, transparent 50%),
-    linear-gradient(180deg, rgba(5,6,12,.3) 0%, rgba(5,6,12,.25) 100%);
-}
-
-/* ═══════════════════════════════════════════
-   ABOUT — LOWRIDER MAGAZINE REDESIGN
-═══════════════════════════════════════════ */
-#section-about{
-  background:
-    radial-gradient(ellipse 120% 50% at 50% 0%,   rgba(74,144,226,.06) 0%, transparent 55%),
-    radial-gradient(ellipse 100% 50% at 50% 100%,  rgba(30,94,200,.05) 0%, transparent 55%),
-    linear-gradient(180deg, rgba(5,6,12,.3) 0%, rgba(5,6,12,.28) 50%, rgba(5,6,12,.3) 100%);
+  background:transparent;
   overflow:visible;
-  min-height:1000px !important;
+  min-height:auto!important;
+  padding:100px 0 0;
 }
-#about-particles{position:absolute;inset:0;z-index:0;pointer-events:none;}
 
-/* TOP HEADER */
-.ab-top{
+/* ── FOUNDER INTRO ── */
+.founder-intro{
   position:relative;z-index:2;
-  display:flex;flex-direction:column;align-items:center;
-  padding:24px 0 12px;gap:4px;
+  max-width:1100px;margin:0 auto;padding:0 2.5rem;
+  display:grid;grid-template-columns:380px 1fr;gap:3.5rem;align-items:start;
 }
-.ab-crown-svg{opacity:.75;filter:drop-shadow(0 0 8px rgba(74,144,226,.5));}
-.ab-sparkle-row{display:flex;gap:14px;align-items:center;margin-bottom:-4px;}
-.ab-spark{
-  font-size:.7rem;color:var(--gold);
-  animation:abSparkPulse 2s ease-in-out infinite;
+.founder-photo{
+  position:relative;width:100%;aspect-ratio:3/4;
+  background:rgba(0,0,0,.5);border:1px solid rgba(74,144,226,.2);
+  border-radius:10px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;
+  box-shadow:0 16px 60px rgba(0,0,0,.6),0 0 20px rgba(74,144,226,.06);
 }
-.ab-spark:nth-child(1){animation-delay:0s;}
-.ab-spark:nth-child(2){animation-delay:.5s;font-size:.5rem;opacity:.6;}
-.ab-spark:nth-child(3){animation-delay:1s;}
-@keyframes abSparkPulse{
-  0%,100%{opacity:.3;transform:scale(.8);}
-  50%{opacity:1;transform:scale(1.2);}
+.founder-photo .fp-placeholder{
+  font-size:3rem;opacity:.15;
 }
-.ab-logo-img{
-  height:80px;width:auto;
-  filter:drop-shadow(0 0 18px rgba(74,144,226,.55)) drop-shadow(0 0 40px rgba(30,94,200,.3));
-  animation:abLogoGlow 4s ease-in-out infinite alternate;
+.founder-photo .fp-label{
+  font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--cream);opacity:.3;
 }
-@keyframes abLogoGlow{
-  from{filter:drop-shadow(0 0 12px rgba(74,144,226,.4)) drop-shadow(0 0 30px rgba(30,94,200,.2));}
-  to  {filter:drop-shadow(0 0 28px rgba(74,144,226,.8)) drop-shadow(0 0 60px rgba(30,94,200,.45));}
+.founder-photo img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;
 }
-.ab-top-flourish{display:flex;align-items:center;gap:10px;width:min(560px,85vw);margin:2px 0;}
-.ab-flourish-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(74,144,226,.65),transparent);}
-.ab-flourish-diamond{width:7px;height:7px;background:var(--gold);transform:rotate(45deg);flex-shrink:0;box-shadow:0 0 6px rgba(74,144,226,.6);}
-.ab-top-eyebrow{
-  font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.28em;
-  color:var(--gold);text-transform:uppercase;opacity:.6;
+.founder-photo::after{
+  content:'';position:absolute;inset:0;z-index:1;
+  background:linear-gradient(180deg,transparent 60%,rgba(5,6,12,.7) 100%);
+  pointer-events:none;
+}
+.founder-text{display:flex;flex-direction:column;gap:1.6rem;padding-top:.5rem;}
+.founder-eyebrow{
+  font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.35em;
+  text-transform:uppercase;color:var(--gold);opacity:.6;
+}
+.founder-name{
+  font-family:'Cinzel',serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:900;
+  color:var(--cream);letter-spacing:.03em;line-height:1;margin:0;
+}
+.founder-rule{
+  width:80px;height:2px;
+  background:linear-gradient(90deg,var(--gold),transparent);
+  opacity:.5;
+}
+.founder-quote{
+  font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-style:italic;
+  color:var(--cream);opacity:.7;line-height:1.6;padding-left:1.2rem;
+  border-left:2px solid rgba(74,144,226,.3);
 }
 
-/* 3-COLUMN BODY */
-.ab-body{
+/* ── STORY CARDS — alternating left/right ── */
+.founder-cards{
   position:relative;z-index:2;
-  display:grid;grid-template-columns:300px 1fr 300px;
-  align-items:stretch;min-height:560px;
+  max-width:900px;margin:4rem auto 0;padding:0 2.5rem;
 }
-
-/* ROSE BED — full section background layer */
-.ab-rose-bed{
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  z-index:0;
-  overflow:hidden;
-}
-.ab-rose-bed img{
-  position:absolute;
-  pointer-events:none;
-  user-select:none;
-}
-
-/* BORDER COLUMNS — mural layout */
-.ab-left,.ab-right{
+.fc-card{
   position:relative;
-  min-height:560px;
-  overflow:visible;
+  background:rgba(6,8,16,.72);backdrop-filter:blur(10px);
+  border:1px solid rgba(74,144,226,.18);border-radius:10px;
+  padding:2.2rem 2.5rem;margin-bottom:2.5rem;
+  box-shadow:0 8px 40px rgba(0,0,0,.5),0 0 14px rgba(74,144,226,.04);
+  display:grid;grid-template-columns:200px 1fr;gap:2rem;align-items:start;
+  transition:transform .3s,box-shadow .3s,border-color .3s;
 }
-.ab-left{border-right:1px solid rgba(74,144,226,.08);}
-.ab-right{border-left:1px solid rgba(74,144,226,.08);}
+.fc-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 16px 50px rgba(0,0,0,.6),0 0 20px rgba(74,144,226,.1);
+  border-color:rgba(74,144,226,.35);
+}
+.fc-card:nth-child(even){direction:rtl;}
+.fc-card:nth-child(even) > *{direction:ltr;}
+.fc-num{
+  font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--gold);opacity:.6;margin-bottom:.5rem;
+}
+.fc-title{
+  font-family:'Cinzel',serif;font-size:1.15rem;font-weight:700;
+  color:var(--cream);margin:0 0 .75rem;line-height:1.3;
+}
+.fc-body{
+  font-family:'Barlow',sans-serif;font-size:.95rem;color:var(--cream);
+  opacity:.85;line-height:1.75;margin:0;
+}
+.fc-photo{
+  width:100%;aspect-ratio:4/5;background:rgba(0,0,0,.45);
+  border:1px solid rgba(74,144,226,.12);border-radius:8px;
+  overflow:hidden;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:6px;position:relative;
+}
+.fc-photo .fp-placeholder{font-size:2rem;opacity:.15;}
+.fc-photo .fp-label{
+  font-family:'Cinzel',serif;font-size:.42rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--cream);opacity:.3;
+}
+.fc-photo img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+}
 
-/* mural image pieces */
-.ab-mural-img{
-  position:absolute;
-  pointer-events:none;
-  user-select:none;
+/* ── TIMELINE ── */
+.founder-timeline{
+  position:relative;z-index:2;
+  max-width:800px;margin:3rem auto 0;padding:0 2.5rem 3rem;
+}
+.ft-line{
+  position:absolute;left:50%;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,transparent,rgba(74,144,226,.35) 10%,rgba(74,144,226,.35) 90%,transparent);
+  transform:translateX(-50%);
+}
+.ft-entry{
+  position:relative;display:flex;align-items:flex-start;
+  margin-bottom:2.5rem;
+}
+.ft-entry:nth-child(odd){flex-direction:row;padding-right:calc(50% + 30px);}
+.ft-entry:nth-child(even){flex-direction:row-reverse;padding-left:calc(50% + 30px);}
+.ft-dot{
+  position:absolute;left:50%;top:6px;
+  width:14px;height:14px;border-radius:50%;
+  background:var(--gold);border:3px solid rgba(5,6,12,.9);
+  transform:translateX(-50%);z-index:2;
+  box-shadow:0 0 12px rgba(74,144,226,.45);
+}
+.ft-content{
+  background:rgba(6,8,16,.7);backdrop-filter:blur(8px);
+  border:1px solid rgba(74,144,226,.18);border-radius:8px;
+  padding:1.2rem 1.5rem;
+  transition:border-color .3s,box-shadow .3s;
+}
+.ft-content:hover{
+  border-color:rgba(74,144,226,.4);
+  box-shadow:0 4px 20px rgba(74,144,226,.12);
+}
+.ft-year{
+  font-family:'Cinzel',serif;font-size:.7rem;font-weight:700;
+  letter-spacing:.18em;color:var(--gold);margin-bottom:.4rem;
+}
+.ft-text{
+  font-family:'Barlow',sans-serif;font-size:.85rem;
+  color:var(--cream);opacity:.8;line-height:1.6;
 }
 
-/* responsive collapse */
-@media(max-width:900px){
-  .ab-left,.ab-right{min-height:220px;overflow:hidden;}
+/* ── FOUNDER FOOTER TITLE ── */
+.founder-footer{
+  position:relative;z-index:2;text-align:center;padding:2rem 5% 4rem;
+}
+.ff-rule{
+  display:flex;align-items:center;gap:1rem;
+  width:min(70%,700px);margin:0 auto 1.4rem;
+}
+.ff-rule-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);}
+.ff-rule-label{
+  font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.5em;
+  text-transform:uppercase;color:#fff;opacity:.3;
+}
+.ff-title{
+  font-family:'Cinzel',serif;font-size:clamp(3rem,8vw,7rem);font-weight:900;
+  letter-spacing:.04em;line-height:.9;margin:0;text-transform:uppercase;
+  -webkit-text-stroke:1.5px rgba(255,255,255,.9);color:transparent;
+  text-shadow:0 0 0 #fff,2px 2px 0 #000,4px 4px 0 rgba(0,0,0,.5);
+  filter:drop-shadow(0 8px 32px rgba(0,0,0,.9));
 }
 
-/* CENTER TEXT PANEL */
-.ab-center{
-  padding:28px 32px 48px;
-  display:flex;align-items:flex-start;justify-content:center;
-}
-.ab-panel{
-  width:100%;background:rgba(7,6,4,.78);
-  border:1px solid rgba(74,144,226,.14);
-  padding:44px 40px;position:relative;
-  backdrop-filter:blur(8px);
+/* ── MOBILE ── */
+@media(max-width:768px){
+  .founder-intro{grid-template-columns:1fr;gap:2rem;padding:0 1.2rem;}
+  .founder-photo{max-width:300px;margin:0 auto;}
+  .fc-card{grid-template-columns:1fr;gap:1rem;padding:1.5rem 1.3rem;}
+  .fc-card:nth-child(even){direction:ltr;}
+  .fc-photo{max-width:200px;margin:0 auto;}
+  .ft-entry:nth-child(odd){padding-right:0;padding-left:36px;}
+  .ft-entry:nth-child(even){padding-left:36px;flex-direction:row;}
+  .ft-line{left:16px;}
+  .ft-dot{left:16px;}
+  .founder-cards,.founder-timeline{padding:0 1.2rem 2rem;}
 }
 .ab-panel::before,.ab-panel::after{
   content:'✦';position:absolute;
@@ -1515,12 +1585,6 @@ footer{
    RESPONSIVE
 ═══════════════════════════════════════════ */
 @media(max-width:900px){
-  .ab-body{grid-template-columns:1fr;grid-template-rows:auto auto auto;}
-  .ab-left{order:1;min-height:180px;border:none;border-bottom:1px solid rgba(74,144,226,.08);}
-  .ab-center{order:2;padding:14px;}
-  .ab-right{order:3;min-height:180px;border:none;border-top:1px solid rgba(74,144,226,.08);}
-  .ab-mural-img{max-width:140px !important;}
-  .ab-panel{padding:26px 18px;}
   .contact-layout{grid-template-columns:1fr}
   .contact-info{display:none}
 }
@@ -1558,21 +1622,6 @@ footer{
   .hero-sub{font-size:.82rem;max-width:100%;}
   .hero-cta{width:100%;text-align:center;justify-content:center;}
 
-  /* ABOUT — 3-col → single col */
-  .ab-body{
-    grid-template-columns:1fr!important;
-    grid-template-rows:auto!important;
-  }
-  .ab-left,.ab-right{
-    min-height:120px!important;
-    border:none!important;
-    border-bottom:1px solid rgba(74,144,226,.08)!important;
-  }
-  .ab-center{order:1!important;padding:10px 12px!important;}
-  .ab-left{order:2!important;}
-  .ab-right{order:3!important;}
-  .ab-panel{padding:20px 16px!important;}
-  .ab-mural-img{max-width:90px!important;}
 
   /* SCENT POPUP */
   #scent-popup{width:95vw!important;max-height:92vh!important;}
@@ -3540,165 +3589,135 @@ body.day-mode {
   </div>
 </div>
 
-<!-- ════════════════ ABOUT — MAGAZINE REDESIGN ════════════════ -->
+<!-- ════════════════ ABOUT — AAA FOUNDER REDESIGN ════════════════ -->
 <section id="section-about" class="section-wrap" style="overflow:visible;">
-  <canvas id="about-particles"></canvas>
 
-  <!-- ── FRAME OVERLAY — sits above rose bed, below text ── -->
-  <div style="position:absolute;inset:0;z-index:6;pointer-events:none;display:flex;align-items:stretch;justify-content:center;">
-    <img src="ABOUT US/about us frame.png" alt=""
-      style="width:100%;height:100%;object-fit:fill;opacity:.92;min-height:1000px;"/>
+  <!-- ── FOUNDER INTRO — photo + name/quote ── -->
+  <div class="founder-intro">
+    <div class="founder-photo">
+      <span class="fp-placeholder">👤</span>
+      <span class="fp-label">Drop founder photo here</span>
+      <!-- <img src="ABOUT US FOUNDER/CLOVIS.png"> -->
+    </div>
+    <div class="founder-text">
+      <div class="founder-eyebrow">The Founder</div>
+      <h2 class="founder-name">Clovis Feliciano</h2>
+      <div class="founder-rule"></div>
+      <blockquote class="founder-quote">"It's more than an air freshener company — it's a tribute to our raza, our memories, and the culture that helped shape us."</blockquote>
+    </div>
   </div>
 
+  <!-- ── STORY CARDS — alternating layout ── -->
+  <div class="founder-cards">
 
-  <!-- ── CROWN — top center ── -->
-  <div style="position:absolute;top:-110px;left:50%;transform:translateX(-50%);z-index:100;pointer-events:none;">
-    <img src="ABOUT US/CROWN.png" alt="Crown"
-      style="width:260px;height:auto;
-      filter:drop-shadow(0 0 24px rgba(74,144,226,.8)) drop-shadow(0 0 60px rgba(74,144,226,.35));
-      animation:abLogoGlow 4s ease-in-out infinite alternate;"/>
-  </div>
-
-  <!-- ── CORNER CROWNS ── -->
-  <!-- top-left -->
-  <div style="position:absolute;top:-18px;left:-18px;z-index:7;pointer-events:none;">
-    <img src="ABOUT US/CROWN.png" alt=""
-      style="width:90px;height:auto;transform:rotate(-45deg);opacity:.75;
-      filter:drop-shadow(0 0 10px rgba(74,144,226,.6)) drop-shadow(0 0 24px rgba(74,144,226,.3));
-      animation:abLogoGlow 4s ease-in-out infinite alternate;"/>
-  </div>
-  <!-- top-right -->
-  <div style="position:absolute;top:-18px;right:-18px;z-index:7;pointer-events:none;">
-    <img src="ABOUT US/CROWN.png" alt=""
-      style="width:90px;height:auto;transform:rotate(45deg);opacity:.75;
-      filter:drop-shadow(0 0 10px rgba(74,144,226,.6)) drop-shadow(0 0 24px rgba(74,144,226,.3));
-      animation:abLogoGlow 4s ease-in-out infinite alternate 0.5s;"/>
-  </div>
-  <!-- bottom-left -->
-  <div style="position:absolute;bottom:-18px;left:-18px;z-index:7;pointer-events:none;">
-    <img src="ABOUT US/CROWN.png" alt=""
-      style="width:90px;height:auto;transform:rotate(-135deg);opacity:.75;
-      filter:drop-shadow(0 0 10px rgba(74,144,226,.6)) drop-shadow(0 0 24px rgba(74,144,226,.3));
-      animation:abLogoGlow 4s ease-in-out infinite alternate 1s;"/>
-  </div>
-  <!-- bottom-right -->
-  <div style="position:absolute;bottom:-18px;right:-18px;z-index:7;pointer-events:none;">
-    <img src="ABOUT US/CROWN.png" alt=""
-      style="width:90px;height:auto;transform:rotate(135deg);opacity:.75;
-      filter:drop-shadow(0 0 10px rgba(74,144,226,.6)) drop-shadow(0 0 24px rgba(74,144,226,.3));
-      animation:abLogoGlow 4s ease-in-out infinite alternate 1.5s;"/>
-  </div>
-
-  <!-- ── MURAL PNGs — realigned to taller frame ── -->
-  <!-- FLAG — top left corner -->
-  <img src="ABOUT US/FLAG.png" alt="" style="position:absolute;width:300px;top:60px;left:-20px;transform:rotate(-8deg);opacity:.88;z-index:9;pointer-events:none;"/>
-  <!-- DICE — top right -->
-  <img src="ABOUT US/DICE.png" alt="" style="position:absolute;width:150px;top:30px;right:30px;transform:rotate(6deg);opacity:.95;z-index:9;pointer-events:none;"/>
-  <!-- LOCS — mid left, vertically centered to frame -->
-  <img src="ABOUT US/LOCS.png" alt="" style="position:absolute;width:240px;top:50%;left:-8px;transform:rotate(-5deg) translateY(-50%);opacity:1;z-index:9;pointer-events:none;filter:drop-shadow(0 4px 20px rgba(0,0,0,.8));"/>
-  <!-- LATINA 2 — right side bottom anchored -->
-  <img src="ABOUT US/LATINA 2.png" alt="" style="position:absolute;width:300px;bottom:0;right:-10px;opacity:1;z-index:9;pointer-events:none;filter:drop-shadow(-8px 0 20px rgba(0,0,0,.7));"/>
-  <!-- BIKE — bottom left anchored -->
-  <img src="ABOUT US/BIKE.png" alt="" style="position:absolute;width:280px;bottom:0;left:-10px;transform:rotate(3deg);opacity:.95;z-index:9;pointer-events:none;filter:drop-shadow(0 -4px 18px rgba(0,0,0,.7));"/>
-
-  <!-- spacer so cards don't hide under crown -->
-  <div style="height:120px;"></div>
-
-  <!-- ── 3 FOUNDER CARDS ── -->
-  <div style="position:relative;z-index:8;display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;width:88%;max-width:1100px;margin:0 auto 20px;align-items:start;">
-
-    <!-- CARD 1 — Who I Am -->
-    <div style="background:rgba(6,8,16,.75);border:1px solid rgba(var(--gold-rgb),.25);border-radius:10px;overflow:hidden;
-      box-shadow:0 8px 32px rgba(0,0,0,.6),0 0 16px rgba(var(--gold-rgb),.06);">
-      <!-- photo slot -->
-      <div style="position:relative;height:240px;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;border-bottom:1px solid rgba(var(--gold-rgb),.15);">
-        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5;"></div>
-        <div style="font-size:2.5rem;opacity:.2;">👤</div>
-        <div style="font-family:'Cinzel',serif;font-size:.45rem;letter-spacing:.2em;text-transform:uppercase;color:var(--cream);opacity:.35;">Drop founder photo here</div>
-        <!-- <img src="assets/founder.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"> -->
+    <!-- CARD 1 -->
+    <div class="fc-card">
+      <div class="fc-photo">
+        <span class="fp-placeholder">👤</span>
+        <span class="fp-label">Photo — early days</span>
       </div>
-      <!-- text -->
-      <div style="padding:1.2rem 1.3rem 1.5rem;">
-        <div style="font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);opacity:.75;margin-bottom:.6rem;">01 — Who I Am</div>
-        <h3 style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--cream);margin:0 0 .75rem;line-height:1.3;">Me & My Family</h3>
-        <p style="font-family:'Barlow',sans-serif;font-size:1rem;color:var(--cream);opacity:.85;line-height:1.75;margin:0;">My love for Chicano culture started at a young age. I grew up flipping through <em>Lowrider</em> magazines, admiring the artwork, the cars, the bikes, the music — everything that made our culture unique. I spent countless hours drawing little cholo characters, and when the Homies collectibles came out, <em>olvídate</em> — I was hooked. Like many youngsters, I ran with the homies, got into trouble, and experienced the streets firsthand. Those years became part of my story, but they didn't define my future.</p>
+      <div>
+        <div class="fc-num">01 — Who I Am</div>
+        <h3 class="fc-title">Me &amp; My Family</h3>
+        <p class="fc-body">My love for Chicano culture started at a young age. I grew up flipping through <em>Lowrider</em> magazines, admiring the artwork, the cars, the bikes, the music — everything that made our culture unique. I spent countless hours drawing little cholo characters, and when the Homies collectibles came out, <em>olvídate</em> — I was hooked. Like many youngsters, I ran with the homies, got into trouble, and experienced the streets firsthand. Those years became part of my story, but they didn't define my future.</p>
       </div>
     </div>
 
-    <!-- CARD 2 — My Culture -->
-    <div style="background:rgba(6,8,16,.75);border:1px solid rgba(var(--gold-rgb),.25);border-radius:10px;overflow:hidden;
-      box-shadow:0 8px 32px rgba(0,0,0,.6),0 0 16px rgba(var(--gold-rgb),.06);">
-      <!-- photo slot -->
-      <div style="position:relative;height:240px;background:rgba(0,0,0,.5);border-bottom:1px solid rgba(var(--gold-rgb),.15);overflow:hidden;">
-        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5;z-index:2;"></div>
-        <img src="ABOUT US FOUNDER/CLOVIS.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;">
+    <!-- CARD 2 -->
+    <div class="fc-card">
+      <div class="fc-photo">
+        <span class="fp-placeholder">👤</span>
+        <span class="fp-label">Photo — roots</span>
       </div>
-      <!-- text -->
-      <div style="padding:1.2rem 1.3rem 1.5rem;">
-        <div style="font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);opacity:.75;margin-bottom:.6rem;">02 — My Roots</div>
-        <h3 style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--cream);margin:0 0 .75rem;line-height:1.3;">Culture & Identity</h3>
-        <p style="font-family:'Barlow',sans-serif;font-size:1rem;color:var(--cream);opacity:.85;line-height:1.75;margin:0;">The biggest reason was my father. He never gave up on me. Even when we argued, he kept trying to steer me away from that life. He believed I was capable of more — taught me discipline, respect, and the value of earning an honest living. As I got older, I grew out of the <em>mocoso</em> stage and into the man I wanted to become. Today, I'm a husband, a father, a hardworking man, and an entrepreneur. But one thing never changed — my love for Chicano culture.</p>
+      <div>
+        <div class="fc-num">02 — My Roots</div>
+        <h3 class="fc-title">Culture &amp; Identity</h3>
+        <p class="fc-body">The biggest reason was my father. He never gave up on me. Even when we argued, he kept trying to steer me away from that life. He believed I was capable of more — taught me discipline, respect, and the value of earning an honest living. As I got older, I grew out of the <em>mocoso</em> stage and into the man I wanted to become. Today, I'm a husband, a father, a hardworking man, and an entrepreneur. But one thing never changed — my love for Chicano culture.</p>
       </div>
     </div>
 
-    <!-- CARD 3 — Why I Did It -->
-    <div style="background:rgba(6,8,16,.75);border:1px solid rgba(var(--gold-rgb),.25);border-radius:10px;overflow:hidden;
-      box-shadow:0 8px 32px rgba(0,0,0,.6),0 0 16px rgba(var(--gold-rgb),.06);">
-      <!-- photo slot -->
-      <div style="position:relative;height:240px;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;border-bottom:1px solid rgba(var(--gold-rgb),.15);">
-        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5;"></div>
-        <div style="font-size:2.5rem;opacity:.2;">🚗</div>
-        <div style="font-family:'Cinzel',serif;font-size:.45rem;letter-spacing:.2em;text-transform:uppercase;color:var(--cream);opacity:.35;">Drop brand photo here</div>
-        <!-- <img src="assets/brand.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"> -->
+    <!-- CARD 3 -->
+    <div class="fc-card">
+      <div class="fc-photo">
+        <span class="fp-placeholder">🚗</span>
+        <span class="fp-label">Photo — brand</span>
       </div>
-      <!-- text -->
-      <div style="padding:1.2rem 1.3rem 1.5rem;">
-        <div style="font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);opacity:.75;margin-bottom:.6rem;">03 — The Why</div>
-        <h3 style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--cream);margin:0 0 .75rem;line-height:1.3;">Why Street Scentz</h3>
-        <p style="font-family:'Barlow',sans-serif;font-size:1rem;color:var(--cream);opacity:.85;line-height:1.75;margin:0;">That's why I created <strong style="color:var(--gold);">Street Scentz</strong>. It's more than an air freshener company — it's a tribute to our raza, our memories, and the culture that helped shape us. From <strong>Horchata</strong> and <strong>Fresas Con Crema</strong> to every future collection, each design tells a story through artwork, nostalgia, and culture. My hope is that every time you catch one of our scents, it reminds you of where you came from, the people you love, and the pride of being part of a culture rich with history, family, and heart. <em>The Smell That Hits Home.</em></p>
+      <div>
+        <div class="fc-num">03 — The Why</div>
+        <h3 class="fc-title">Why Street Scentz</h3>
+        <p class="fc-body">That's why I created <strong style="color:var(--gold);">Street Scentz</strong>. It's more than an air freshener company — it's a tribute to our raza, our memories, and the culture that helped shape us. From <strong>Horchata</strong> and <strong>Fresas Con Crema</strong> to every future collection, each design tells a story through artwork, nostalgia, and culture. My hope is that every time you catch one of our scents, it reminds you of where you came from, the people you love, and the pride of being part of a culture rich with history, family, and heart. <em>The Smell That Hits Home.</em></p>
       </div>
-    </div>
-
-  </div><!-- end 3 cards -->
-
-  <!-- ── BOTTOM: Old English Founder Title ── -->
-  <div style="position:relative;z-index:8;text-align:center;padding:16px 5% 40px;">
-
-    <!-- thin rule -->
-    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.4rem;width:70%;max-width:700px;margin-left:auto;margin-right:auto;">
-      <div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,#fff);opacity:.15;"></div>
-      <span style="font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.5em;text-transform:uppercase;color:#fff;opacity:.3;">The Founder</span>
-      <div style="flex:1;height:1px;background:linear-gradient(90deg,#fff,transparent);opacity:.15;"></div>
-    </div>
-
-    <!-- main title -->
-    <h2 style="
-      font-family:'Cinzel',serif;
-      font-size:clamp(3rem,8vw,7rem);
-      font-weight:900;
-      color:#fff;
-      letter-spacing:.04em;
-      line-height:.9;
-      margin:0;
-      text-transform:uppercase;
-      -webkit-text-stroke:1.5px rgba(255,255,255,.9);
-      color:transparent;
-      text-shadow:
-        0 0 0 #fff,
-        2px 2px 0 #000,
-        4px 4px 0 rgba(0,0,0,.5);
-      filter:drop-shadow(0 8px 32px rgba(0,0,0,.9));
-    ">About<br>The Founder</h2>
-
-    <!-- subtitle rule -->
-    <div style="margin-top:1.2rem;display:flex;align-items:center;gap:1rem;width:50%;max-width:500px;margin-left:auto;margin-right:auto;">
-      <div style="flex:1;height:1px;background:#fff;opacity:.12;"></div>
-      <span style="font-family:'Cinzel',serif;font-size:.45rem;letter-spacing:.6em;text-transform:uppercase;color:#fff;opacity:.35;">The Man Behind The Brand</span>
-      <div style="flex:1;height:1px;background:#fff;opacity:.12;"></div>
     </div>
 
   </div>
 
+  <!-- ── TIMELINE ── -->
+  <div class="founder-timeline">
+    <div class="ft-line"></div>
+
+    <div class="ft-entry">
+      <div class="ft-dot"></div>
+      <div class="ft-content">
+        <div class="ft-year">1989</div>
+        <div class="ft-text">Born and raised in New Mexico — grew up surrounded by lowriders, murals, and the Chicano culture that defined the neighborhoods.</div>
+      </div>
+    </div>
+
+    <div class="ft-entry">
+      <div class="ft-dot"></div>
+      <div class="ft-content">
+        <div class="ft-year">Early 2000s</div>
+        <div class="ft-text">Running with the homies through NM streets — collecting Homies figurines, drawing cholo characters, flipping through Lowrider magazines at the swap meets.</div>
+      </div>
+    </div>
+
+    <div class="ft-entry">
+      <div class="ft-dot"></div>
+      <div class="ft-content">
+        <div class="ft-year">The Turning Point</div>
+        <div class="ft-text">Dad never gave up. Discipline, respect, and the value of earning an honest living — those lessons pulled me from the streets and into the man I was meant to become.</div>
+      </div>
+    </div>
+
+    <div class="ft-entry">
+      <div class="ft-dot"></div>
+      <div class="ft-content">
+        <div class="ft-year">2021</div>
+        <div class="ft-text">Street Scentz is born. The idea hit while cruising through Clovis — what if every scent reminded you of home? Horchata, Fresas, Jamaica — the flavors of la cultura, hanging from your mirror.</div>
+      </div>
+    </div>
+
+    <div class="ft-entry">
+      <div class="ft-dot"></div>
+      <div class="ft-content">
+        <div class="ft-year">2024</div>
+        <div class="ft-text">First full collection drops. Six signature scents, each one a love letter to the raza. From New Mexico car shows to online — the brand goes live.</div>
+      </div>
+    </div>
+
+    <div class="ft-entry">
+      <div class="ft-dot"></div>
+      <div class="ft-content">
+        <div class="ft-year">Today</div>
+        <div class="ft-text">Husband. Father. Entrepreneur. Still reppin' NM culture, still cruising, still dreaming bigger. The smell that hits home — from our familia to yours.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FOUNDER TITLE — bottom ── -->
+  <div class="founder-footer">
+    <div class="ff-rule">
+      <div class="ff-rule-line"></div>
+      <span class="ff-rule-label">The Founder</span>
+      <div class="ff-rule-line"></div>
+    </div>
+    <h2 class="ff-title">About<br>The Founder</h2>
+    <div class="ff-rule" style="margin-top:1.2rem;">
+      <div class="ff-rule-line"></div>
+      <span class="ff-rule-label">The Man Behind The Brand</span>
+      <div class="ff-rule-line"></div>
+    </div>
+  </div>
 
 </section>
 
