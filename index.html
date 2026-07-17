@@ -3362,58 +3362,13 @@ body.day-mode {
     </div>
 
     <div class="checkout-wrap">
-      <!-- ── STEPS 1 + 2 (left) ── -->
       <div class="checkout-steps">
         <div class="checkout-left">
 
-          <!-- STEP 1: Product Selector -->
-          <p class="checkout-step-label">Step 1 — Build Your Order</p>
-          <div class="co-product-list">
-            <div class="co-product-row">
-              <div class="co-product-info">
-                <div class="co-product-name">Churro</div>
-                <div class="co-product-price">$14.99 each</div>
-              </div>
-              <div class="co-qty-controls">
-                <button class="co-qty-btn" onclick="checkoutRemoveItem('Churro',14.99)">−</button>
-                <span class="co-qty-val" id="co-qty-Churro">0</span>
-                <button class="co-qty-btn" onclick="checkoutAddItem('Churro',14.99)">+</button>
-              </div>
-            </div>
-            <div class="co-product-row">
-              <div class="co-product-info">
-                <div class="co-product-name">Horchata</div>
-                <div class="co-product-price">$14.99 each</div>
-              </div>
-              <div class="co-qty-controls">
-                <button class="co-qty-btn" onclick="checkoutRemoveItem('Horchata',14.99)">−</button>
-                <span class="co-qty-val" id="co-qty-Horchata">0</span>
-                <button class="co-qty-btn" onclick="checkoutAddItem('Horchata',14.99)">+</button>
-              </div>
-            </div>
-            <div class="co-product-row">
-              <div class="co-product-info">
-                <div class="co-product-name">Jamaica</div>
-                <div class="co-product-price">$14.99 each</div>
-              </div>
-              <div class="co-qty-controls">
-                <button class="co-qty-btn" onclick="checkoutRemoveItem('Jamaica',14.99)">−</button>
-                <span class="co-qty-val" id="co-qty-Jamaica">0</span>
-                <button class="co-qty-btn" onclick="checkoutAddItem('Jamaica',14.99)">+</button>
-              </div>
-            </div>
-            <div class="co-product-row">
-              <div class="co-product-info">
-                <div class="co-product-name">Pina Colada</div>
-                <div class="co-product-price">$14.99 each</div>
-              </div>
-              <div class="co-qty-controls">
-                <button class="co-qty-btn" onclick="checkoutRemoveItem('Pina Colada',14.99)">−</button>
-                <span class="co-qty-val" id="co-qty-PinaColada">0</span>
-                <button class="co-qty-btn" onclick="checkoutAddItem('Pina Colada',14.99)">+</button>
-              </div>
-            </div>
-          </div>
+          <!-- STEP 1: Live Cart Items -->
+          <p class="checkout-step-label">Step 1 — Your Cart</p>
+          <div id="co-live-cart" class="co-product-list"></div>
+          <div id="co-live-empty" class="co-empty-note" style="text-align:center;padding:2rem 0;">Your cart is empty — add scents from the Shop.</div>
 
           <!-- STEP 2: Promo Code -->
           <p class="checkout-step-label">Step 2 — Drop Your Code</p>
@@ -3425,7 +3380,7 @@ body.day-mode {
             <div class="co-promo-msg" id="co-promo-msg"></div>
           </div>
 
-        </div><!-- /.checkout-left -->
+        </div>
 
         <!-- STEP 3: Order Summary (right) -->
         <div class="checkout-right">
@@ -3437,7 +3392,7 @@ body.day-mode {
             <div class="co-corner br"></div>
             <div class="co-summary-title">&#x2605; Order Summary &#x2605;</div>
             <ul class="co-item-list" id="co-item-list">
-              <li class="co-empty-note">Your cart is empty — add some scents above.</li>
+              <li class="co-empty-note">Your cart is empty — add some scents.</li>
             </ul>
             <hr class="co-divider-line" />
             <div class="co-summary-line" id="co-line-subtotal">
@@ -3467,9 +3422,9 @@ body.day-mode {
               <span class="co-trust-item">⭐ Premium Quality</span>
             </div>
           </div>
-        </div><!-- /.checkout-right -->
-      </div><!-- /.checkout-steps -->
-    </div><!-- /.checkout-wrap -->
+        </div>
+      </div>
+    </div>
   </div><!-- /.section-content -->
 </section>
 
@@ -4955,10 +4910,7 @@ function _initScentVideo_PLACEHOLDER(){
    CHECKOUT — FEATURE
 ═══════════════════════════════════════════ */
 (function() {
-  // ── State ──
-  const PRICES = { 'Churro': 14.99, 'Horchata': 14.99, 'Jamaica': 14.99, 'Pina Colada': 14.99 };
-  const ID_MAP  = { 'Churro': 'Churro', 'Horchata': 'Horchata', 'Jamaica': 'Jamaica', 'Pina Colada': 'PinaColada' };
-  const PROMOS  = {
+  const PROMOS = {
     'LOWRIDER20' : 20,
     'FIRSTRIDE'  : 20,
     'FAMILIA10'  : 10,
@@ -4966,115 +4918,186 @@ function _initScentVideo_PLACEHOLDER(){
     'STREETLIFE' : 25,
     'BLOCKLOVE'  : 30
   };
-  const cart = { items: {}, promoCode: null, discount: 0 };
+  let promoCode = null, discount = 0;
 
-  function fmt(n) { return '$' + n.toFixed(2); }
-  function subtotal() {
-    return Object.entries(cart.items).reduce(function(sum, entry){ return sum + entry[1] * PRICES[entry[0]]; }, 0);
+  function fmt(n){ return '$' + n.toFixed(2); }
+  function getCart(){
+    try { return JSON.parse(localStorage.getItem('ss-cart') || '[]'); } catch(e){ return []; }
+  }
+  function saveCart(items){ localStorage.setItem('ss-cart', JSON.stringify(items)); }
+
+  // Sync nav cart badge after checkout changes
+  function syncNavCart(){
+    if(typeof ssCart !== 'undefined' && ssCart.toggle){
+      // force nav cart re-render by triggering its render via a storage event workaround
+      const countEl = document.getElementById('ss-cart-count');
+      const items = getCart();
+      const count = items.reduce((n,i)=>n+i.qty,0);
+      if(countEl){
+        countEl.textContent = count;
+        countEl.classList.toggle('empty', count===0);
+      }
+      // re-render nav cart items panel
+      const itemsEl = document.getElementById('ss-cart-items');
+      const emptyEl = document.getElementById('ss-cart-empty');
+      const footEl = document.getElementById('ss-cart-foot');
+      const totalEl = document.getElementById('ss-cart-total');
+      if(itemsEl){
+        itemsEl.innerHTML = '';
+        items.forEach((it,i)=>{
+          const row = document.createElement('div');
+          row.className = 'ss-cart-item';
+          row.innerHTML = `<img src="${it.img}" alt="${it.name}"/>
+            <div class="ss-cart-item-info">
+              <div class="ss-cart-item-name">${it.name}</div>
+              <div class="ss-cart-item-price">${fmt(it.price*it.qty)}</div>
+            </div>
+            <div class="ss-cart-qty">
+              <button onclick="coChangeQty(${i},-1)">−</button>
+              <span>${it.qty}</span>
+              <button onclick="coChangeQty(${i},1)">+</button>
+            </div>
+            <button class="ss-cart-remove" onclick="coRemove(${i})">&#x2715;</button>`;
+          itemsEl.appendChild(row);
+        });
+      }
+      if(emptyEl) emptyEl.style.display = items.length ? 'none' : 'block';
+      if(footEl) footEl.style.display = items.length ? 'block' : 'none';
+      if(totalEl) totalEl.textContent = fmt(items.reduce((s,i)=>s+i.price*i.qty,0));
+    }
   }
 
-  window.checkoutAddItem = function(scent) {
-    cart.items[scent] = (cart.items[scent] || 0) + 1;
+  window.coChangeQty = function(idx, delta){
+    const items = getCart();
+    if(!items[idx]) return;
+    items[idx].qty += delta;
+    if(items[idx].qty < 1) items.splice(idx,1);
+    saveCart(items);
+    syncNavCart();
     checkoutRender();
   };
-  window.checkoutRemoveItem = function(scent) {
-    if (!cart.items[scent]) return;
-    cart.items[scent]--;
-    if (cart.items[scent] === 0) delete cart.items[scent];
+  window.coRemove = function(idx){
+    const items = getCart();
+    items.splice(idx,1);
+    saveCart(items);
+    syncNavCart();
     checkoutRender();
   };
 
-  window.checkoutApplyPromo = function() {
-    var raw   = (document.getElementById('co-promo-input').value || '').trim().toUpperCase();
-    var panel = document.getElementById('co-promo-panel');
-    var msg   = document.getElementById('co-promo-msg');
+  window.checkoutApplyPromo = function(){
+    const raw   = (document.getElementById('co-promo-input').value || '').trim().toUpperCase();
+    const panel = document.getElementById('co-promo-panel');
+    const msg   = document.getElementById('co-promo-msg');
     panel.classList.remove('shake','flash');
     void panel.offsetWidth;
-    if (PROMOS[raw] !== undefined) {
-      cart.promoCode = raw;
-      cart.discount  = PROMOS[raw];
+    if(PROMOS[raw] !== undefined){
+      promoCode = raw; discount = PROMOS[raw];
       panel.classList.add('flash');
-      msg.className  = 'co-promo-msg valid';
-      msg.innerHTML  = '✔ Code applied — ' + cart.discount + '% off!';
+      msg.className = 'co-promo-msg valid';
+      msg.innerHTML = '&#10004; Code applied — ' + discount + '% off!';
     } else {
-      cart.promoCode = null;
-      cart.discount  = 0;
+      promoCode = null; discount = 0;
       panel.classList.add('shake');
-      msg.className  = 'co-promo-msg invalid';
-      msg.innerHTML  = "That code doesn't ride with us.";
+      msg.className = 'co-promo-msg invalid';
+      msg.innerHTML = "That code doesn't ride with us.";
     }
     checkoutRender();
   };
 
-  window.checkoutRender = function() {
-    Object.keys(ID_MAP).forEach(function(scent) {
-      var el = document.getElementById('co-qty-' + ID_MAP[scent]);
-      if (el) el.textContent = cart.items[scent] || 0;
-    });
-    var listEl  = document.getElementById('co-item-list');
-    var entries = Object.keys(cart.items).filter(function(s){ return cart.items[s] > 0; });
-    if (!listEl) return;
-    if (entries.length === 0) {
-      listEl.innerHTML = '<li class="co-empty-note">Your cart is empty — add some scents above.</li>';
-    } else {
-      listEl.innerHTML = entries.map(function(scent) {
-        var qty = cart.items[scent];
-        return '<li class="co-item-row">' +
-          '<span class="co-item-name">' + scent + '</span>' +
-          '<span class="co-item-qty">x' + qty + '</span>' +
-          '<span class="co-item-price">' + fmt(qty * PRICES[scent]) + '</span>' +
-        '</li>';
-      }).join('');
+  window.checkoutRender = function(){
+    const items = getCart();
+    const liveCart = document.getElementById('co-live-cart');
+    const liveEmpty = document.getElementById('co-live-empty');
+
+    // Step 1 — live cart items
+    if(liveCart){
+      if(items.length === 0){
+        liveCart.innerHTML = '';
+        if(liveEmpty) liveEmpty.style.display = 'block';
+      } else {
+        if(liveEmpty) liveEmpty.style.display = 'none';
+        liveCart.innerHTML = items.map((it,i) => `
+          <div class="co-product-row">
+            <img src="${it.img}" alt="${it.name}" style="width:42px;height:52px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 4px 10px rgba(0,0,0,.5));"/>
+            <div class="co-product-info">
+              <div class="co-product-name">${it.name}</div>
+              <div class="co-product-price">${fmt(it.price)} each</div>
+            </div>
+            <div class="co-qty-controls">
+              <button class="co-qty-btn" onclick="coChangeQty(${i},-1)">−</button>
+              <span class="co-qty-val">${it.qty}</span>
+              <button class="co-qty-btn" onclick="coChangeQty(${i},1)">+</button>
+            </div>
+          </div>`).join('');
+      }
     }
-    var sub       = subtotal();
-    var discAmt   = cart.discount ? sub * (cart.discount / 100) : 0;
-    var afterDisc = sub - discAmt;
-    var shipping  = (sub === 0) ? 0 : (afterDisc >= 35 ? 0 : 4.99);
-    var total     = afterDisc + shipping;
 
-    var subEl = document.getElementById('co-val-subtotal');
-    if (subEl) subEl.textContent = fmt(sub);
+    // Step 3 — summary
+    const listEl = document.getElementById('co-item-list');
+    if(listEl){
+      if(items.length === 0){
+        listEl.innerHTML = '<li class="co-empty-note">Your cart is empty — add some scents.</li>';
+      } else {
+        listEl.innerHTML = items.map(it =>
+          `<li class="co-item-row"><span class="co-item-name">${it.name}</span><span class="co-item-qty">x${it.qty}</span><span class="co-item-price">${fmt(it.price*it.qty)}</span></li>`
+        ).join('');
+      }
+    }
 
-    var discLine = document.getElementById('co-line-discount');
-    if (discLine) {
-      if (cart.promoCode && discAmt > 0) {
+    const sub = items.reduce((s,i)=>s+i.price*i.qty,0);
+    const discAmt = discount ? sub * (discount/100) : 0;
+    const afterDisc = sub - discAmt;
+    const shipping = sub === 0 ? 0 : (afterDisc >= 35 ? 0 : 4.99);
+    const total = afterDisc + shipping;
+
+    const subEl = document.getElementById('co-val-subtotal');
+    if(subEl) subEl.textContent = fmt(sub);
+
+    const discLine = document.getElementById('co-line-discount');
+    if(discLine){
+      if(promoCode && discAmt > 0){
         discLine.style.display = '';
-        document.getElementById('co-promo-applied').textContent = cart.promoCode;
-        document.getElementById('co-val-original').textContent  = fmt(sub);
-        document.getElementById('co-val-discount').textContent  = fmt(afterDisc);
-        document.getElementById('co-badge-pct').textContent     = '-' + cart.discount + '%';
-      } else {
-        discLine.style.display = 'none';
-      }
+        document.getElementById('co-promo-applied').textContent = promoCode;
+        document.getElementById('co-val-original').textContent = fmt(sub);
+        document.getElementById('co-val-discount').textContent = fmt(afterDisc);
+        document.getElementById('co-badge-pct').textContent = '-' + discount + '%';
+      } else { discLine.style.display = 'none'; }
     }
 
-    var shipEl = document.getElementById('co-val-shipping');
-    if (shipEl) {
-      if (sub === 0) {
-        shipEl.textContent = '—'; shipEl.style.color = '';
-      } else if (shipping === 0) {
-        shipEl.textContent = 'FREE'; shipEl.style.color = '#6fcf97';
-      } else {
-        shipEl.textContent = fmt(shipping); shipEl.style.color = '';
-      }
+    const shipEl = document.getElementById('co-val-shipping');
+    if(shipEl){
+      if(sub === 0){ shipEl.textContent = '—'; shipEl.style.color = ''; }
+      else if(shipping === 0){ shipEl.textContent = 'FREE'; shipEl.style.color = '#6fcf97'; }
+      else { shipEl.textContent = fmt(shipping); shipEl.style.color = ''; }
     }
-    var totEl = document.getElementById('co-val-total');
-    if (totEl) totEl.textContent = fmt(total);
+    const totEl = document.getElementById('co-val-total');
+    if(totEl) totEl.textContent = fmt(total);
   };
 
-  window.checkoutPlaceOrder = function() {
-    if (subtotal() === 0) { alert('Add at least one item before placing your order.'); return; }
+  window.checkoutPlaceOrder = function(){
+    const items = getCart();
+    if(items.length === 0){ alert('Add at least one item before placing your order.'); return; }
     document.getElementById('co-success-overlay').classList.add('visible');
-    cart.items = {}; cart.promoCode = null; cart.discount = 0;
-    var msg = document.getElementById('co-promo-msg');
-    if (msg) { msg.textContent = ''; msg.className = 'co-promo-msg'; }
-    var inp = document.getElementById('co-promo-input');
-    if (inp) inp.value = '';
+    saveCart([]);
+    promoCode = null; discount = 0;
+    const msg = document.getElementById('co-promo-msg');
+    if(msg){ msg.textContent = ''; msg.className = 'co-promo-msg'; }
+    const inp = document.getElementById('co-promo-input');
+    if(inp) inp.value = '';
+    syncNavCart();
     checkoutRender();
   };
 
-  var promoInput = document.getElementById('co-promo-input');
-  if (promoInput) promoInput.addEventListener('keydown', function(e){ if(e.key==='Enter') checkoutApplyPromo(); });
+  const promoInput = document.getElementById('co-promo-input');
+  if(promoInput) promoInput.addEventListener('keydown', e=>{ if(e.key==='Enter') checkoutApplyPromo(); });
+
+  // Re-render checkout whenever user navigates to it
+  const origNavClick = window.navClick;
+  window.navClick = function(e, section){
+    origNavClick(e, section);
+    if(section === 'checkout') checkoutRender();
+  };
+
   checkoutRender();
 })();
 
@@ -5186,15 +5209,15 @@ const ssCart = (() => {
       qty.className = 'ss-cart-qty';
       const minus = document.createElement('button');
       minus.textContent = '−';
-      minus.onclick = ()=>{ it.qty>1 ? it.qty-- : items.splice(i,1); save(); render(); };
+      minus.onclick = ()=>{ it.qty>1 ? it.qty-- : items.splice(i,1); save(); render(); if(typeof checkoutRender==='function') checkoutRender(); };
       const q = document.createElement('span'); q.textContent = it.qty;
       const plus = document.createElement('button');
       plus.textContent = '+';
-      plus.onclick = ()=>{ it.qty++; save(); render(); };
+      plus.onclick = ()=>{ it.qty++; save(); render(); if(typeof checkoutRender==='function') checkoutRender(); };
       qty.append(minus, q, plus);
       const rm = document.createElement('button');
       rm.className = 'ss-cart-remove'; rm.innerHTML = '&#x2715;'; rm.title = 'Remove';
-      rm.onclick = ()=>{ items.splice(i,1); save(); render(); };
+      rm.onclick = ()=>{ items.splice(i,1); save(); render(); if(typeof checkoutRender==='function') checkoutRender(); };
       row.append(img, info, qty, rm);
       itemsEl.appendChild(row);
     });
@@ -5230,7 +5253,7 @@ const ssCart = (() => {
     const found = items.find(i=>i.name===name);
     if(found) found.qty++;
     else items.push({name, price, img, qty:1});
-    save(); render();
+    save(); render(); if(typeof checkoutRender==='function') checkoutRender();
     flyToCart(srcImg);
   }
 
