@@ -1536,10 +1536,10 @@ footer{
   transform:rotateY(180deg);
   background:linear-gradient(160deg,rgba(10,14,26,.97),rgba(6,8,15,.99));
   border:1px solid rgba(74,144,226,.55);
-  border-radius:26px; /* matches rounded freshener silhouette */
-  padding:20px 14px;
-  display:flex;flex-direction:column;justify-content:center;gap:5px;
-  overflow:hidden;text-align:center;
+  border-radius:26px;
+  padding:16px 12px;
+  display:flex;flex-direction:column;justify-content:center;gap:4px;
+  overflow-y:auto;text-align:center;
   box-shadow:inset 0 0 24px rgba(74,144,226,.08),0 0 18px rgba(74,144,226,.15);
 }
 .sp-flip-back .ab-info-title{border-bottom:1px solid rgba(74,144,226,.25);text-align:center;font-size:.85rem;}
@@ -1700,9 +1700,12 @@ footer{
   #ss-cart{margin-right:6px!important;}
   #ss-cart-btn{padding:0 9px!important;font-size:.9rem!important;}
 
-  /* FLIP CARDS — smaller back face text */
-  .sp-flip-back{padding:12px 8px!important;gap:3px!important;}
-  .sp-flip-back div{font-size:.62rem!important;line-height:1.35!important;}
+  /* FLIP CARDS — readable on mobile */
+  .sp-flip-back{padding:10px 8px!important;gap:2px!important;overflow-y:auto!important;}
+  .sp-flip-back .ab-info-title{font-size:.75rem!important;}
+  .sp-flip-back .ab-info-label{font-size:.6rem!important;}
+  .sp-flip-back .ab-info-text{font-size:.68rem!important;line-height:1.4!important;margin-bottom:3px!important;}
+
   .sp-flip-hint{font-size:.52rem!important;}
 
   /* GIFT BUNDLES — smaller flavor row */
@@ -1711,6 +1714,44 @@ footer{
 
   /* SHOP CARD BG — keep freshener contained */
   .card-img-wrap{height:210px!important;}
+
+  /* FOUNDER — stack photo + text */
+  .founder-intro{grid-template-columns:1fr!important;gap:1.5rem!important;padding:0 1rem!important;}
+  .founder-photo{max-width:260px!important;margin:0 auto!important;}
+  .founder-name{font-size:1.8rem!important;}
+  .founder-quote{font-size:1rem!important;}
+  .ff-title{font-size:clamp(2rem,10vw,3.5rem)!important;}
+
+  /* FOUNDER CARDS — tighter */
+  .fc-card{flex:0 0 280px!important;}
+  .fc-card-text{padding:1rem 1.1rem 1.2rem!important;}
+  .fc-body{font-size:.85rem!important;}
+  .founder-cards,.founder-timeline{padding:0 1rem!important;}
+
+  /* TIMELINE — tighter entries */
+  .ft-entry{flex:0 0 170px!important;}
+  .ft-text{font-size:.8rem!important;}
+
+  /* CHECKOUT — single column, full width fields */
+  .checkout-steps{flex-direction:column!important;gap:1.5rem!important;}
+  .checkout-left,.checkout-right{width:100%!important;min-width:0!important;}
+  .co-field-row{flex-direction:column!important;gap:.8rem!important;}
+  .co-summary-card{margin:0!important;}
+
+  /* NAV CART PANEL — centered on mobile */
+  #ss-cart-panel{position:fixed!important;top:60px!important;left:4%!important;right:4%!important;width:92vw!important;transform:none!important;}
+
+  /* PROMO POPUP — keep inside viewport */
+  #scent-overlay{padding-top:60px!important;align-items:center!important;}
+  #scent-popup{max-height:85vh!important;overflow-y:auto!important;}
+
+  /* CARD PROMO + SHIPPING — readable */
+  .card-promo{font-size:.55rem!important;padding:3px 6px!important;}
+  .card-shipping{font-size:.58rem!important;}
+
+  /* GENERAL — prevent horizontal overflow on all Android */
+  *{max-width:100vw;}
+  section{overflow-x:hidden!important;}
 }
 
 /* ═══════════════════════════════════════════
