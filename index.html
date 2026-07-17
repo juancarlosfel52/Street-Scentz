@@ -2131,8 +2131,36 @@ body.day-mode {
    CHECKOUT SECTION
 ════════════════════════════════════════════ */
 #section-checkout {
-  background: linear-gradient(180deg, rgba(5,6,12,.3) 0%, rgba(5,6,12,.25) 50%, rgba(5,6,12,.3) 100%);
+  background:
+    linear-gradient(180deg, rgba(5,6,12,.75) 0%, rgba(5,6,12,.7) 50%, rgba(5,6,12,.75) 100%),
+    url('New Assets/ClovisScene.png') center/cover no-repeat;
 }
+/* Stripe card element */
+#card-element {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(74,144,226,.3);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-top: .5rem;
+  transition: border-color .3s;
+}
+#card-element.StripeElement--focus { border-color: #4A90E2; }
+#card-errors { color: #e74c3c; font-size: .82rem; margin-top: .5rem; min-height: 1.2em; }
+.co-field-group { margin-bottom: 1rem; }
+.co-field-group label {
+  display: block; font-family: 'Barlow',sans-serif; font-size: .78rem;
+  text-transform: uppercase; letter-spacing: .08em; color: rgba(184,212,240,.7);
+  margin-bottom: .35rem;
+}
+.co-field-group input {
+  width: 100%; padding: 10px 14px; background: rgba(255,255,255,.06);
+  border: 1px solid rgba(74,144,226,.25); border-radius: 8px; color: #B8D4F0;
+  font-family: 'Barlow',sans-serif; font-size: .92rem; outline: none;
+  transition: border-color .3s;
+}
+.co-field-group input:focus { border-color: #4A90E2; }
+.co-field-row { display: flex; gap: 1rem; }
+.co-field-row .co-field-group { flex: 1; }
 .checkout-wrap {
   max-width: 1100px;
   margin: 0 auto;
@@ -3380,11 +3408,29 @@ body.day-mode {
             <div class="co-promo-msg" id="co-promo-msg"></div>
           </div>
 
+          <!-- STEP 3: Customer Info & Payment -->
+          <p class="checkout-step-label">Step 3 — Your Info &amp; Payment</p>
+          <div class="co-field-row">
+            <div class="co-field-group"><label>Full Name</label><input type="text" id="co-name" placeholder="Juan Perez" autocomplete="name"/></div>
+            <div class="co-field-group"><label>Email</label><input type="email" id="co-email" placeholder="you@email.com" autocomplete="email"/></div>
+          </div>
+          <div class="co-field-group"><label>Address</label><input type="text" id="co-address" placeholder="123 Main St" autocomplete="street-address"/></div>
+          <div class="co-field-row">
+            <div class="co-field-group"><label>City</label><input type="text" id="co-city" placeholder="El Paso" autocomplete="address-level2"/></div>
+            <div class="co-field-group"><label>State</label><input type="text" id="co-state" placeholder="TX" maxlength="2" autocomplete="address-level1"/></div>
+            <div class="co-field-group"><label>Zip</label><input type="text" id="co-zip" placeholder="79901" maxlength="10" autocomplete="postal-code"/></div>
+          </div>
+          <div class="co-field-group">
+            <label>Card Details</label>
+            <div id="card-element"></div>
+            <div id="card-errors" role="alert"></div>
+          </div>
+
         </div>
 
-        <!-- STEP 3: Order Summary (right) -->
+        <!-- STEP 4: Order Summary (right) -->
         <div class="checkout-right">
-          <p class="checkout-step-label">Step 3 — Your Order Summary</p>
+          <p class="checkout-step-label">Step 4 — Your Order Summary</p>
           <div class="co-summary-card" id="co-summary-card">
             <div class="co-corner tl"></div>
             <div class="co-corner tr"></div>
@@ -5074,18 +5120,122 @@ function _initScentVideo_PLACEHOLDER(){
     if(totEl) totEl.textContent = fmt(total);
   };
 
-  window.checkoutPlaceOrder = function(){
+  /* ── Stripe Elements setup ── */
+  let stripeInstance = null, stripeCard = null;
+  function initStripe() {
+    if (stripeInstance) return;
+    try {
+      stripeInstance = Stripe(window.STRIPE_PK);
+      const elements = stripeInstance.elements();
+      stripeCard = elements.create('card', {
+        style: {
+          base: { color: '#B8D4F0', fontFamily: 'Barlow, sans-serif', fontSize: '15px',
+                  '::placeholder': { color: 'rgba(184,212,240,.45)' } },
+          invalid: { color: '#e74c3c' }
+        }
+      });
+      stripeCard.mount('#card-element');
+      stripeCard.on('change', e => {
+        document.getElementById('card-errors').textContent = e.error ? e.error.message : '';
+      });
+    } catch(e) { console.warn('Stripe init deferred:', e.message); }
+  }
+  // Init once DOM ready and Stripe loaded
+  if (typeof Stripe !== 'undefined') initStripe();
+  else window.addEventListener('load', () => setTimeout(initStripe, 200));
+
+  window.checkoutPlaceOrder = async function(){
     const items = getCart();
     if(items.length === 0){ alert('Add at least one item before placing your order.'); return; }
-    document.getElementById('co-success-overlay').classList.add('visible');
-    saveCart([]);
-    promoCode = null; discount = 0;
-    const msg = document.getElementById('co-promo-msg');
-    if(msg){ msg.textContent = ''; msg.className = 'co-promo-msg'; }
-    const inp = document.getElementById('co-promo-input');
-    if(inp) inp.value = '';
-    syncNavCart();
-    checkoutRender();
+
+    // Validate customer fields
+    const name = document.getElementById('co-name').value.trim();
+    const email = document.getElementById('co-email').value.trim();
+    const address = document.getElementById('co-address').value.trim();
+    const city = document.getElementById('co-city').value.trim();
+    const state = document.getElementById('co-state').value.trim();
+    const zip = document.getElementById('co-zip').value.trim();
+
+    if(!name || !email || !address || !city || !state || !zip){
+      alert('Please fill in all customer info fields.'); return;
+    }
+    if(!/\S+@\S+\.\S+/.test(email)){
+      alert('Please enter a valid email address.'); return;
+    }
+
+    const customer = { name, email, address, city, state, zip };
+
+    // Compute totals
+    const sub = items.reduce((s,i) => s + i.price * i.qty, 0);
+    const discAmt = discount ? sub * (discount / 100) : 0;
+    const afterDisc = sub - discAmt;
+    const shipping = afterDisc >= 35 ? 0 : 4.99;
+    const total = afterDisc + shipping;
+    const amountCents = Math.round(total * 100);
+
+    const btn = document.querySelector('.co-place-btn');
+    const origText = btn.textContent;
+    btn.textContent = 'Processing...';
+    btn.disabled = true;
+
+    try {
+      // 1. Create payment intent
+      const piRes = await fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: amountCents, items, customer })
+      });
+      const piData = await piRes.json();
+      if(!piRes.ok) throw new Error(piData.error || 'Payment setup failed');
+
+      // 2. Confirm card payment
+      if(!stripeInstance || !stripeCard) throw new Error('Payment system not loaded. Please refresh.');
+      const { error, paymentIntent } = await stripeInstance.confirmCardPayment(piData.clientSecret, {
+        payment_method: {
+          card: stripeCard,
+          billing_details: { name, email, address: { line1: address, city, state, postal_code: zip } }
+        }
+      });
+      if(error) throw new Error(error.message);
+
+      // 3. Save order
+      await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items, customer,
+          subtotal: +sub.toFixed(2),
+          discount: +discAmt.toFixed(2),
+          shipping: +shipping.toFixed(2),
+          total: +total.toFixed(2),
+          promoCode: promoCode || null,
+          stripePaymentId: paymentIntent.id
+        })
+      });
+
+      // 4. Success — clear cart, show overlay
+      document.getElementById('co-success-overlay').classList.add('visible');
+      saveCart([]);
+      promoCode = null; discount = 0;
+      const msg = document.getElementById('co-promo-msg');
+      if(msg){ msg.textContent = ''; msg.className = 'co-promo-msg'; }
+      const inp = document.getElementById('co-promo-input');
+      if(inp) inp.value = '';
+      // Clear customer fields
+      ['co-name','co-email','co-address','co-city','co-state','co-zip'].forEach(id => {
+        const el = document.getElementById(id); if(el) el.value = '';
+      });
+      if(stripeCard) stripeCard.clear();
+      syncNavCart();
+      checkoutRender();
+
+    } catch(err) {
+      alert('Payment failed: ' + err.message);
+      document.getElementById('card-errors').textContent = err.message;
+    } finally {
+      btn.textContent = origText;
+      btn.disabled = false;
+    }
   };
 
   const promoInput = document.getElementById('co-promo-input');
@@ -5453,6 +5603,10 @@ const ssCart = (() => {
   });
 })();
 
+</script>
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+window.STRIPE_PK = 'pk_test_YOUR_KEY_HERE';
 </script>
 </body>
 </html>

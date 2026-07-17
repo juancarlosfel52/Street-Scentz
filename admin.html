@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Street Scentz — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --gold: #4A90E2;
+  --bronze: #1A3A8F;
+  --cream: #B8D4F0;
+  --bg: #05060C;
+  --card: rgba(10,18,40,.65);
+  --border: rgba(74,144,226,.2);
+  --border-h: rgba(74,144,226,.5);
+  --text: #B8D4F0;
+  --text-dim: rgba(184,212,240,.55);
+  --danger: #e74c3c;
+  --success: #27ae60;
+  --warn: #f39c12;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:'Barlow',sans-serif; background:var(--bg); color:var(--text);
+  min-height:100vh; overflow-x:hidden;
+}
+
+/* ── PIN GATE ── */
+.pin-gate {
+  position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center;
+  background:var(--bg);
+}
+.pin-gate.hidden { display:none; }
+.pin-box {
+  text-align:center; background:var(--card); border:1px solid var(--border);
+  padding:3rem 2.5rem; border-radius:16px;
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+}
+.pin-box h1 { font-family:'Cinzel',serif; font-size:1.6rem; color:var(--gold); margin-bottom:.4rem; }
+.pin-box p { color:var(--text-dim); font-size:.88rem; margin-bottom:1.5rem; }
+.pin-input {
+  width:200px; padding:12px 16px; text-align:center; font-size:1.5rem; letter-spacing:.5em;
+  background:rgba(255,255,255,.05); border:1px solid var(--border); border-radius:10px;
+  color:var(--cream); font-family:'Barlow',sans-serif; outline:none;
+}
+.pin-input:focus { border-color:var(--gold); }
+.pin-input.shake { animation:pinShake .4s; }
+@keyframes pinShake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+.pin-err { color:var(--danger); font-size:.82rem; margin-top:.8rem; min-height:1.2em; }
+
+/* ── DASHBOARD LAYOUT ── */
+.dash { display:none; }
+.dash.active { display:block; }
+.dash-header {
+  display:flex; align-items:center; justify-content:space-between; padding:1.2rem 2rem;
+  border-bottom:1px solid var(--border); backdrop-filter:blur(10px);
+  position:sticky; top:0; z-index:100; background:rgba(5,6,12,.85);
+}
+.dash-logo { font-family:'Cinzel',serif; font-size:1.3rem; color:var(--gold); }
+.dash-logo span { color:var(--cream); font-weight:400; }
+.dash-tabs { display:flex; gap:0; }
+.dash-tab {
+  padding:.7rem 1.3rem; font-size:.82rem; font-weight:600; text-transform:uppercase;
+  letter-spacing:.06em; color:var(--text-dim); cursor:pointer; border:none; background:none;
+  border-bottom:2px solid transparent; transition:all .25s;
+}
+.dash-tab:hover { color:var(--cream); }
+.dash-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+.dash-logout { background:none; border:1px solid var(--border); color:var(--text-dim);
+  padding:.5rem 1rem; border-radius:8px; cursor:pointer; font-size:.78rem; transition:all .25s; }
+.dash-logout:hover { border-color:var(--danger); color:var(--danger); }
+
+.dash-body { padding:2rem; max-width:1400px; margin:0 auto; }
+.panel { display:none; }
+.panel.active { display:block; }
+.panel-title { font-family:'Cinzel',serif; font-size:1.4rem; color:var(--gold); margin-bottom:1.5rem; }
+
+/* ── CARDS ── */
+.stat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.2rem; margin-bottom:2rem; }
+.stat-card {
+  background:var(--card); border:1px solid var(--border); border-radius:14px;
+  padding:1.5rem; backdrop-filter:blur(16px); transition:border-color .3s;
+}
+.stat-card:hover { border-color:var(--border-h); }
+.stat-label { font-size:.72rem; text-transform:uppercase; letter-spacing:.1em; color:var(--text-dim); margin-bottom:.5rem; }
+.stat-val { font-family:'Cinzel',serif; font-size:1.8rem; color:var(--cream); }
+.stat-val.green { color:var(--success); }
+
+/* ── TABLE ── */
+.adm-table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; }
+th { text-align:left; font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-dim);
+  padding:.8rem 1rem; border-bottom:1px solid var(--border); }
+td { padding:.8rem 1rem; border-bottom:1px solid rgba(74,144,226,.08); font-size:.88rem; vertical-align:top; }
+tr:hover td { background:rgba(74,144,226,.04); }
+
+/* ── BADGES ── */
+.badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:.72rem; font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+.badge-new { background:rgba(74,144,226,.15); color:#4A90E2; }
+.badge-shipped { background:rgba(243,156,18,.15); color:#f39c12; }
+.badge-delivered { background:rgba(39,174,96,.15); color:#27ae60; }
+
+/* ── ORDER DETAIL ── */
+.order-detail { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.5rem; margin-top:1rem; }
+.order-detail h3 { font-family:'Cinzel',serif; color:var(--gold); margin-bottom:1rem; }
+.order-detail .od-row { display:flex; justify-content:space-between; padding:.3rem 0; font-size:.88rem; }
+.order-detail .od-label { color:var(--text-dim); }
+
+/* ── FORMS ── */
+.adm-input {
+  padding:10px 14px; background:rgba(255,255,255,.05); border:1px solid var(--border);
+  border-radius:8px; color:var(--cream); font-family:'Barlow',sans-serif; font-size:.9rem; outline:none;
+  transition:border-color .3s;
+}
+.adm-input:focus { border-color:var(--gold); }
+.adm-btn {
+  padding:10px 20px; background:var(--gold); color:#fff; border:none; border-radius:8px;
+  font-family:'Barlow',sans-serif; font-weight:600; font-size:.85rem; cursor:pointer;
+  transition:all .25s; text-transform:uppercase; letter-spacing:.05em;
+}
+.adm-btn:hover { background:#3a7bd5; transform:translateY(-1px); }
+.adm-btn.danger { background:var(--danger); }
+.adm-btn.danger:hover { background:#c0392b; }
+.adm-btn.sm { padding:6px 14px; font-size:.76rem; }
+.adm-btn.outline { background:none; border:1px solid var(--border); color:var(--text-dim); }
+.adm-btn.outline:hover { border-color:var(--gold); color:var(--gold); }
+
+.form-row { display:flex; gap:1rem; align-items:flex-end; flex-wrap:wrap; margin-bottom:1.5rem; }
+.form-group { display:flex; flex-direction:column; gap:.3rem; }
+.form-group label { font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-dim); }
+
+/* ── TOP SELLERS ── */
+.top-list { list-style:none; }
+.top-list li { display:flex; justify-content:space-between; padding:.6rem 0; border-bottom:1px solid rgba(74,144,226,.08); font-size:.9rem; }
+.top-list li:last-child { border:none; }
+.top-rank { color:var(--gold); font-weight:700; margin-right:.8rem; width:1.5rem; }
+
+/* ── INVENTORY ── */
+.inv-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1rem; }
+.inv-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.2rem; }
+.inv-name { font-weight:600; margin-bottom:.6rem; }
+.inv-card .adm-input { width:80px; text-align:center; }
+
+/* ── PROMO LIST ── */
+.promo-row { display:flex; align-items:center; gap:1rem; padding:.7rem 0; border-bottom:1px solid rgba(74,144,226,.08); }
+.promo-code { font-weight:700; font-family:'Cinzel',serif; color:var(--gold); min-width:140px; }
+.promo-disc { color:var(--cream); min-width:60px; }
+.promo-status { min-width:60px; }
+.promo-actions { margin-left:auto; display:flex; gap:.5rem; }
+
+/* ── SETTINGS ── */
+.settings-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; max-width:700px; }
+.settings-grid .form-group { width:100%; }
+.settings-grid .adm-input { width:100%; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .dash-header { flex-wrap:wrap; gap:.8rem; }
+  .dash-tabs { flex-wrap:wrap; gap:0; }
+  .dash-tab { padding:.5rem .8rem; font-size:.75rem; }
+  .dash-body { padding:1rem; }
+  .stat-grid { grid-template-columns:1fr 1fr; }
+  .settings-grid { grid-template-columns:1fr; }
+  .form-row { flex-direction:column; }
+}
+@media(max-width:480px){
+  .stat-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- PIN GATE -->
+<div class="pin-gate" id="pin-gate">
+  <div class="pin-box">
+    <h1>STREET SCENTZ</h1>
+    <p>Admin Dashboard</p>
+    <input class="pin-input" id="pin-input" type="password" maxlength="4" placeholder="----" inputmode="numeric" autocomplete="off"/>
+    <div class="pin-err" id="pin-err"></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dash" id="dash">
+  <header class="dash-header">
+    <div class="dash-logo">STREET <span>SCENTZ</span> &mdash; Admin</div>
+    <div class="dash-tabs" id="dash-tabs">
+      <button class="dash-tab active" data-panel="orders">Orders</button>
+      <button class="dash-tab" data-panel="revenue">Revenue</button>
+      <button class="dash-tab" data-panel="inventory">Inventory</button>
+      <button class="dash-tab" data-panel="promos">Promos</button>
+      <button class="dash-tab" data-panel="customers">Customers</button>
+      <button class="dash-tab" data-panel="settings">Settings</button>
+    </div>
+    <button class="dash-logout" onclick="logout()">Logout</button>
+  </header>
+
+  <div class="dash-body">
+
+    <!-- ORDERS -->
+    <div class="panel active" id="panel-orders">
+      <h2 class="panel-title">Orders</h2>
+      <div class="adm-table-wrap">
+        <table>
+          <thead><tr><th>Order #</th><th>Date</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th></th></tr></thead>
+          <tbody id="orders-tbody"></tbody>
+        </table>
+      </div>
+      <div id="order-detail-area"></div>
+    </div>
+
+    <!-- REVENUE -->
+    <div class="panel" id="panel-revenue">
+      <h2 class="panel-title">Revenue</h2>
+      <div class="stat-grid" id="rev-cards"></div>
+      <h3 style="font-family:'Cinzel',serif;color:var(--gold);margin-bottom:1rem;">Top Sellers</h3>
+      <ul class="top-list" id="top-sellers"></ul>
+    </div>
+
+    <!-- INVENTORY -->
+    <div class="panel" id="panel-inventory">
+      <h2 class="panel-title">Inventory</h2>
+      <div class="inv-grid" id="inv-grid"></div>
+      <div style="margin-top:1.5rem"><button class="adm-btn" onclick="saveInventory()">Save Inventory</button></div>
+    </div>
+
+    <!-- PROMOS -->
+    <div class="panel" id="panel-promos">
+      <h2 class="panel-title">Promo Codes</h2>
+      <div class="form-row">
+        <div class="form-group"><label>Code</label><input class="adm-input" id="new-promo-code" placeholder="SUMMER25" maxlength="20"/></div>
+        <div class="form-group"><label>Discount %</label><input class="adm-input" id="new-promo-disc" type="number" min="1" max="100" placeholder="25" style="width:80px"/></div>
+        <button class="adm-btn" onclick="createPromo()">Create</button>
+      </div>
+      <div id="promo-list"></div>
+    </div>
+
+    <!-- CUSTOMERS -->
+    <div class="panel" id="panel-customers">
+      <h2 class="panel-title">Customers</h2>
+      <div class="adm-table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>Orders</th><th>Total Spent</th></tr></thead>
+          <tbody id="customers-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="panel" id="panel-settings">
+      <h2 class="panel-title">Settings</h2>
+      <div class="settings-grid">
+        <div class="form-group"><label>Store Name</label><input class="adm-input" id="set-name" value="Street Scentz"/></div>
+        <div class="form-group"><label>Contact Email</label><input class="adm-input" id="set-email" type="email"/></div>
+        <div class="form-group"><label>Phone</label><input class="adm-input" id="set-phone" type="tel"/></div>
+        <div class="form-group"><label>Tax Rate %</label><input class="adm-input" id="set-tax" type="number" step="0.01" min="0" max="30"/></div>
+        <div class="form-group"><label>Flat Shipping Rate ($)</label><input class="adm-input" id="set-shipping" type="number" step="0.01" min="0"/></div>
+      </div>
+      <div style="margin-top:1.5rem"><button class="adm-btn" onclick="saveSettings()">Save Settings</button></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const ADMIN_PIN = '1025';
+const FLAVORS = ['Horchata','Fresas con Crema','Jamaica','Mango Chile','Melon Pina','Sandia'];
+
+/* ── PIN ── */
+const pinInput = document.getElementById('pin-input');
+pinInput.addEventListener('input', () => {
+  if (pinInput.value.length === 4) {
+    if (pinInput.value === ADMIN_PIN) {
+      document.getElementById('pin-gate').classList.add('hidden');
+      document.getElementById('dash').classList.add('active');
+      loadPanel('orders');
+    } else {
+      document.getElementById('pin-err').textContent = 'Wrong PIN';
+      pinInput.classList.add('shake');
+      setTimeout(() => { pinInput.classList.remove('shake'); pinInput.value = ''; }, 500);
+    }
+  }
+});
+pinInput.focus();
+
+function logout() {
+  document.getElementById('dash').classList.remove('active');
+  document.getElementById('pin-gate').classList.remove('hidden');
+  pinInput.value = '';
+  document.getElementById('pin-err').textContent = '';
+  pinInput.focus();
+}
+
+/* ── TABS ── */
+document.getElementById('dash-tabs').addEventListener('click', e => {
+  const tab = e.target.closest('.dash-tab');
+  if (!tab) return;
+  document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  tab.classList.add('active');
+  const id = tab.dataset.panel;
+  document.getElementById('panel-' + id).classList.add('active');
+  loadPanel(id);
+});
+
+function loadPanel(id) {
+  const loaders = { orders: loadOrders, revenue: loadRevenue, inventory: loadInventory, promos: loadPromos, customers: loadCustomers, settings: loadSettings };
+  if (loaders[id]) loaders[id]();
+}
+
+function fmt(n) { return '$' + Number(n).toFixed(2); }
+function fmtDate(iso) {
+  if (!iso) return '-';
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) + ' ' +
+         d.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
+}
+
+/* ── ORDERS ── */
+async function loadOrders() {
+  const orders = await fetch('/api/orders').then(r => r.json()).catch(() => []);
+  const tbody = document.getElementById('orders-tbody');
+  if (orders.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-dim);padding:2rem">No orders yet</td></tr>';
+    return;
+  }
+  tbody.innerHTML = orders.map(o => `
+    <tr>
+      <td style="font-weight:600;color:var(--gold)">${o.id}</td>
+      <td>${fmtDate(o.createdAt)}</td>
+      <td>${o.customer?.name || '-'}</td>
+      <td>${(o.items||[]).length} item${(o.items||[]).length!==1?'s':''}</td>
+      <td style="font-weight:600">${fmt(o.total)}</td>
+      <td><span class="badge badge-${o.status}">${o.status}</span></td>
+      <td><button class="adm-btn sm outline" onclick="viewOrder('${o.id}')">View</button></td>
+    </tr>`).join('');
+}
+
+async function viewOrder(id) {
+  const orders = await fetch('/api/orders').then(r => r.json()).catch(() => []);
+  const o = orders.find(x => x.id === id);
+  if (!o) return;
+  const area = document.getElementById('order-detail-area');
+  area.innerHTML = `
+    <div class="order-detail">
+      <h3>Order ${o.id}</h3>
+      <div class="od-row"><span class="od-label">Customer</span><span>${o.customer?.name||'-'}</span></div>
+      <div class="od-row"><span class="od-label">Email</span><span>${o.customer?.email||'-'}</span></div>
+      <div class="od-row"><span class="od-label">Address</span><span>${o.customer?.address||''}, ${o.customer?.city||''}, ${o.customer?.state||''} ${o.customer?.zip||''}</span></div>
+      <div class="od-row"><span class="od-label">Items</span><span>${(o.items||[]).map(i=>`${i.name} x${i.qty}`).join(', ')}</span></div>
+      <div class="od-row"><span class="od-label">Subtotal</span><span>${fmt(o.subtotal)}</span></div>
+      ${o.discount ? `<div class="od-row"><span class="od-label">Discount (${o.promoCode||''})</span><span style="color:#6fcf97">-${fmt(o.discount)}</span></div>` : ''}
+      <div class="od-row"><span class="od-label">Shipping</span><span>${o.shipping===0?'FREE':fmt(o.shipping)}</span></div>
+      <div class="od-row"><span class="od-label">Total</span><span style="font-weight:700;font-size:1.1rem">${fmt(o.total)}</span></div>
+      <div class="od-row"><span class="od-label">Stripe ID</span><span style="font-size:.78rem;color:var(--text-dim)">${o.stripePaymentId||'-'}</span></div>
+      <div style="margin-top:1.2rem;display:flex;gap:.6rem">
+        <button class="adm-btn sm ${o.status==='new'?'':'outline'}" onclick="updateStatus('${o.id}','new')">New</button>
+        <button class="adm-btn sm ${o.status==='shipped'?'':'outline'}" onclick="updateStatus('${o.id}','shipped')">Shipped</button>
+        <button class="adm-btn sm ${o.status==='delivered'?'':'outline'}" onclick="updateStatus('${o.id}','delivered')">Delivered</button>
+      </div>
+    </div>`;
+}
+
+async function updateStatus(id, status) {
+  await fetch('/api/orders/' + id, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({status}) });
+  loadOrders();
+  viewOrder(id);
+}
+
+/* ── REVENUE ── */
+async function loadRevenue() {
+  const s = await fetch('/api/stats').then(r => r.json()).catch(() => ({}));
+  document.getElementById('rev-cards').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Today</div><div class="stat-val green">${fmt(s.today||0)}</div></div>
+    <div class="stat-card"><div class="stat-label">This Week</div><div class="stat-val green">${fmt(s.week||0)}</div></div>
+    <div class="stat-card"><div class="stat-label">This Month</div><div class="stat-val green">${fmt(s.month||0)}</div></div>
+    <div class="stat-card"><div class="stat-label">All Time</div><div class="stat-val green">${fmt(s.total||0)}</div></div>
+    <div class="stat-card"><div class="stat-label">Total Orders</div><div class="stat-val">${s.orderCount||0}</div></div>
+    <div class="stat-card"><div class="stat-label">Avg Order Value</div><div class="stat-val">${fmt(s.avgValue||0)}</div></div>`;
+  const list = document.getElementById('top-sellers');
+  if ((s.topSellers||[]).length === 0) {
+    list.innerHTML = '<li style="color:var(--text-dim)">No sales data yet</li>';
+  } else {
+    list.innerHTML = s.topSellers.map((t,i) =>
+      `<li><span><span class="top-rank">${i+1}.</span>${t.name}</span><span style="color:var(--gold);font-weight:600">${t.qty} sold</span></li>`
+    ).join('');
+  }
+}
+
+/* ── INVENTORY ── */
+function loadInventory() {
+  const inv = JSON.parse(localStorage.getItem('ss-inventory') || '{}');
+  document.getElementById('inv-grid').innerHTML = FLAVORS.map(f => `
+    <div class="inv-card">
+      <div class="inv-name">${f}</div>
+      <label style="font-size:.72rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em">Stock</label>
+      <input class="adm-input" type="number" min="0" data-flavor="${f}" value="${inv[f]||0}" style="margin-top:.3rem"/>
+    </div>`).join('');
+}
+
+function saveInventory() {
+  const inv = {};
+  document.querySelectorAll('#inv-grid input[data-flavor]').forEach(el => {
+    inv[el.dataset.flavor] = parseInt(el.value) || 0;
+  });
+  localStorage.setItem('ss-inventory', JSON.stringify(inv));
+  alert('Inventory saved');
+}
+
+/* ── PROMOS ── */
+async function loadPromos() {
+  const promos = await fetch('/api/promos').then(r => r.json()).catch(() => []);
+  const list = document.getElementById('promo-list');
+  if (promos.length === 0) {
+    list.innerHTML = '<div style="color:var(--text-dim);padding:1rem 0">No promo codes yet</div>';
+    return;
+  }
+  list.innerHTML = promos.map(p => `
+    <div class="promo-row">
+      <span class="promo-code">${p.code}</span>
+      <span class="promo-disc">${p.discount}% off</span>
+      <span class="promo-status"><span class="badge ${p.active?'badge-delivered':'badge-shipped'}">${p.active?'Active':'Inactive'}</span></span>
+      <span class="promo-actions">
+        <button class="adm-btn sm outline" onclick="togglePromo('${p.code}',${!p.active})">${p.active?'Disable':'Enable'}</button>
+        <button class="adm-btn sm danger" onclick="deletePromo('${p.code}')">Delete</button>
+      </span>
+    </div>`).join('');
+}
+
+async function createPromo() {
+  const code = document.getElementById('new-promo-code').value.trim();
+  const discount = document.getElementById('new-promo-disc').value;
+  if (!code || !discount) { alert('Enter code and discount %'); return; }
+  const res = await fetch('/api/promo', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({code,discount}) });
+  if (!res.ok) { const d = await res.json(); alert(d.error||'Error'); return; }
+  document.getElementById('new-promo-code').value = '';
+  document.getElementById('new-promo-disc').value = '';
+  loadPromos();
+}
+
+async function togglePromo(code, active) {
+  await fetch('/api/promo/' + code, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({active}) });
+  loadPromos();
+}
+
+async function deletePromo(code) {
+  if (!confirm('Delete promo ' + code + '?')) return;
+  await fetch('/api/promo/' + code, { method:'DELETE' });
+  loadPromos();
+}
+
+/* ── CUSTOMERS ── */
+async function loadCustomers() {
+  const orders = await fetch('/api/orders').then(r => r.json()).catch(() => []);
+  const map = {};
+  orders.forEach(o => {
+    const email = o.customer?.email;
+    if (!email) return;
+    if (!map[email]) map[email] = { name: o.customer.name||'-', email, orders:0, spent:0 };
+    map[email].orders++;
+    map[email].spent += o.total || 0;
+    if (o.customer.name) map[email].name = o.customer.name;
+  });
+  const customers = Object.values(map).sort((a,b) => b.spent - a.spent);
+  const tbody = document.getElementById('customers-tbody');
+  if (customers.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-dim);padding:2rem">No customers yet</td></tr>';
+    return;
+  }
+  tbody.innerHTML = customers.map(c => `
+    <tr>
+      <td>${c.name}</td>
+      <td>${c.email}</td>
+      <td>${c.orders}</td>
+      <td style="font-weight:600">${fmt(c.spent)}</td>
+    </tr>`).join('');
+}
+
+/* ── SETTINGS ── */
+function loadSettings() {
+  const s = JSON.parse(localStorage.getItem('ss-settings') || '{}');
+  document.getElementById('set-name').value = s.name || 'Street Scentz';
+  document.getElementById('set-email').value = s.email || '';
+  document.getElementById('set-phone').value = s.phone || '';
+  document.getElementById('set-tax').value = s.tax || 0;
+  document.getElementById('set-shipping').value = s.shipping || 4.99;
+}
+
+function saveSettings() {
+  const s = {
+    name: document.getElementById('set-name').value,
+    email: document.getElementById('set-email').value,
+    phone: document.getElementById('set-phone').value,
+    tax: parseFloat(document.getElementById('set-tax').value) || 0,
+    shipping: parseFloat(document.getElementById('set-shipping').value) || 0
+  };
+  localStorage.setItem('ss-settings', JSON.stringify(s));
+  alert('Settings saved');
+}
+</script>
+</body>
+</html>
