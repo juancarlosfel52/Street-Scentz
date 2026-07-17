@@ -951,33 +951,38 @@ body{
   position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
 }
 
-/* ── TIMELINE ── */
+/* ── TIMELINE — horizontal scroll ── */
 .founder-timeline{
   position:relative;z-index:2;
-  max-width:800px;margin:3rem auto 0;padding:0 2.5rem 3rem;
+  max-width:1100px;margin:3rem auto 0;padding:0 2.5rem 2rem;
 }
-.ft-line{
-  position:absolute;left:50%;top:0;bottom:0;width:2px;
-  background:linear-gradient(180deg,transparent,rgba(74,144,226,.35) 10%,rgba(74,144,226,.35) 90%,transparent);
-  transform:translateX(-50%);
+.ft-track{
+  display:flex;gap:0;align-items:flex-start;
+  overflow-x:auto;scroll-snap-type:x mandatory;
+  scrollbar-width:none;-ms-overflow-style:none;
+  padding-bottom:12px;
+}
+.ft-track::-webkit-scrollbar{display:none;}
+.ft-line-h{
+  position:absolute;left:2.5rem;right:2.5rem;top:28px;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(74,144,226,.35) 5%,rgba(74,144,226,.35) 95%,transparent);
+  z-index:0;pointer-events:none;
 }
 .ft-entry{
-  position:relative;display:flex;align-items:flex-start;
-  margin-bottom:2.5rem;
+  position:relative;flex:0 0 200px;scroll-snap-align:start;
+  display:flex;flex-direction:column;align-items:center;
+  padding:0 8px;
 }
-.ft-entry:nth-child(odd){flex-direction:row;padding-right:calc(50% + 30px);}
-.ft-entry:nth-child(even){flex-direction:row-reverse;padding-left:calc(50% + 30px);}
 .ft-dot{
-  position:absolute;left:50%;top:6px;
-  width:14px;height:14px;border-radius:50%;
+  width:16px;height:16px;border-radius:50%;flex-shrink:0;
   background:var(--gold);border:3px solid rgba(5,6,12,.9);
-  transform:translateX(-50%);z-index:2;
   box-shadow:0 0 12px rgba(74,144,226,.45);
+  z-index:2;margin-bottom:14px;
 }
 .ft-content{
-  background:rgba(6,8,16,.7);backdrop-filter:blur(8px);
+  background:rgba(6,8,16,.72);backdrop-filter:blur(8px);
   border:1px solid rgba(74,144,226,.18);border-radius:8px;
-  padding:1.2rem 1.5rem;
+  padding:14px 16px;text-align:center;width:100%;
   transition:border-color .3s,box-shadow .3s;
 }
 .ft-content:hover{
@@ -985,12 +990,12 @@ body{
   box-shadow:0 4px 20px rgba(74,144,226,.12);
 }
 .ft-year{
-  font-family:'Cinzel',serif;font-size:.7rem;font-weight:700;
-  letter-spacing:.18em;color:var(--gold);margin-bottom:.4rem;
+  font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;
+  letter-spacing:.12em;color:var(--gold);margin-bottom:.5rem;
 }
 .ft-text{
-  font-family:'Barlow',sans-serif;font-size:.85rem;
-  color:var(--cream);opacity:.8;line-height:1.6;
+  font-family:'Barlow',sans-serif;font-size:.88rem;
+  color:var(--cream);opacity:.85;line-height:1.55;
 }
 
 /* ── FOUNDER FOOTER TITLE ── */
@@ -1021,10 +1026,7 @@ body{
   .fc-card{grid-template-columns:1fr;gap:1rem;padding:1.5rem 1.3rem;}
   .fc-card:nth-child(even){direction:ltr;}
   .fc-photo{max-width:200px;margin:0 auto;}
-  .ft-entry:nth-child(odd){padding-right:0;padding-left:36px;}
-  .ft-entry:nth-child(even){padding-left:36px;flex-direction:row;}
-  .ft-line{left:16px;}
-  .ft-dot{left:16px;}
+  .ft-entry{flex:0 0 170px;}
   .founder-cards,.founder-timeline{padding:0 1.2rem 2rem;}
 }
 .ab-panel::before,.ab-panel::after{
@@ -3592,6 +3594,21 @@ body.day-mode {
 <!-- ════════════════ ABOUT — AAA FOUNDER REDESIGN ════════════════ -->
 <section id="section-about" class="section-wrap" style="overflow:visible;">
 
+  <!-- ── FOUNDER TITLE — TOP ── -->
+  <div class="founder-footer" style="padding-top:3rem;padding-bottom:1.5rem;">
+    <div class="ff-rule">
+      <div class="ff-rule-line"></div>
+      <span class="ff-rule-label">The Founder</span>
+      <div class="ff-rule-line"></div>
+    </div>
+    <h2 class="ff-title">About<br>The Founder</h2>
+    <div class="ff-rule" style="margin-top:1.2rem;">
+      <div class="ff-rule-line"></div>
+      <span class="ff-rule-label">Established in Clovis, NM</span>
+      <div class="ff-rule-line"></div>
+    </div>
+  </div>
+
   <!-- ── FOUNDER INTRO — photo + name/quote ── -->
   <div class="founder-intro">
     <div class="founder-photo">
@@ -3600,7 +3617,7 @@ body.day-mode {
       <!-- <img src="ABOUT US FOUNDER/CLOVIS.png"> -->
     </div>
     <div class="founder-text">
-      <div class="founder-eyebrow">The Founder</div>
+      <div class="founder-eyebrow">Established in Clovis, NM</div>
       <h2 class="founder-name">Clovis Feliciano</h2>
       <div class="founder-rule"></div>
       <blockquote class="founder-quote">"It's more than an air freshener company — it's a tribute to our raza, our memories, and the culture that helped shape us."</blockquote>
@@ -3610,7 +3627,6 @@ body.day-mode {
   <!-- ── STORY CARDS — alternating layout ── -->
   <div class="founder-cards">
 
-    <!-- CARD 1 -->
     <div class="fc-card">
       <div class="fc-photo">
         <span class="fp-placeholder">👤</span>
@@ -3623,7 +3639,6 @@ body.day-mode {
       </div>
     </div>
 
-    <!-- CARD 2 -->
     <div class="fc-card">
       <div class="fc-photo">
         <span class="fp-placeholder">👤</span>
@@ -3636,7 +3651,6 @@ body.day-mode {
       </div>
     </div>
 
-    <!-- CARD 3 -->
     <div class="fc-card">
       <div class="fc-photo">
         <span class="fp-placeholder">🚗</span>
@@ -3651,71 +3665,59 @@ body.day-mode {
 
   </div>
 
-  <!-- ── TIMELINE ── -->
+  <!-- ── HORIZONTAL TIMELINE ── -->
   <div class="founder-timeline">
-    <div class="ft-line"></div>
+    <div class="ft-line-h"></div>
+    <div class="ft-track">
 
-    <div class="ft-entry">
-      <div class="ft-dot"></div>
-      <div class="ft-content">
-        <div class="ft-year">1989</div>
-        <div class="ft-text">Born and raised in New Mexico — grew up surrounded by lowriders, murals, and the Chicano culture that defined the neighborhoods.</div>
+      <div class="ft-entry">
+        <div class="ft-dot"></div>
+        <div class="ft-content">
+          <div class="ft-year">1989</div>
+          <div class="ft-text">Born and raised in New Mexico — surrounded by lowriders, murals, and Chicano culture.</div>
+        </div>
       </div>
-    </div>
 
-    <div class="ft-entry">
-      <div class="ft-dot"></div>
-      <div class="ft-content">
-        <div class="ft-year">Early 2000s</div>
-        <div class="ft-text">Running with the homies through NM streets — collecting Homies figurines, drawing cholo characters, flipping through Lowrider magazines at the swap meets.</div>
+      <div class="ft-entry">
+        <div class="ft-dot"></div>
+        <div class="ft-content">
+          <div class="ft-year">Early 2000s</div>
+          <div class="ft-text">Running the NM streets — Homies figurines, cholo art, swap meets, Lowrider magazines.</div>
+        </div>
       </div>
-    </div>
 
-    <div class="ft-entry">
-      <div class="ft-dot"></div>
-      <div class="ft-content">
-        <div class="ft-year">The Turning Point</div>
-        <div class="ft-text">Dad never gave up. Discipline, respect, and the value of earning an honest living — those lessons pulled me from the streets and into the man I was meant to become.</div>
+      <div class="ft-entry">
+        <div class="ft-dot"></div>
+        <div class="ft-content">
+          <div class="ft-year">The Turn</div>
+          <div class="ft-text">Dad never gave up. Discipline and respect pulled me off the streets into the man I became.</div>
+        </div>
       </div>
-    </div>
 
-    <div class="ft-entry">
-      <div class="ft-dot"></div>
-      <div class="ft-content">
-        <div class="ft-year">2021</div>
-        <div class="ft-text">Street Scentz is born. The idea hit while cruising through Clovis — what if every scent reminded you of home? Horchata, Fresas, Jamaica — the flavors of la cultura, hanging from your mirror.</div>
+      <div class="ft-entry">
+        <div class="ft-dot"></div>
+        <div class="ft-content">
+          <div class="ft-year">2021</div>
+          <div class="ft-text">Street Scentz is born in Clovis — every scent a reminder of home, la cultura, our raza.</div>
+        </div>
       </div>
-    </div>
 
-    <div class="ft-entry">
-      <div class="ft-dot"></div>
-      <div class="ft-content">
-        <div class="ft-year">2024</div>
-        <div class="ft-text">First full collection drops. Six signature scents, each one a love letter to the raza. From New Mexico car shows to online — the brand goes live.</div>
+      <div class="ft-entry">
+        <div class="ft-dot"></div>
+        <div class="ft-content">
+          <div class="ft-year">2024</div>
+          <div class="ft-text">First full collection drops. Six signature scents — from NM car shows to online, the brand goes live.</div>
+        </div>
       </div>
-    </div>
 
-    <div class="ft-entry">
-      <div class="ft-dot"></div>
-      <div class="ft-content">
-        <div class="ft-year">Today</div>
-        <div class="ft-text">Husband. Father. Entrepreneur. Still reppin' NM culture, still cruising, still dreaming bigger. The smell that hits home — from our familia to yours.</div>
+      <div class="ft-entry">
+        <div class="ft-dot"></div>
+        <div class="ft-content">
+          <div class="ft-year">Today</div>
+          <div class="ft-text">Husband. Father. Entrepreneur. Still reppin' NM, still cruising. The smell that hits home.</div>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <!-- ── FOUNDER TITLE — bottom ── -->
-  <div class="founder-footer">
-    <div class="ff-rule">
-      <div class="ff-rule-line"></div>
-      <span class="ff-rule-label">The Founder</span>
-      <div class="ff-rule-line"></div>
-    </div>
-    <h2 class="ff-title">About<br>The Founder</h2>
-    <div class="ff-rule" style="margin-top:1.2rem;">
-      <div class="ff-rule-line"></div>
-      <span class="ff-rule-label">The Man Behind The Brand</span>
-      <div class="ff-rule-line"></div>
     </div>
   </div>
 
