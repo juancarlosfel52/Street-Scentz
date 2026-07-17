@@ -1838,6 +1838,51 @@ footer{
   display:none;
 }
 
+/* ── CUSTOMER REVIEWS ── */
+.reviews-section{
+  position:relative;z-index:2;
+  padding:80px 0 60px;background:transparent;
+}
+.reviews-header{text-align:center;margin-bottom:2.5rem;}
+.reviews-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:1.5rem;max-width:1100px;margin:0 auto;padding:0 2.5rem;
+}
+.review-card{
+  background:rgba(6,8,16,.72);backdrop-filter:blur(10px);
+  border:1px solid rgba(74,144,226,.15);border-radius:10px;
+  padding:1.5rem 1.6rem;
+  transition:transform .3s,border-color .3s,box-shadow .3s;
+}
+.review-card:hover{
+  transform:translateY(-3px);border-color:rgba(74,144,226,.35);
+  box-shadow:0 12px 36px rgba(0,0,0,.5),0 0 14px rgba(74,144,226,.08);
+}
+.review-stars{color:var(--gold);font-size:1rem;margin-bottom:.6rem;letter-spacing:2px;}
+.review-text{
+  font-family:'Barlow',sans-serif;font-size:.92rem;color:var(--cream);
+  opacity:.85;line-height:1.65;margin-bottom:1rem;font-style:italic;
+}
+.review-footer{display:flex;align-items:center;justify-content:space-between;}
+.review-name{
+  font-family:'Cinzel',serif;font-size:.7rem;font-weight:700;
+  letter-spacing:.1em;color:var(--gold);
+}
+.review-date{
+  font-family:'Barlow',sans-serif;font-size:.65rem;
+  color:var(--cream);opacity:.4;
+}
+.review-product{
+  display:inline-block;margin-top:.5rem;
+  font-family:'Barlow',sans-serif;font-size:.6rem;font-weight:600;
+  color:var(--cream);opacity:.5;background:rgba(74,144,226,.1);
+  border:1px solid rgba(74,144,226,.2);border-radius:3px;
+  padding:2px 8px;letter-spacing:.06em;
+}
+@media(max-width:480px){
+  .reviews-grid{grid-template-columns:1fr!important;padding:0 1rem!important;}
+}
+
 /* ── SECTION VIDEO CARDS ── */
 .section-video-card{
   position:relative;max-width:800px;margin:0 auto 2.5rem;
@@ -3501,6 +3546,60 @@ body.day-mode {
     </div>
   </div>
 </section>
+
+<!-- ════════════════ CUSTOMER REVIEWS ════════════════ -->
+<div class="reviews-section">
+  <div class="reviews-header">
+    <div class="sec-eyebrow" style="text-align:center;">What The Streets Are Saying</div>
+    <h2 class="sec-title" style="text-align:center;">CUSTOMER <span>REVIEWS</span></h2>
+    <div class="sec-divider" style="margin:0 auto;"></div>
+  </div>
+  <div class="reviews-grid">
+
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">"Horchata scent is UNREAL. My girl thought I had a whole cup in the car. Lasts for weeks too, not like those gas station trees."</p>
+      <div class="review-footer"><span class="review-name">@eastside_rafa</span><span class="review-date">June 2026</span></div>
+      <span class="review-product">Horchata</span>
+    </div>
+
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">"Bought the Full Collection for my homie's birthday. He called me at midnight to say Jamaica had him feeling nostalgic. Best gift ever."</p>
+      <div class="review-footer"><span class="review-name">@cruising_maria</span><span class="review-date">May 2026</span></div>
+      <span class="review-product">Full Collection</span>
+    </div>
+
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">"Fresas con Crema is exactly what it sounds like. Sweet, creamy, and it takes me right back to the paletero cart on summer days. 10/10."</p>
+      <div class="review-footer"><span class="review-name">@la_dulce_vida</span><span class="review-date">June 2026</span></div>
+      <span class="review-product">Fresas con Crema</span>
+    </div>
+
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">"Put the Mango Chile in my lowrider before a car show. Everyone kept asking what that smell was. Had em lined up at my booth."</p>
+      <div class="review-footer"><span class="review-name">@lowrider_mike</span><span class="review-date">April 2026</span></div>
+      <span class="review-product">Mango Chile</span>
+    </div>
+
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+      <p class="review-text">"Sandía is clean and light, perfect for daily driving. Only 4 stars because I want a watermelon-lime version next. Hint hint."</p>
+      <div class="review-footer"><span class="review-name">@nm_queen_505</span><span class="review-date">May 2026</span></div>
+      <span class="review-product">Sandía</span>
+    </div>
+
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">"Third order in. Jamaica and Melón Piña are permanent in my truck. The packaging, the art, the scent — everything is premium. This brand gets it."</p>
+      <div class="review-footer"><span class="review-name">@the_real_chula</span><span class="review-date">July 2026</span></div>
+      <span class="review-product">Jamaica + Melón Piña</span>
+    </div>
+
+  </div>
+</div>
 
 <!-- ════════════════ CHECKOUT ════════════════ -->
 <section id="section-checkout" class="section-wrap">
