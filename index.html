@@ -3131,7 +3131,7 @@ body.day-mode {
     <div class="fc-card"><div class="fc-photo"><img src="New Assets/WHY_STREETSCENTZ.png" alt="Why Street Scentz"/></div><div class="fc-card-text"><div class="fc-num">03 — The Why</div><h3 class="fc-title">Why Street Scentz</h3><p class="fc-body">That's why I created <strong style="color:var(--gold);">Street Scentz</strong>. It's a tribute to our raza, our memories, and the culture that shaped us. Each design tells a story through artwork, nostalgia, and culture. <em>The Smell That Hits Home.</em></p></div></div>
   </div></div>
   <div class="founder-timeline"><div class="ft-line-h"></div><div class="ft-track">
-    <div class="ft-entry"><div class="ft-dot"></div><div class="ft-content"><div class="ft-year">1989</div><div class="ft-text">Born and raised in New Mexico — surrounded by lowriders, murals, and Chicano culture.</div></div></div>
+    <div class="ft-entry"><div class="ft-dot"></div><div class="ft-content"><div class="ft-year">1994</div><div class="ft-text">Born and raised in New Mexico — surrounded by lowriders, murals, and Chicano culture.</div></div></div>
     <div class="ft-entry"><div class="ft-dot"></div><div class="ft-content"><div class="ft-year">Early 2000s</div><div class="ft-text">Running the NM streets — Homies figurines, cholo art, swap meets, Lowrider magazines.</div></div></div>
     <div class="ft-entry"><div class="ft-dot"></div><div class="ft-content"><div class="ft-year">The Turn</div><div class="ft-text">Dad never gave up. Discipline and respect pulled me off the streets into the man I became.</div></div></div>
     <div class="ft-entry"><div class="ft-dot"></div><div class="ft-content"><div class="ft-year">2021</div><div class="ft-text">Street Scentz is born in Clovis — every scent a reminder of home, la cultura, our raza.</div></div></div>
@@ -5150,6 +5150,38 @@ const ssPlayer = (function(){
     _pause(){ if(playing){ audio.pause(); } },
     _resume(){ if(playing){ audio.play().catch(()=>{}); muteCommercial(true); } }
   };
+})();
+
+/* ══════════ TIMELINE AUTO-SCROLL ══════════ */
+(() => {
+  const track = document.querySelector('.ft-track');
+  if(!track) return;
+  let scrollDir = 1;
+  let paused = false;
+  track.addEventListener('mouseenter', () => paused = true);
+  track.addEventListener('mouseleave', () => paused = false);
+  track.addEventListener('touchstart', () => paused = true);
+  track.addEventListener('touchend', () => { setTimeout(() => paused = false, 3000); });
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting) startScroll();
+      else stopScroll();
+    });
+  }, { threshold: 0.3 });
+  observer.observe(track);
+
+  let raf;
+  function tick(){
+    if(!paused){
+      track.scrollLeft += scrollDir * 0.5;
+      if(track.scrollLeft >= track.scrollWidth - track.clientWidth - 2) scrollDir = -1;
+      if(track.scrollLeft <= 2) scrollDir = 1;
+    }
+    raf = requestAnimationFrame(tick);
+  }
+  function startScroll(){ if(!raf) raf = requestAnimationFrame(tick); }
+  function stopScroll(){ if(raf){ cancelAnimationFrame(raf); raf = null; } }
 })();
 
 /* ══════════ SECTION VIDEOS — scroll play/pause ══════════ */
