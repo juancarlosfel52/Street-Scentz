@@ -1837,6 +1837,26 @@ footer{
   display:none;
 }
 
+/* ── SECTION VIDEO CARDS ── */
+.section-video-card{
+  position:relative;max-width:500px;margin:0 auto 2.5rem;
+  border-radius:10px;overflow:hidden;
+  border:1px solid rgba(74,144,226,.3);
+  box-shadow:0 12px 48px rgba(0,0,0,.7),0 0 20px rgba(74,144,226,.1);
+  background:#000;
+}
+.section-video-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;z-index:2;
+  background:linear-gradient(90deg,transparent 0%,var(--gold) 40%,var(--amber) 60%,transparent 100%);
+  opacity:.5;pointer-events:none;
+}
+.section-video-card video{
+  width:100%;display:block;background:#000;
+}
+@media(max-width:480px){
+  .section-video-card{max-width:92vw;margin:0 auto 1.5rem;}
+}
+
 /* ── CART FLY ANIMATION ── */
 .cart-fly{
   position:fixed;z-index:2000;pointer-events:none;
@@ -3092,6 +3112,9 @@ body.day-mode {
     <h2 class="ff-title">About<br>The Founder</h2>
     <div class="ff-rule" style="margin-top:1.2rem;"><div class="ff-rule-line"></div><span class="ff-rule-label">Established in Clovis, NM</span><div class="ff-rule-line"></div></div>
   </div>
+  <div class="section-video-card" style="margin-top:1.5rem;">
+    <video class="section-vid" muted loop playsinline preload="none"><source src="New Assets/Fruitcup_Scene.mp4" type="video/mp4"></video>
+  </div>
   <div class="founder-intro">
     <div class="founder-photo"><img src="New Assets/STREET_SCENTZ_STORY.png" alt="Street Scentz"/></div>
     <div class="founder-text">
@@ -3127,6 +3150,10 @@ body.day-mode {
   </div>
 
   <div style="position:relative;z-index:1;text-align:center;">
+
+    <div class="section-video-card" style="margin-bottom:2rem;">
+      <video class="section-vid" muted loop playsinline preload="none"><source src="New Assets/Latina_Cheers.mp4" type="video/mp4"></video>
+    </div>
 
     <!-- collection logo small header -->
     <div id="collection-logo-wrap" style="display:inline-block;position:relative;margin-bottom:1rem;">
@@ -3217,6 +3244,9 @@ body.day-mode {
       <h2 class="sec-title">THE <span>SCENT</span> DROP</h2>
       <div class="sec-divider"></div>
       <p class="sec-desc">Collectible air fresheners built for the culture. Every scent tells a story.</p>
+    </div>
+    <div class="section-video-card">
+      <video class="section-vid" muted loop playsinline preload="none"><source src="New Assets/Car_Commercial.mp4" type="video/mp4"></video>
     </div>
     <div class="products-grid">
 
@@ -3341,6 +3371,9 @@ body.day-mode {
       <h2 class="sec-title">EXCLUSIVE <span>DROPS</span></h2>
       <div class="sec-divider"></div>
       <p class="sec-desc">Real deals. Limited time. Built for the ones who know.</p>
+    </div>
+    <div class="section-video-card">
+      <video class="section-vid" muted loop playsinline preload="none"><source src="New Assets/Lowrider_Scene.mp4" type="video/mp4"></video>
     </div>
 
     <div class="promo-area">
@@ -5121,6 +5154,19 @@ const ssPlayer = (function(){
     _pause(){ if(playing){ audio.pause(); } },
     _resume(){ if(playing){ audio.play().catch(()=>{}); muteCommercial(true); } }
   };
+})();
+
+/* ══════════ SECTION VIDEOS — scroll play/pause ══════════ */
+(() => {
+  const vids = document.querySelectorAll('.section-vid');
+  if(!vids.length) return;
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting) e.target.play().catch(()=>{});
+      else { e.target.pause(); }
+    });
+  }, { threshold: 0.3 });
+  vids.forEach(v => observer.observe(v));
 })();
 
 /* ══════════ SHOPPING CART ══════════ */
