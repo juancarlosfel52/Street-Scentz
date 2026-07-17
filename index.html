@@ -100,109 +100,6 @@ body{
   background:rgba(5,6,12,.52);
 }
 
-/* ── LIGHT GLOWS ── */
-.g-light{position:absolute;border-radius:50%;pointer-events:none;}
-
-/* Pendant 1 — left ceiling lamp (warm white) */
-#gl-pend1{
-  left:29%;top:6%;
-  width:180px;height:180px;
-  margin:-90px 0 0 -90px;
-  background:radial-gradient(circle,rgba(255,240,200,.55) 0%,rgba(255,220,120,.18) 35%,transparent 70%);
-  animation:glFlicker1 6s ease-in-out infinite;
-}
-/* Pendant 2 — right ceiling lamp (warm white) */
-#gl-pend2{
-  left:60%;top:10%;
-  width:160px;height:160px;
-  margin:-80px 0 0 -80px;
-  background:radial-gradient(circle,rgba(255,240,200,.48) 0%,rgba(255,220,120,.15) 35%,transparent 70%);
-  animation:glFlicker2 7.4s ease-in-out infinite;
-}
-/* "Respect" neon — red, top-left */
-#gl-respect{
-  left:6.6%;top:9%;
-  width:130px;height:70px;
-  margin:-35px 0 0 -65px;
-  background:radial-gradient(ellipse,rgba(255,40,40,.6) 0%,rgba(220,20,20,.22) 45%,transparent 75%);
-  animation:glNeonRed 4.2s ease-in-out infinite;
-}
-/* "Impala" neon — red/orange, mid-left */
-#gl-impala{
-  left:27%;top:30%;
-  width:110px;height:60px;
-  margin:-30px 0 0 -55px;
-  background:radial-gradient(ellipse,rgba(255,80,30,.55) 0%,rgba(220,50,10,.2) 45%,transparent 72%);
-  animation:glNeonOrange 5.1s ease-in-out infinite;
-}
-/* Blue circle neon — mid-left */
-#gl-circle{
-  left:32%;top:30%;
-  width:90px;height:90px;
-  margin:-45px 0 0 -45px;
-  background:radial-gradient(circle,rgba(30,120,255,.55) 0%,rgba(20,90,220,.2) 40%,transparent 70%);
-  animation:glNeonBlue 3.8s ease-in-out infinite;
-}
-/* "Low & Slow" neon — cyan/teal, top-right */
-#gl-lowslow{
-  left:85%;top:13%;
-  width:140px;height:60px;
-  margin:-30px 0 0 -70px;
-  background:radial-gradient(ellipse,rgba(20,200,240,.52) 0%,rgba(10,150,220,.18) 45%,transparent 72%);
-  animation:glNeonBlue 5.7s ease-in-out infinite;
-}
-/* Orange work lamp — left shelves */
-#gl-shelf{
-  left:9%;top:34%;
-  width:80px;height:80px;
-  margin:-40px 0 0 -40px;
-  background:radial-gradient(circle,rgba(255,140,30,.45) 0%,rgba(200,90,10,.15) 45%,transparent 70%);
-  animation:glFlicker2 8.2s ease-in-out infinite;
-}
-
-/* ── FLICKER KEYFRAMES ── */
-@keyframes glFlicker1{
-  0%,100%{opacity:1;}
-  4%{opacity:.7;}
-  5%{opacity:1;}
-  52%{opacity:.85;}
-  53%{opacity:1;}
-  78%{opacity:.6;}
-  79%{opacity:.9;}
-  80%{opacity:1;}
-}
-@keyframes glFlicker2{
-  0%,100%{opacity:1;}
-  15%{opacity:.65;}
-  16%{opacity:1;}
-  60%{opacity:.8;}
-  61%{opacity:1;}
-  90%{opacity:.5;}
-  91%{opacity:1;}
-}
-@keyframes glNeonRed{
-  0%,100%{opacity:1;filter:blur(0px);}
-  20%{opacity:.5;filter:blur(1px);}
-  21%{opacity:1;filter:blur(0px);}
-  65%{opacity:.7;filter:blur(.5px);}
-  66%{opacity:1;filter:blur(0px);}
-}
-@keyframes glNeonOrange{
-  0%,100%{opacity:1;}
-  35%{opacity:.6;}
-  36%{opacity:1;}
-  70%{opacity:.75;}
-  71%{opacity:1;}
-}
-@keyframes glNeonBlue{
-  0%,100%{opacity:1;filter:blur(0px);}
-  10%{opacity:.55;filter:blur(1px);}
-  11%{opacity:1;filter:blur(0px);}
-  55%{opacity:.7;}
-  56%{opacity:1;}
-  88%{opacity:.4;filter:blur(1.5px);}
-  89%{opacity:.95;filter:blur(0px);}
-}
 
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar{width:4px}
@@ -683,6 +580,17 @@ body{
 }
 .card-footer{
   display:flex;align-items:center;justify-content:space-between;
+}
+.card-promo{
+  font-family:'Cinzel',serif;font-size:.55rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--cream);background:rgba(74,144,226,.18);
+  border:1px solid rgba(74,144,226,.35);border-radius:3px;
+  padding:4px 8px;margin-top:8px;text-align:center;
+}
+.card-shipping{
+  font-family:'Barlow',sans-serif;font-size:.62rem;
+  color:rgba(184,212,240,.4);margin-top:4px;
 }
 .card-price{
   font-family:'Barlow',sans-serif;font-size:1.4rem;font-weight:700;
@@ -2575,16 +2483,6 @@ body.day-mode {
   <div class="gb-img fade" id="gb-img-b"></div>
   <div class="gb-tint"></div>
   <div class="gb-vignette"></div>
-  <!-- ceiling pendants -->
-  <div class="g-light" id="gl-pend1"></div>
-  <div class="g-light" id="gl-pend2"></div>
-  <!-- neons -->
-  <div class="g-light" id="gl-respect"></div>
-  <div class="g-light" id="gl-impala"></div>
-  <div class="g-light" id="gl-circle"></div>
-  <div class="g-light" id="gl-lowslow"></div>
-  <!-- work lamp -->
-  <div class="g-light" id="gl-shelf"></div>
 </div>
 
 <div class="bandana-bg"></div>
@@ -3217,9 +3115,11 @@ body.day-mode {
           <div class="card-scent">Horchata</div>
           <div class="card-desc">Cold sweet rice milk with cinnamon bark, soft vanilla, and a creamy almond finish — abuela's pitcher on a summer afternoon.</div>
           <div class="card-footer">
-            <span class="card-price">$14.99</span>
+            <span class="card-price">$8.99</span>
             <button class="btn-cart">Add to Cart</button>
           </div>
+          <div class="card-promo">2 for $13.99</div>
+          <div class="card-shipping">+ tax · shipping may vary</div>
         </div>
       </div>
 
@@ -3233,9 +3133,11 @@ body.day-mode {
           <div class="card-scent">Fresas con Crema</div>
           <div class="card-desc">Ripe strawberries folded into sweet cream — the cup you begged for at the paletería after school.</div>
           <div class="card-footer">
-            <span class="card-price">$14.99</span>
+            <span class="card-price">$8.99</span>
             <button class="btn-cart">Add to Cart</button>
           </div>
+          <div class="card-promo">2 for $13.99</div>
+          <div class="card-shipping">+ tax · shipping may vary</div>
         </div>
       </div>
 
@@ -3249,9 +3151,11 @@ body.day-mode {
           <div class="card-scent">Jamaica</div>
           <div class="card-desc">Bright hibiscus flowers, tart berry, and citrus zest — agua fresca poured over ice at the family cookout.</div>
           <div class="card-footer">
-            <span class="card-price">$12.99</span>
+            <span class="card-price">$8.99</span>
             <button class="btn-cart">Add to Cart</button>
           </div>
+          <div class="card-promo">2 for $13.99</div>
+          <div class="card-shipping">+ tax · shipping may vary</div>
         </div>
       </div>
 
@@ -3265,9 +3169,11 @@ body.day-mode {
           <div class="card-scent">Mango Chile</div>
           <div class="card-desc">Juicy ripe mango dusted with chile and lime — straight off the fruit cart, cup and all.</div>
           <div class="card-footer">
-            <span class="card-price">$13.99</span>
+            <span class="card-price">$8.99</span>
             <button class="btn-cart">Add to Cart</button>
           </div>
+          <div class="card-promo">2 for $13.99</div>
+          <div class="card-shipping">+ tax · shipping may vary</div>
         </div>
       </div>
 
@@ -3281,9 +3187,11 @@ body.day-mode {
           <div class="card-scent">Melón Piña</div>
           <div class="card-desc">Sweet cantaloupe and golden pineapple — a fresh-cut fruit bowl riding shotgun on a hot day.</div>
           <div class="card-footer">
-            <span class="card-price">$12.99</span>
+            <span class="card-price">$8.99</span>
             <button class="btn-cart">Add to Cart</button>
           </div>
+          <div class="card-promo">2 for $13.99</div>
+          <div class="card-shipping">+ tax · shipping may vary</div>
         </div>
       </div>
 
@@ -3297,9 +3205,11 @@ body.day-mode {
           <div class="card-scent">Sandía</div>
           <div class="card-desc">Crisp watermelon with a cool aquatic finish — summer at the park, seeds and all.</div>
           <div class="card-footer">
-            <span class="card-price">$12.99</span>
+            <span class="card-price">$8.99</span>
             <button class="btn-cart">Add to Cart</button>
           </div>
+          <div class="card-promo">2 for $13.99</div>
+          <div class="card-shipping">+ tax · shipping may vary</div>
         </div>
       </div>
 
@@ -3545,7 +3455,7 @@ body.day-mode {
           </div>
           <div class="gift-name">Aguas Frescas Trio</div>
           <div class="gift-desc">Horchata, Jamaica &amp; Melón Piña — the full aguas frescas stand hanging from your mirror. Gift-boxed with a message card.</div>
-          <div class="gift-price"><span class="gift-orig">$40.97</span> $35.99 <span class="gift-save">Save 12%</span></div>
+          <div class="gift-price"><span class="gift-orig">$26.97</span> $23.99 <span class="gift-save">Save 11%</span></div>
           <button class="btn-gift">Add to Cart</button>
         </div>
       </div>
@@ -3561,7 +3471,7 @@ body.day-mode {
           </div>
           <div class="gift-name">Fruit Cart Pack</div>
           <div class="gift-desc">Mango Chile, Sandía &amp; Melón Piña — everything the frutero yells about, boxed for gifting.</div>
-          <div class="gift-price"><span class="gift-orig">$39.97</span> $34.99 <span class="gift-save">Save 12%</span></div>
+          <div class="gift-price"><span class="gift-orig">$26.97</span> $23.99 <span class="gift-save">Save 11%</span></div>
           <button class="btn-gift">Add to Cart</button>
         </div>
       </div>
@@ -3576,7 +3486,7 @@ body.day-mode {
           </div>
           <div class="gift-name">La Dulce Vida Duo</div>
           <div class="gift-desc">Fresas con Crema &amp; Horchata — the two sweetest memories of the paletería, paired together.</div>
-          <div class="gift-price"><span class="gift-orig">$29.98</span> $25.99 <span class="gift-save">Save 13%</span></div>
+          <div class="gift-price"><span class="gift-orig">$17.98</span> $14.99 <span class="gift-save">Save 17%</span></div>
           <button class="btn-gift">Add to Cart</button>
         </div>
       </div>
@@ -3595,7 +3505,7 @@ body.day-mode {
           </div>
           <div class="gift-name">The Full Collection</div>
           <div class="gift-desc">All six scents in one premium boxed set — every flavor, every memory. The ultimate gift for the culture.</div>
-          <div class="gift-price"><span class="gift-orig">$81.94</span> $69.99 <span class="gift-save">Save 15%</span></div>
+          <div class="gift-price"><span class="gift-orig">$53.94</span> $44.99 <span class="gift-save">Save 17%</span></div>
           <button class="btn-gift">Add to Cart</button>
         </div>
       </div>
