@@ -291,15 +291,15 @@ body{
 /* section background */
 .section-bg{
   position:absolute;inset:0;z-index:0;
-  background-size:cover;background-position:center;
+  background:none!important;background-image:none!important;
 }
 .section-bg::before{
   content:'';position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(5,6,12,.52) 0%,rgba(5,6,12,.65) 100%);
+  background:linear-gradient(180deg,rgba(5,6,12,.25) 0%,rgba(5,6,12,.35) 100%);
 }
 .section-bg::after{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 50% 0%,rgba(var(--amber-rgb),.08) 0%,transparent 70%);
+  background:radial-gradient(ellipse at 50% 0%,rgba(var(--amber-rgb),.05) 0%,transparent 70%);
   pointer-events:none;
 }
 .section-content{position:relative;z-index:1}
@@ -317,10 +317,10 @@ body{
 .hero-bg{
   position:absolute;inset:0;
   background:
-    radial-gradient(ellipse 120% 80% at 50% 110%, rgba(30,94,200,.22) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 50% at 75% 60%, rgba(74,144,226,.1) 0%, transparent 50%),
-    radial-gradient(ellipse 80% 40% at 20% 80%, rgba(142,90,34,.12) 0%, transparent 50%),
-    linear-gradient(180deg, #0B0A0A 0%, #120d07 40%, #1a0f05 70%, #0d0804 100%);
+    radial-gradient(ellipse 120% 80% at 50% 110%, rgba(30,94,200,.15) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 75% 60%, rgba(74,144,226,.08) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 40% at 20% 80%, rgba(142,90,34,.06) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(5,6,12,.25) 0%, rgba(5,6,12,.3) 40%, rgba(5,6,12,.25) 100%);
 }
 
 /* SVG palm tree silhouettes */
@@ -543,7 +543,7 @@ body{
 #section-shop{
   background:
     radial-gradient(ellipse 100% 60% at 50% 0%, rgba(142,90,34,.06) 0%, transparent 60%),
-    linear-gradient(180deg, #111008 0%, #0e0d0b 40%, #121110 100%);
+    linear-gradient(180deg, rgba(5,6,12,.3) 0%, rgba(5,6,12,.25) 40%, rgba(5,6,12,.3) 100%);
 }
 
 .products-grid{
@@ -706,7 +706,7 @@ body{
 #section-discounts{
   background:
     radial-gradient(ellipse 80% 50% at 20% 50%, rgba(30,94,200,.05) 0%, transparent 55%),
-    linear-gradient(160deg, #0d0c0a 0%, #0B0A0A 50%, #0f0d0a 100%);
+    linear-gradient(160deg, rgba(5,6,12,.3) 0%, rgba(5,6,12,.28) 50%, rgba(5,6,12,.3) 100%);
 }
 
 .promo-area{
@@ -830,7 +830,7 @@ body{
 #section-gifting{
   background:
     radial-gradient(ellipse 70% 60% at 80% 30%, rgba(74,144,226,.05) 0%, transparent 55%),
-    linear-gradient(180deg, #111008 0%, #0e0c09 100%);
+    linear-gradient(180deg, rgba(5,6,12,.3) 0%, rgba(5,6,12,.28) 100%);
 }
 
 .gift-grid{
@@ -939,9 +939,9 @@ body{
 ═══════════════════════════════════════════ */
 #section-about{
   background:
-    radial-gradient(ellipse 60% 80% at 15% 50%, rgba(142,90,34,.07) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 40% at 85% 20%, rgba(30,94,200,.04) 0%, transparent 50%),
-    linear-gradient(180deg, #0B0A0A 0%, #0d0b08 100%);
+    radial-gradient(ellipse 60% 80% at 15% 50%, rgba(142,90,34,.05) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 85% 20%, rgba(30,94,200,.03) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(5,6,12,.3) 0%, rgba(5,6,12,.25) 100%);
 }
 
 /* ═══════════════════════════════════════════
@@ -949,9 +949,9 @@ body{
 ═══════════════════════════════════════════ */
 #section-about{
   background:
-    radial-gradient(ellipse 120% 50% at 50% 0%,   rgba(74,144,226,.08) 0%, transparent 55%),
-    radial-gradient(ellipse 100% 50% at 50% 100%,  rgba(30,94,200,.07) 0%, transparent 55%),
-    linear-gradient(180deg, #080706 0%, #0d0b08 50%, #080706 100%);
+    radial-gradient(ellipse 120% 50% at 50% 0%,   rgba(74,144,226,.06) 0%, transparent 55%),
+    radial-gradient(ellipse 100% 50% at 50% 100%,  rgba(30,94,200,.05) 0%, transparent 55%),
+    linear-gradient(180deg, rgba(5,6,12,.3) 0%, rgba(5,6,12,.28) 50%, rgba(5,6,12,.3) 100%);
   overflow:visible;
   min-height:1000px !important;
 }
@@ -1282,7 +1282,7 @@ body{
 #section-contact{
   background:
     radial-gradient(ellipse 80% 50% at 50% 100%, rgba(74,144,226,.06) 0%, transparent 55%),
-    linear-gradient(180deg, #0f0e0c 0%, #0B0A0A 100%);
+    linear-gradient(180deg, rgba(5,6,12,.3) 0%, rgba(5,6,12,.28) 100%);
 }
 
 .contact-layout{
@@ -2169,7 +2169,7 @@ body.day-mode {
    CHECKOUT SECTION
 ════════════════════════════════════════════ */
 #section-checkout {
-  background: linear-gradient(180deg, #0B0A0A 0%, #0f0c07 50%, #0B0A0A 100%);
+  background: linear-gradient(180deg, rgba(5,6,12,.3) 0%, rgba(5,6,12,.25) 50%, rgba(5,6,12,.3) 100%);
 }
 .checkout-wrap {
   max-width: 1100px;
@@ -3387,7 +3387,7 @@ body.day-mode {
 
 <!-- ════════════════ CHECKOUT ════════════════ -->
 <section id="section-checkout" class="section-wrap">
-  <div class="section-bg" style="background:linear-gradient(180deg,#0B0A0A 0%,#0f0c07 50%,#0B0A0A 100%)"></div>
+  <div class="section-bg"></div>
   <div class="section-content">
     <div class="sec-header">
       <div class="sec-eyebrow">Secure &amp; Easy</div>
