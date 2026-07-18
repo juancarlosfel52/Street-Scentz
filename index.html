@@ -5454,7 +5454,12 @@ const ssCart = (() => {
 
 /* ══════════ HERO CONTROL PANEL ══════════ */
 (() => {
-  const ASSETS = [
+  const isMob = window.innerWidth <= 480;
+  const ASSETS = isMob ? [
+    { id:'hero-lowrider-wrap', label:'Lowrider', defaults:{x:-100,y:16,z:3,w:Math.round(window.innerWidth*0.55),r:85,ry:-10,rx:-3,rz:2} },
+    { id:'hero-girl-wrap',     label:'Girl',     defaults:{x:-20,y:0,z:4,w:Math.round(window.innerWidth*0.30),r:72,ry:-2,rx:-6,rz:-1} },
+    { id:'hero-building-wrap', label:'Building',  defaults:{x:-60,y:-50,z:2,w:Math.round(window.innerWidth*0.68),r:100,ry:-6,rx:0,rz:0} },
+  ] : [
     { id:'hero-lowrider-wrap', label:'Lowrider', defaults:{x:-346,y:16,z:3,w:665,r:113,ry:-12,rx:-3,rz:2} },
     { id:'hero-girl-wrap',     label:'Girl',     defaults:{x:-66,y:0,z:4,w:360,r:87,ry:-2,rx:-8,rz:-1} },
     { id:'hero-building-wrap', label:'Building',  defaults:{x:-190,y:-190,z:2,w:765,r:149,ry:-6,rx:0,rz:0} },
@@ -5479,8 +5484,8 @@ const ssCart = (() => {
     const el = document.getElementById(id);
     if(!el) return;
     const s = state[id];
-    el.style.transform = `translateX(${s.x}px) translateY(${s.y}px) perspective(800px) rotateX(${s.rx}deg) rotateY(${s.ry}deg) rotateZ(${s.rz}deg) scale(${s.r/100})`;
-    el.style.width = s.w + 'px';
+    el.style.setProperty('transform', `translateX(${s.x}px) translateY(${s.y}px) perspective(800px) rotateX(${s.rx}deg) rotateY(${s.ry}deg) rotateZ(${s.rz}deg) scale(${s.r/100})`, 'important');
+    el.style.setProperty('width', s.w + 'px', 'important');
   }
 
   // Build panel HTML
