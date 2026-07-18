@@ -1685,18 +1685,32 @@ footer{
   /* CTA BAR — mobile only */
   #ss-cta-bar{display:flex!important;}
 
-  /* HERO SCENE — match desktop layout scaled down */
-  #hero-building-wrap{width:68vw!important;right:-4%!important;transform:translateX(-60px) translateY(-50px) perspective(800px) rotateY(-6deg) scale(1)!important;}
-  #hero-lowrider-wrap{width:55vw!important;right:-2%!important;transform:translateX(-100px) translateY(16px) perspective(800px) rotateX(-3deg) rotateY(-10deg) rotateZ(2deg) scale(.85)!important;}
-  #hero-girl-wrap{width:30vw!important;right:4%!important;transform:translateX(-20px) perspective(800px) rotateX(-6deg) rotateY(-2deg) rotateZ(-1deg) scale(.72)!important;}
+  /* HERO SCENE — tuned mobile values */
+  #hero-building-wrap{width:295px!important;right:auto!important;transform:translateX(-77px) translateY(-600px) perspective(800px) rotateX(0deg) rotateY(-3deg) rotateZ(0deg) scale(1.50)!important;}
+  #hero-lowrider-wrap{width:335px!important;right:auto!important;transform:translateX(-4px) translateY(-477px) perspective(800px) rotateX(-3deg) rotateY(-10deg) rotateZ(2deg) scale(1.11)!important;}
+  #hero-girl-wrap{width:225px!important;right:auto!important;transform:translateX(90px) translateY(-433px) perspective(800px) rotateX(-3deg) rotateY(-2deg) rotateZ(-4deg) scale(0.66)!important;}
   /* hero ctrl visible on mobile for tuning */
 
   /* TRAILER + DEALS — stack vertically on mobile */
   #hero-trailer{
     position:relative!important;left:auto!important;top:auto!important;
     width:92vw!important;margin:80px auto 0!important;
-    flex-direction:column!important;gap:.8rem!important;
+    flex-direction:column!important;gap:.5rem!important;
   }
+  /* lower video 4 units */
+  #hero-trailer > div:first-child{margin-top:4px!important;}
+  /* deals tab — stretched buy bar */
+  #deals-tab{
+    width:100%!important;
+  }
+  #deals-tab > div:last-child{
+    padding:.45rem .8rem .35rem!important;border-radius:6px!important;
+  }
+  #deals-track{min-height:36px!important;gap:.3rem!important;}
+  #deal-label{font-size:.42rem!important;margin-bottom:.1rem!important;}
+  #deal-text{font-size:.6rem!important;margin-bottom:.25rem!important;}
+  #deal-btn{padding:.22rem .6rem!important;font-size:.48rem!important;width:100%!important;}
+  #deals-dots{margin-top:.25rem!important;}
 
   /* NAV CART — compact */
   #ss-cart{margin-right:6px!important;}
