@@ -1615,17 +1615,18 @@ footer{
   /* NAV */
   #nav{padding:0 1rem;}
 
-  /* HERO — shorter on mobile */
-  #section-home{min-height:85svh!important;}
+  /* HERO — much shorter on mobile, hide bottom scene PNGs */
+  #section-home{min-height:auto!important;height:auto!important;padding-bottom:20px!important;}
   .hero-inner{
-    padding:0 1.2rem 4vh 1.2rem;
+    padding:0 1.2rem 3vh 1.2rem;
     max-width:100%;
-    min-height:85svh!important;
+    min-height:auto!important;
     margin-top:0!important;
   }
   .hero-title{font-size:clamp(2.4rem,11vw,3.6rem)!important;}
   .hero-sub{font-size:.82rem;max-width:100%;}
   .hero-cta{width:100%;text-align:center;justify-content:center;}
+  #hero-building-wrap,#hero-lowrider-wrap,#hero-girl-wrap{display:none!important;}
 
 
   /* SCENT POPUP */
@@ -1687,14 +1688,17 @@ footer{
   /* CTA BAR — mobile only */
   #ss-cta-bar{display:flex!important;}
 
-  /* HERO SCENE — match desktop layout scaled down */
-  #hero-building-wrap{width:68vw!important;right:-4%!important;transform:translateX(-60px) translateY(-50px) perspective(800px) rotateY(-6deg) scale(1)!important;}
-  #hero-lowrider-wrap{width:55vw!important;right:-2%!important;transform:translateX(-100px) translateY(16px) perspective(800px) rotateX(-3deg) rotateY(-10deg) rotateZ(2deg) scale(.85)!important;}
-  #hero-girl-wrap{width:30vw!important;right:4%!important;transform:translateX(-20px) perspective(800px) rotateX(-6deg) rotateY(-2deg) rotateZ(-1deg) scale(.72)!important;}
   #hero-ctrl-toggle,#hero-ctrl{display:none!important;}
 
-  /* DEALS TAB — move right, off the video */
-  #deals-tab{width:min(260px,70vw)!important;left:auto!important;right:4%!important;transform:none!important;}
+  /* TRAILER + DEALS — stack vertically, full width on mobile */
+  #hero-trailer{
+    position:relative!important;left:auto!important;top:auto!important;
+    width:92vw!important;margin:80px auto 0!important;
+  }
+  #deals-tab{
+    position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;
+    transform:none!important;width:92vw!important;margin:1rem auto 0!important;z-index:6!important;
+  }
 
   /* NAV CART — compact */
   #ss-cart{margin-right:6px!important;}
@@ -1880,7 +1884,7 @@ footer{
   padding:2px 8px;letter-spacing:.06em;
 }
 @media(max-width:480px){
-  .reviews-grid{grid-template-columns:1fr!important;padding:0 1rem!important;}
+  .reviews-section{display:none!important;}
 }
 
 /* ── SECTION VIDEO CARDS ── */
@@ -3084,7 +3088,7 @@ body.day-mode {
   </div>
 
   <!-- TRAILER BLOCK — left side -->
-  <div style="position:absolute;left:4%;top:12%;width:min(400px,44vw);z-index:6;">
+  <div id="hero-trailer" style="position:absolute;left:4%;top:12%;width:min(400px,44vw);z-index:6;">
 
     <!-- header -->
     <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.35rem;">
