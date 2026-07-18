@@ -1687,7 +1687,7 @@ footer{
 
   /* HERO SCENE — mobile layout */
   #hero-building-wrap{width:385px!important;right:-4%!important;transform:translateX(-45px) translateY(-600px) perspective(800px) rotateX(0deg) rotateY(-6deg) rotateZ(0deg) scale(1.13)!important;}
-  #hero-lowrider-wrap{width:226px!important;right:-2%!important;z-index:5!important;transform:translateX(-24px) translateY(-65px) perspective(800px) rotateX(-3deg) rotateY(-10deg) rotateZ(-2deg) scale(.85) scaleX(-1)!important;}
+  #hero-lowrider-wrap{width:640px!important;right:-2%!important;z-index:5!important;transform:translateX(-11px) translateY(-493px) perspective(800px) rotateX(-3deg) rotateY(-3deg) rotateZ(20deg) scale(.85) scaleX(-1)!important;}
   #hero-girl-wrap{width:210px!important;right:4%!important;transform:translateX(45px) translateY(-65px) perspective(800px) rotateX(-6deg) rotateY(-2deg) rotateZ(-1deg) scale(.95)!important;}
   /* hero ctrl visible on mobile for tuning */
 
@@ -5471,7 +5471,7 @@ const ssCart = (() => {
   const isMob = window.innerWidth <= 480;
   const vw = window.innerWidth;
   const ASSETS = isMob ? [
-    { id:'hero-lowrider-wrap', label:'Lowrider', defaults:{x:-24,y:-65,z:3,w:226,r:85,ry:-10,rx:-3,rz:-2} },
+    { id:'hero-lowrider-wrap', label:'Lowrider', defaults:{x:-11,y:-493,z:3,w:640,r:85,ry:-3,rx:-3,rz:20,flipX:true} },
     { id:'hero-girl-wrap',     label:'Girl',     defaults:{x:45,y:-65,z:4,w:210,r:95,ry:-2,rx:-6,rz:-1} },
     { id:'hero-building-wrap', label:'Building',  defaults:{x:-45,y:-600,z:2,w:385,r:113,ry:-6,rx:0,rz:0} },
   ] : [
@@ -5492,14 +5492,15 @@ const ssCart = (() => {
   const state = {};
   ASSETS.forEach(a => {
     state[a.id] = { x:a.defaults.x, y:a.defaults.y, w:a.defaults.w,
-      r:a.defaults.r||100, ry:a.defaults.ry||0, rx:a.defaults.rx||0, rz:a.defaults.rz||0 };
+      r:a.defaults.r||100, ry:a.defaults.ry||0, rx:a.defaults.rx||0, rz:a.defaults.rz||0, flipX:!!a.defaults.flipX };
   });
 
   function apply(id){
     const el = document.getElementById(id);
     if(!el) return;
     const s = state[id];
-    el.style.setProperty('transform', `translateX(${s.x}px) translateY(${s.y}px) perspective(800px) rotateX(${s.rx}deg) rotateY(${s.ry}deg) rotateZ(${s.rz}deg) scale(${s.r/100})`, 'important');
+    const flip = s.flipX ? ' scaleX(-1)' : '';
+    el.style.setProperty('transform', `translateX(${s.x}px) translateY(${s.y}px) perspective(800px) rotateX(${s.rx}deg) rotateY(${s.ry}deg) rotateZ(${s.rz}deg) scale(${s.r/100})${flip}`, 'important');
     el.style.setProperty('width', s.w + 'px', 'important');
   }
 
