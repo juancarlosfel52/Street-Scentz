@@ -1685,10 +1685,10 @@ footer{
   /* CTA BAR — mobile only */
   #ss-cta-bar{display:flex!important;}
 
-  /* HERO SCENE — tuned mobile values */
-  #hero-building-wrap{width:295px!important;right:auto!important;transform:translateX(-77px) translateY(-600px) perspective(800px) rotateX(0deg) rotateY(-3deg) rotateZ(0deg) scale(1.50)!important;}
-  #hero-lowrider-wrap{width:335px!important;right:auto!important;transform:translateX(-4px) translateY(-477px) perspective(800px) rotateX(-3deg) rotateY(-10deg) rotateZ(2deg) scale(1.11)!important;}
-  #hero-girl-wrap{width:225px!important;right:auto!important;transform:translateX(90px) translateY(-433px) perspective(800px) rotateX(-3deg) rotateY(-2deg) rotateZ(-4deg) scale(0.66)!important;}
+  /* HERO SCENE — mobile layout */
+  #hero-building-wrap{width:68vw!important;right:-4%!important;transform:translateX(-60px) translateY(-50px) perspective(800px) rotateY(-6deg) scale(1)!important;}
+  #hero-lowrider-wrap{width:55vw!important;right:-2%!important;transform:translateX(-100px) translateY(16px) perspective(800px) rotateX(-3deg) rotateY(-10deg) rotateZ(2deg) scale(.85)!important;}
+  #hero-girl-wrap{width:30vw!important;right:4%!important;transform:translateX(-20px) perspective(800px) rotateX(-6deg) rotateY(-2deg) rotateZ(-1deg) scale(.72)!important;}
   /* hero ctrl visible on mobile for tuning */
 
   /* TRAILER + DEALS — stack vertically on mobile */
@@ -5469,10 +5469,11 @@ const ssCart = (() => {
 /* ══════════ HERO CONTROL PANEL ══════════ */
 (() => {
   const isMob = window.innerWidth <= 480;
+  const vw = window.innerWidth;
   const ASSETS = isMob ? [
-    { id:'hero-lowrider-wrap', label:'Lowrider', defaults:{x:-100,y:16,z:3,w:Math.round(window.innerWidth*0.55),r:85,ry:-10,rx:-3,rz:2} },
-    { id:'hero-girl-wrap',     label:'Girl',     defaults:{x:-20,y:0,z:4,w:Math.round(window.innerWidth*0.30),r:72,ry:-2,rx:-6,rz:-1} },
-    { id:'hero-building-wrap', label:'Building',  defaults:{x:-60,y:-50,z:2,w:Math.round(window.innerWidth*0.68),r:100,ry:-6,rx:0,rz:0} },
+    { id:'hero-lowrider-wrap', label:'Lowrider', defaults:{x:-100,y:16,z:3,w:Math.round(vw*0.55),r:85,ry:-10,rx:-3,rz:2} },
+    { id:'hero-girl-wrap',     label:'Girl',     defaults:{x:-20,y:0,z:4,w:Math.round(vw*0.30),r:72,ry:-2,rx:-6,rz:-1} },
+    { id:'hero-building-wrap', label:'Building',  defaults:{x:-60,y:-50,z:2,w:Math.round(vw*0.68),r:100,ry:-6,rx:0,rz:0} },
   ] : [
     { id:'hero-lowrider-wrap', label:'Lowrider', defaults:{x:-346,y:16,z:3,w:665,r:113,ry:-12,rx:-3,rz:2} },
     { id:'hero-girl-wrap',     label:'Girl',     defaults:{x:-66,y:0,z:4,w:360,r:87,ry:-2,rx:-8,rz:-1} },
