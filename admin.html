@@ -26,6 +26,18 @@ body {
   min-height:100vh; overflow-x:hidden;
 }
 
+/* ── BG SLIDESHOW ── */
+.admin-bg-layer {
+  position:fixed; inset:0; z-index:-1;
+  background-size:cover; background-position:center; background-repeat:no-repeat;
+  transition:opacity 1.8s ease;
+}
+.admin-bg-layer.hidden { opacity:0; }
+.admin-bg-tint {
+  position:fixed; inset:0; z-index:-1;
+  background:rgba(5,6,12,.72);
+}
+
 /* ── PIN GATE ── */
 .pin-gate {
   position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center;
@@ -170,6 +182,11 @@ tr:hover td { background:rgba(74,144,226,.04); }
 </style>
 </head>
 <body>
+
+<!-- BG SLIDESHOW -->
+<div class="admin-bg-layer" id="admin-bg-a"></div>
+<div class="admin-bg-layer hidden" id="admin-bg-b"></div>
+<div class="admin-bg-tint"></div>
 
 <!-- PIN GATE -->
 <div class="pin-gate" id="pin-gate">
@@ -498,6 +515,30 @@ function saveSettings() {
   localStorage.setItem('ss-settings', JSON.stringify(s));
   alert('Settings saved');
 }
+
+/* ── Admin BG Slideshow ── */
+(function(){
+  const imgs = [
+    'New Assets/AdminBG (1).png',
+    'New Assets/AdminBG (2).png',
+    'New Assets/AdminBG (3).png',
+    'New Assets/AdminBG (4).png'
+  ];
+  imgs.forEach(function(s){ var i=new Image(); i.src=s; });
+  var a = document.getElementById('admin-bg-a');
+  var b = document.getElementById('admin-bg-b');
+  var idx = 0;
+  a.style.backgroundImage = 'url("'+imgs[0]+'")';
+  a.classList.remove('hidden');
+  setInterval(function(){
+    idx = (idx + 1) % imgs.length;
+    var front = a.classList.contains('hidden') ? a : b;
+    var back  = a.classList.contains('hidden') ? b : a;
+    front.style.backgroundImage = 'url("'+imgs[idx]+'")';
+    front.classList.remove('hidden');
+    back.classList.add('hidden');
+  }, 5000);
+})();
 </script>
 </body>
 </html>
