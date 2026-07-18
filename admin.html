@@ -48,23 +48,25 @@ body {
 #loading-canvas {
   position:absolute; inset:0; width:100%; height:100%; z-index:1;
 }
-#loading-zia {
-  position:relative; z-index:2; width:min(320px,55vw); height:auto;
-  filter:drop-shadow(0 0 30px rgba(74,200,255,.5));
-  animation:ziaGlow 2s ease-in-out infinite alternate;
-}
-@keyframes ziaGlow {
-  0%{filter:drop-shadow(0 0 20px rgba(74,200,255,.3)) brightness(0.8);}
-  100%{filter:drop-shadow(0 0 50px rgba(74,200,255,.8)) brightness(1.3);}
-}
 #loading-text-img {
   position:relative; z-index:2; width:min(380px,65vw); height:auto;
-  margin-top:24px; opacity:0;
-  transition:opacity 1.5s ease, filter 1.5s ease;
-  filter:brightness(0);
+  opacity:0; filter:brightness(0);
+  transition:opacity 2s ease, filter 2.5s ease;
 }
 #loading-text-img.lit {
-  opacity:1; filter:brightness(1.2) drop-shadow(0 0 20px rgba(74,200,255,.7));
+  opacity:1; filter:brightness(1.2) drop-shadow(0 0 25px rgba(74,200,255,.7));
+}
+#loading-zia {
+  position:relative; z-index:2; width:min(320px,55vw); height:auto;
+  margin-top:20px; opacity:0.35;
+  filter:drop-shadow(0 0 20px rgba(74,200,255,.3));
+  transition:opacity 2s ease, filter 2s ease;
+}
+#loading-zia.surging {
+  opacity:0.55; filter:drop-shadow(0 0 50px rgba(74,200,255,.7)) brightness(1.3);
+}
+#loading-zia.peak {
+  opacity:0.7; filter:drop-shadow(0 0 70px rgba(74,200,255,.9)) brightness(1.5);
 }
 #loading-pct {
   position:relative; z-index:2; margin-top:20px;
@@ -233,8 +235,8 @@ tr:hover td { background:rgba(74,144,226,.04); }
 <!-- LOADING SCREEN -->
 <div id="loading-screen">
   <canvas id="loading-canvas"></canvas>
-  <img id="loading-zia" src="New Assets/Loading_Zia.png" alt=""/>
   <img id="loading-text-img" src="New Assets/Loading_Text.png" alt=""/>
+  <img id="loading-zia" src="New Assets/Loading_Zia.png" alt=""/>
   <div id="loading-pct">0%</div>
   <div id="loading-noise"></div>
 </div>
@@ -597,8 +599,9 @@ function saveSettings() {
 })();
 
 /* ══════════════════════════════════════════════
-   ZIA PARTICLE REACTOR — Loading Screen
+   ZIA PARTICLE REACTOR — Loading Screen v2
    4k GPU particles, GLSL shaders, controlled bloom
+   Cinematic: reactor → burst → slow orbital attract → spread ignite → fade
    ══════════════════════════════════════════════ */
 (function(){
   var screen = document.getElementById('loading-screen');
@@ -611,9 +614,15 @@ function saveSettings() {
   var gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
   if(!gl){ screen.classList.add('done'); return; }
 
-  /* ── constants ── */
   var PARTICLE_COUNT = 4096;
-  var DURATION = 7.0; /* total animation seconds */
+  var DURATION = 10.5;
+  /* Timeline:
+     0.0–2.5   Phase 0  Reactor core swirl (builds energy)
+     2.5–4.5   Phase 1  Cardinal burst out 4 rays
+     4.5–7.5   Phase 2  Slow orbital attract toward text (3s graceful arc)
+     7.5–9.5   Phase 3  Spread & settle around text, ignite text
+     9.5–10.5  Phase 4  Particles gently dissipate, screen fades
+  */
   var dpr = Math.min(window.devicePixelRatio, 2);
 
   function resize(){
@@ -626,7 +635,6 @@ function saveSettings() {
   resize();
   window.addEventListener('resize', resize);
 
-  /* ── compile shader ── */
   function makeShader(src, type){
     var s = gl.createShader(type);
     gl.shaderSource(s, src);
@@ -644,134 +652,204 @@ function saveSettings() {
     return p;
   }
 
-  /* ── vertex shader ── */
-  var vertSrc = [
-    'attribute vec2 aSeed;',
-    'uniform float uTime;',
-    'uniform float uPhase;', /* 0=reactor 1=burst 2=attract 3=ignite */
-    'uniform vec2 uRes;',
-    'uniform vec2 uZiaCenter;', /* normalized 0-1 */
-    'uniform vec2 uTextCenter;',
-    'varying float vLife;',
-    'varying float vHeat;',
-    '',
-    '/* simplex-ish hash */',
-    'float hash(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }',
-    '',
-    'void main(){',
-    '  float id = aSeed.x;',
-    '  float seed = aSeed.y;',
-    '  float angle0 = seed * 6.2832;',
-    '  float radius0 = hash(vec2(id,seed)) * 0.12;',
-    '',
-    '  /* cardinal direction for this particle (0=top 1=right 2=bottom 3=left) */',
-    '  int card = int(mod(id, 4.0));',
-    '  vec2 cardDir = vec2(0.0, -1.0);', /* top */
-    '  if(card==1) cardDir = vec2(1.0, 0.0);',   /* right */
-    '  if(card==2) cardDir = vec2(0.0, 1.0);',    /* bottom */
-    '  if(card==3) cardDir = vec2(-1.0, 0.0);',   /* left */
-    '',
-    '  /* phase timing */',
-    '  float t = uTime;',
-    '  float stagger = hash(vec2(id*3.7, seed*2.1)) * 0.4;',
-    '',
-    '  vec2 pos = uZiaCenter;',
-    '  float heat = 0.0;',
-    '  float life = 1.0;',
-    '',
-    '  /* PHASE 0: reactor core — swirl around center */',
-    '  if(uPhase < 1.0){',
-    '    float p0 = min(t / 2.0, 1.0);',
-    '    float swirl = angle0 + t * (2.0 + seed * 3.0);',
-    '    float r = radius0 * (0.3 + 0.7 * p0) * (0.8 + 0.4*sin(t*4.0+id));',
-    '    pos += vec2(cos(swirl), sin(swirl)) * r;',
-    '    heat = 0.5 + 0.5 * sin(t * 6.0 + id);',
-    '    life = p0;',
-    '  }',
-    '',
-    '  /* PHASE 1: cardinal burst — fly out through 4 rays */',
-    '  if(uPhase >= 1.0 && uPhase < 2.0){',
-    '    float p1 = min((t - 2.0 - stagger*0.3) / 1.2, 1.0);',
-    '    p1 = max(p1, 0.0);',
-    '    float eased = p1 * p1 * (3.0 - 2.0 * p1);', /* smoothstep */
-    '    float spread = hash(vec2(id*1.3, seed*4.1)) * 0.06 - 0.03;',
-    '    vec2 dir = cardDir + vec2(spread, spread);',
-    '    pos = uZiaCenter + dir * eased * 0.45;',
-    '    heat = 1.0 - eased * 0.3;',
-    '    life = 1.0;',
-    '  }',
-    '',
-    '  /* PHASE 2: attract to text */',
-    '  if(uPhase >= 2.0 && uPhase < 3.0){',
-    '    float p2 = min((t - 3.5 - stagger*0.5) / 1.5, 1.0);',
-    '    p2 = max(p2, 0.0);',
-    '    float eased = p2 * p2;',
-    '    vec2 burstEnd = uZiaCenter + cardDir * 0.45;',
-    '    float spreadX = hash(vec2(id*2.9, seed)) * 0.3 - 0.15;',
-    '    vec2 textTarget = uTextCenter + vec2(spreadX, 0.0);',
-    '    pos = mix(burstEnd, textTarget, eased);',
-    '    heat = 0.7 + 0.3 * (1.0 - p2);',
-    '    life = 1.0;',
-    '  }',
-    '',
-    '  /* PHASE 3: ignite — particles at text, fading */',
-    '  if(uPhase >= 3.0){',
-    '    float p3 = min((t - 5.0) / 1.5, 1.0);',
-    '    float spreadX = hash(vec2(id*2.9, seed)) * 0.3 - 0.15;',
-    '    pos = uTextCenter + vec2(spreadX, 0.0);',
-    '    pos += vec2(hash(vec2(t,id))-0.5, hash(vec2(id,t))-0.5) * 0.02 * (1.0-p3);',
-    '    heat = 1.0;',
-    '    life = 1.0 - p3;',
-    '  }',
-    '',
-    '  /* NDC */',
-    '  float aspect = uRes.x / uRes.y;',
-    '  vec2 ndc = (pos - 0.5) * 2.0;',
-    '  ndc.x /= aspect;',
-    '',
-    '  gl_Position = vec4(ndc, 0.0, 1.0);',
-    '  gl_PointSize = (3.0 + heat * 5.0) * (uRes.y / 800.0);',
-    '  vLife = life;',
-    '  vHeat = heat;',
-    '}'
-  ].join('\n');
+  /* ── VERTEX SHADER ── */
+  var vertSrc = `
+attribute vec2 aSeed;
+uniform float uTime;
+uniform float uPhase;
+uniform vec2 uRes;
+uniform vec2 uZiaCenter;
+uniform vec2 uTextCenter;
+varying float vLife;
+varying float vHeat;
 
-  /* ── fragment shader ── */
-  var fragSrc = [
-    'precision mediump float;',
-    'varying float vLife;',
-    'varying float vHeat;',
-    '',
-    'void main(){',
-    '  vec2 c = gl_PointCoord - 0.5;',
-    '  float d = length(c);',
-    '  if(d > 0.5) discard;',
-    '',
-    '  /* soft circle with glow falloff */',
-    '  float alpha = smoothstep(0.5, 0.1, d) * vLife;',
-    '',
-    '  /* color: cool teal → hot white-blue */',
-    '  vec3 coolColor = vec3(0.15, 0.65, 0.9);',   /* teal */
-    '  vec3 hotColor  = vec3(0.7, 0.95, 1.0);',     /* white-blue */
-    '  vec3 coreColor = vec3(1.0, 1.0, 1.0);',      /* pure white */
-    '  vec3 col = mix(coolColor, hotColor, vHeat);',
-    '  col = mix(col, coreColor, smoothstep(0.3, 0.0, d) * vHeat);',
-    '',
-    '  /* bloom glow additive */',
-    '  alpha += smoothstep(0.5, 0.0, d) * 0.3 * vHeat;',
-    '',
-    '  gl_FragColor = vec4(col * alpha, alpha);',
-    '}'
-  ].join('\n');
+float hash(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
+float hash2(vec2 p){ return fract(sin(dot(p,vec2(269.5,183.3)))*43758.5453); }
+
+/* smooth ease-out cubic */
+float easeOut(float t){ float t1=1.0-t; return 1.0-t1*t1*t1; }
+/* smooth ease-in-out */
+float easeInOut(float t){ return t<0.5 ? 4.0*t*t*t : 1.0-pow(-2.0*t+2.0,3.0)/2.0; }
+
+void main(){
+  float id = aSeed.x;
+  float seed = aSeed.y;
+  float angle0 = seed * 6.2832;
+  float radius0 = hash(vec2(id,seed)) * 0.12;
+
+  /* cardinal direction (0=top 1=right 2=bottom 3=left) */
+  int card = int(mod(id, 4.0));
+  vec2 cardDir = vec2(0.0, -1.0);
+  if(card==1) cardDir = vec2(1.0, 0.0);
+  if(card==2) cardDir = vec2(0.0, 1.0);
+  if(card==3) cardDir = vec2(-1.0, 0.0);
+
+  float t = uTime;
+  float stagger = hash(vec2(id*3.7, seed*2.1)) * 0.5;
+  float stagger2 = hash2(vec2(id*1.9, seed*5.3)) * 0.6;
+
+  vec2 pos = uZiaCenter;
+  float heat = 0.0;
+  float life = 1.0;
+
+  /* ─── PHASE 0: reactor core swirl (0–2.5s) ─── */
+  if(uPhase < 1.0){
+    float p0 = min(t / 2.5, 1.0);
+    float swirl = angle0 + t * (1.5 + seed * 2.5);
+    float pulse = 0.7 + 0.3 * sin(t * 3.0 + id * 0.01);
+    float r = radius0 * (0.2 + 0.8 * p0) * pulse;
+    pos += vec2(cos(swirl), sin(swirl)) * r;
+    heat = 0.3 + 0.7 * p0 * (0.5 + 0.5 * sin(t * 5.0 + id));
+    life = smoothstep(0.0, 0.4, p0);
+  }
+
+  /* ─── PHASE 1: cardinal burst (2.5–4.5s) ─── */
+  if(uPhase >= 1.0 && uPhase < 2.0){
+    float rawP = (t - 2.5 - stagger * 0.3) / 1.8;
+    float p1 = clamp(rawP, 0.0, 1.0);
+    float eased = easeOut(p1);
+    /* spread perpendicular to cardinal direction for ray width */
+    float perpSpread = (hash(vec2(id*1.3, seed*4.1)) - 0.5) * 0.05;
+    vec2 perp = vec2(-cardDir.y, cardDir.x);
+    vec2 dir = cardDir + perp * perpSpread;
+    float dist = eased * (0.3 + hash(vec2(id*2.2,seed*1.7)) * 0.2);
+    pos = uZiaCenter + dir * dist;
+    /* particles still gently swirl at their endpoints */
+    float endSwirl = angle0 + t * 0.5;
+    pos += vec2(cos(endSwirl), sin(endSwirl)) * 0.008 * (1.0 - eased * 0.5);
+    heat = 1.0 - eased * 0.2;
+    life = 1.0;
+  }
+
+  /* ─── PHASE 2: slow orbital attract toward text (4.5–7.5s) ─── */
+  if(uPhase >= 2.0 && uPhase < 3.0){
+    float rawP = (t - 4.5 - stagger2 * 0.8) / 2.5;
+    float p2 = clamp(rawP, 0.0, 1.0);
+    float eased = easeInOut(p2);
+
+    /* start position = where burst ended */
+    float burstDist = 0.3 + hash(vec2(id*2.2,seed*1.7)) * 0.2;
+    float perpSpread = (hash(vec2(id*1.3, seed*4.1)) - 0.5) * 0.05;
+    vec2 perp = vec2(-cardDir.y, cardDir.x);
+    vec2 burstEnd = uZiaCenter + (cardDir + perp * perpSpread) * burstDist;
+
+    /* target = spread along text width */
+    float textSpreadX = (hash(vec2(id*2.9, seed)) - 0.5) * 0.28;
+    float textSpreadY = (hash2(vec2(id, seed*3.1)) - 0.5) * 0.04;
+    vec2 textTarget = uTextCenter + vec2(textSpreadX, textSpreadY);
+
+    /* orbital arc — particles curve gracefully, not straight line */
+    vec2 mid = (burstEnd + textTarget) * 0.5;
+    /* offset the midpoint perpendicular to create an arc */
+    vec2 diff = textTarget - burstEnd;
+    vec2 arcPerp = vec2(-diff.y, diff.x);
+    float arcSign = (mod(id, 2.0) < 1.0) ? 1.0 : -1.0;
+    float arcStrength = 0.08 + hash(vec2(id*4.4, seed*2.8)) * 0.12;
+    mid += arcPerp * arcSign * arcStrength;
+
+    /* quadratic bezier: burstEnd → mid → textTarget */
+    vec2 ab = mix(burstEnd, mid, eased);
+    vec2 bc = mix(mid, textTarget, eased);
+    pos = mix(ab, bc, eased);
+
+    /* gentle rotation at current position */
+    float orbitAngle = t * (0.8 + seed * 0.5) + id;
+    float orbitR = 0.015 * (1.0 - eased);
+    pos += vec2(cos(orbitAngle), sin(orbitAngle)) * orbitR;
+
+    heat = 0.6 + 0.4 * eased;
+    life = 1.0;
+  }
+
+  /* ─── PHASE 3: spread settle + ignite text (7.5–9.5s) ─── */
+  if(uPhase >= 3.0 && uPhase < 4.0){
+    float rawP = (t - 7.5) / 2.0;
+    float p3 = clamp(rawP, 0.0, 1.0);
+
+    float textSpreadX = (hash(vec2(id*2.9, seed)) - 0.5) * 0.28;
+    float textSpreadY = (hash2(vec2(id, seed*3.1)) - 0.5) * 0.04;
+    vec2 settled = uTextCenter + vec2(textSpreadX, textSpreadY);
+
+    /* gentle breathing drift at settled position */
+    float breathe = sin(t * 1.5 + id * 0.1) * 0.006 * (1.0 - p3 * 0.7);
+    float breatheY = cos(t * 1.2 + seed * 6.0) * 0.004 * (1.0 - p3 * 0.7);
+    pos = settled + vec2(breathe, breatheY);
+
+    /* some particles slowly rise/spread outward like embers */
+    float isEmber = step(0.7, hash(vec2(id*6.6, seed)));
+    float emberRise = isEmber * p3 * 0.08;
+    float emberDrift = isEmber * sin(t + id) * p3 * 0.04;
+    pos += vec2(emberDrift, -emberRise);
+
+    heat = 1.0 - p3 * 0.15;
+    life = 1.0 - isEmber * p3 * 0.6;
+  }
+
+  /* ─── PHASE 4: gentle dissipate (9.5–10.5s) ─── */
+  if(uPhase >= 4.0){
+    float rawP = (t - 9.5) / 1.0;
+    float p4 = clamp(rawP, 0.0, 1.0);
+
+    float textSpreadX = (hash(vec2(id*2.9, seed)) - 0.5) * 0.28;
+    float textSpreadY = (hash2(vec2(id, seed*3.1)) - 0.5) * 0.04;
+    vec2 settled = uTextCenter + vec2(textSpreadX, textSpreadY);
+
+    /* particles gently float upward and outward */
+    float driftAngle = hash(vec2(id*3.3, seed*7.7)) * 6.2832;
+    float driftDist = p4 * 0.06 * (0.5 + hash(vec2(id, seed*2.2)));
+    pos = settled + vec2(cos(driftAngle), sin(driftAngle) - 0.5) * driftDist;
+
+    heat = 0.8 * (1.0 - p4);
+    life = 1.0 - easeInOut(p4);
+  }
+
+  /* NDC */
+  float aspect = uRes.x / uRes.y;
+  vec2 ndc = (pos - 0.5) * 2.0;
+  ndc.x /= aspect;
+
+  gl_Position = vec4(ndc, 0.0, 1.0);
+  gl_PointSize = (2.5 + heat * 5.5) * (uRes.y / 800.0);
+  vLife = life;
+  vHeat = heat;
+}`;
+
+  /* ── FRAGMENT SHADER ── */
+  var fragSrc = `
+precision mediump float;
+varying float vLife;
+varying float vHeat;
+
+void main(){
+  vec2 c = gl_PointCoord - 0.5;
+  float d = length(c);
+  if(d > 0.5) discard;
+
+  /* soft glow falloff */
+  float core = smoothstep(0.5, 0.05, d);
+  float glow = smoothstep(0.5, 0.0, d);
+  float alpha = core * vLife;
+
+  /* teal → white-blue heat ramp */
+  vec3 coolColor = vec3(0.12, 0.55, 0.85);
+  vec3 hotColor  = vec3(0.6, 0.92, 1.0);
+  vec3 coreColor = vec3(1.0, 1.0, 1.0);
+  vec3 col = mix(coolColor, hotColor, vHeat);
+  col = mix(col, coreColor, smoothstep(0.25, 0.0, d) * vHeat * 0.8);
+
+  /* additive bloom halo */
+  alpha += glow * 0.25 * vHeat * vLife;
+
+  gl_FragColor = vec4(col * alpha, alpha);
+}`;
 
   var prog = makeProgram(vertSrc, fragSrc);
   gl.useProgram(prog);
 
-  /* ── seed buffer ── */
   var seeds = new Float32Array(PARTICLE_COUNT * 2);
   for(var i=0; i<PARTICLE_COUNT; i++){
-    seeds[i*2]   = i;                      /* id */
-    seeds[i*2+1] = Math.random();          /* seed */
+    seeds[i*2]   = i;
+    seeds[i*2+1] = Math.random();
   }
   var seedBuf = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, seedBuf);
@@ -780,56 +858,67 @@ function saveSettings() {
   gl.enableVertexAttribArray(aSeed);
   gl.vertexAttribPointer(aSeed, 2, gl.FLOAT, false, 0, 0);
 
-  /* ── uniforms ── */
   var uTime = gl.getUniformLocation(prog, 'uTime');
   var uPhase = gl.getUniformLocation(prog, 'uPhase');
   var uRes = gl.getUniformLocation(prog, 'uRes');
   var uZiaCenter = gl.getUniformLocation(prog, 'uZiaCenter');
   var uTextCenter = gl.getUniformLocation(prog, 'uTextCenter');
 
-  /* ── blending ── */
   gl.enable(gl.BLEND);
-  gl.blendFunc(gl.SRC_ALPHA, gl.ONE); /* additive for bloom */
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 
-  /* ── get element centers in normalized coords ── */
   function getCenter(el){
     var r = el.getBoundingClientRect();
     return [(r.left + r.width/2) / window.innerWidth,
             (r.top + r.height/2) / window.innerHeight];
   }
 
-  /* ── percentage counter ── */
-  var pct = 0;
+  /* ── percentage curve — synced to animation feel ── */
+  function calcPct(t){
+    /* Phase-aware percentage so it feels intentional:
+       0-2.5s  → 0-15%   (slow buildup, reactor charging)
+       2.5-4.5 → 15-40%  (burst, visible progress)
+       4.5-7.5 → 40-75%  (long attract, steady climb)
+       7.5-9.5 → 75-95%  (ignition, anticipation)
+       9.5-10.5→ 95-100% (final) */
+    if(t<2.5)  return (t/2.5)*15;
+    if(t<4.5)  return 15+((t-2.5)/2.0)*25;
+    if(t<7.5)  return 40+((t-4.5)/3.0)*35;
+    if(t<9.5)  return 75+((t-7.5)/2.0)*20;
+    return 95+((t-9.5)/1.0)*5;
+  }
 
-  /* ── animation loop ── */
   var startTime = performance.now();
   var done = false;
+  var textLit = false;
+  var ziaSurging = false;
+  var ziaPeak = false;
 
   function tick(){
     if(done) return;
     var elapsed = (performance.now() - startTime) / 1000;
 
-    /* update percentage */
-    pct = Math.min(Math.floor((elapsed / DURATION) * 100), 100);
+    /* synced percentage */
+    var pct = Math.min(Math.round(calcPct(elapsed)), 100);
     pctEl.textContent = pct + '%';
 
     /* determine phase */
     var phase = 0;
-    if(elapsed >= 2.0) phase = 1;
-    if(elapsed >= 3.5) phase = 2;
-    if(elapsed >= 5.0) phase = 3;
+    if(elapsed >= 2.5) phase = 1;
+    if(elapsed >= 4.5) phase = 2;
+    if(elapsed >= 7.5) phase = 3;
+    if(elapsed >= 9.5) phase = 4;
 
-    /* text ignition at phase 3 */
-    if(elapsed >= 4.8 && !textImg.classList.contains('lit')){
+    /* zia glow transitions */
+    if(elapsed >= 1.5 && !ziaSurging){ zia.classList.add('surging'); ziaSurging=true; }
+    if(elapsed >= 2.5 && !ziaPeak){ zia.classList.add('peak'); ziaPeak=true; }
+
+    /* text ignition — starts during phase 3 settling */
+    if(elapsed >= 8.0 && !textLit){
       textImg.classList.add('lit');
+      textLit = true;
     }
 
-    /* zia pulse intensity based on phase */
-    if(phase >= 1 && phase < 3){
-      zia.style.filter = 'drop-shadow(0 0 60px rgba(74,200,255,.9)) brightness(1.5)';
-    }
-
-    /* render */
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
@@ -844,17 +933,16 @@ function saveSettings() {
 
     gl.drawArrays(gl.POINTS, 0, PARTICLE_COUNT);
 
-    /* end sequence */
     if(elapsed >= DURATION){
       done = true;
       screen.classList.add('done');
-      setTimeout(function(){ screen.style.display = 'none'; }, 900);
+      setTimeout(function(){ screen.style.display = 'none'; }, 1200);
       return;
     }
     requestAnimationFrame(tick);
   }
 
-  /* preload images then start */
+  /* preload then start */
   var img1 = new Image(); img1.src = 'New Assets/Loading_Zia.png';
   var img2 = new Image(); img2.src = 'New Assets/Loading_Text.png';
   var loaded = 0;
