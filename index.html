@@ -1690,7 +1690,7 @@ footer{
 
   /* HERO SCENE — mobile layout */
   #hero-building-wrap{width:385px!important;right:-4%!important;transform:translateX(-45px) translateY(-600px) perspective(800px) rotateX(0deg) rotateY(-6deg) rotateZ(0deg) scale(1.13)!important;}
-  #hero-lowrider-wrap{width:640px!important;right:-2%!important;z-index:5!important;transform:translateX(-11px) translateY(-493px) perspective(800px) rotateX(-3deg) rotateY(-3deg) rotateZ(-1deg) scale(.85) scaleX(-1)!important;}
+  #hero-lowrider-wrap{width:280px!important;right:-2%!important;z-index:5!important;transform:translateX(10px) translateY(-350px) perspective(800px) rotateX(-3deg) rotateY(-3deg) rotateZ(-1deg) scale(.85) scaleX(-1)!important;}
   #hero-girl-wrap{width:210px!important;right:4%!important;transform:translateX(45px) translateY(-65px) perspective(800px) rotateX(-6deg) rotateY(-2deg) rotateZ(-1deg) scale(.95)!important;}
   /* hero ctrl visible on mobile for tuning */
 
@@ -5474,7 +5474,7 @@ const ssCart = (() => {
   const isMob = window.innerWidth <= 480;
   const vw = window.innerWidth;
   const ASSETS = isMob ? [
-    { id:'hero-lowrider-wrap', label:'Lowrider', defaults:{x:-11,y:-493,z:3,w:640,r:85,ry:-3,rx:-3,rz:-1,flipX:true} },
+    { id:'hero-lowrider-wrap', label:'Lowrider', defaults:{x:10,y:-350,z:3,w:280,r:85,ry:-3,rx:-3,rz:-1,flipX:true} },
     { id:'hero-girl-wrap',     label:'Girl',     defaults:{x:45,y:-65,z:4,w:210,r:95,ry:-2,rx:-6,rz:-1} },
     { id:'hero-building-wrap', label:'Building',  defaults:{x:-45,y:-600,z:2,w:385,r:113,ry:-6,rx:0,rz:0} },
   ] : [
