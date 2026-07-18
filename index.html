@@ -1687,8 +1687,8 @@ footer{
 
   /* HERO SCENE — mobile layout */
   #hero-building-wrap{width:385px!important;right:-4%!important;transform:translateX(-45px) translateY(-600px) perspective(800px) rotateX(0deg) rotateY(-6deg) rotateZ(0deg) scale(1.13)!important;}
-  #hero-lowrider-wrap{width:226px!important;right:-2%!important;transform:translateX(-24px) translateY(549px) perspective(800px) rotateX(-3deg) rotateY(-10deg) rotateZ(-2deg) scale(.85)!important;}
-  #hero-girl-wrap{width:210px!important;right:4%!important;transform:translateX(45px) translateY(-45px) perspective(800px) rotateX(-6deg) rotateY(-2deg) rotateZ(-1deg) scale(.95)!important;}
+  #hero-lowrider-wrap{width:226px!important;right:-2%!important;transform:translateX(-24px) translateY(-65px) perspective(800px) rotateX(-3deg) rotateY(-10deg) rotateZ(-2deg) scale(.85) scaleX(-1)!important;}
+  #hero-girl-wrap{width:210px!important;right:4%!important;transform:translateX(45px) translateY(-65px) perspective(800px) rotateX(-6deg) rotateY(-2deg) rotateZ(-1deg) scale(.95)!important;}
   /* hero ctrl visible on mobile for tuning */
 
   /* TRAILER + DEALS — stack vertically on mobile */
@@ -5471,8 +5471,8 @@ const ssCart = (() => {
   const isMob = window.innerWidth <= 480;
   const vw = window.innerWidth;
   const ASSETS = isMob ? [
-    { id:'hero-lowrider-wrap', label:'Lowrider', defaults:{x:-24,y:549,z:3,w:226,r:85,ry:-10,rx:-3,rz:-2} },
-    { id:'hero-girl-wrap',     label:'Girl',     defaults:{x:45,y:-45,z:4,w:210,r:95,ry:-2,rx:-6,rz:-1} },
+    { id:'hero-lowrider-wrap', label:'Lowrider', defaults:{x:-24,y:-65,z:3,w:226,r:85,ry:-10,rx:-3,rz:-2} },
+    { id:'hero-girl-wrap',     label:'Girl',     defaults:{x:45,y:-65,z:4,w:210,r:95,ry:-2,rx:-6,rz:-1} },
     { id:'hero-building-wrap', label:'Building',  defaults:{x:-45,y:-600,z:2,w:385,r:113,ry:-6,rx:0,rz:0} },
   ] : [
     { id:'hero-lowrider-wrap', label:'Lowrider', defaults:{x:-346,y:16,z:3,w:665,r:113,ry:-12,rx:-3,rz:2} },
