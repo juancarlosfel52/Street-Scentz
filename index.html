@@ -1615,18 +1615,15 @@ footer{
   /* NAV */
   #nav{padding:0 1rem;}
 
-  /* HERO — much shorter on mobile, hide bottom scene PNGs */
-  #section-home{min-height:auto!important;height:auto!important;padding-bottom:20px!important;}
+  /* HERO */
+  #section-home{min-height:100svh;}
   .hero-inner{
-    padding:0 1.2rem 3vh 1.2rem;
+    padding:0 1.2rem 8vh 1.2rem;
     max-width:100%;
-    min-height:auto!important;
-    margin-top:0!important;
   }
   .hero-title{font-size:clamp(2.4rem,11vw,3.6rem)!important;}
   .hero-sub{font-size:.82rem;max-width:100%;}
   .hero-cta{width:100%;text-align:center;justify-content:center;}
-  #hero-building-wrap,#hero-lowrider-wrap,#hero-girl-wrap{display:none!important;}
 
 
   /* SCENT POPUP */
@@ -1688,6 +1685,10 @@ footer{
   /* CTA BAR — mobile only */
   #ss-cta-bar{display:flex!important;}
 
+  /* HERO SCENE — match desktop layout scaled down */
+  #hero-building-wrap{width:68vw!important;right:-4%!important;transform:translateX(-60px) translateY(-50px) perspective(800px) rotateY(-6deg) scale(1)!important;}
+  #hero-lowrider-wrap{width:55vw!important;right:-2%!important;transform:translateX(-100px) translateY(16px) perspective(800px) rotateX(-3deg) rotateY(-10deg) rotateZ(2deg) scale(.85)!important;}
+  #hero-girl-wrap{width:30vw!important;right:4%!important;transform:translateX(-20px) perspective(800px) rotateX(-6deg) rotateY(-2deg) rotateZ(-1deg) scale(.72)!important;}
   #hero-ctrl-toggle,#hero-ctrl{display:none!important;}
 
   /* TRAILER + DEALS — stack vertically, full width on mobile */
