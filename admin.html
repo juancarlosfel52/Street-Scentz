@@ -50,23 +50,33 @@ body {
 }
 #loading-text-img {
   position:relative; z-index:2; width:min(380px,65vw); height:auto;
-  opacity:0; filter:brightness(0);
-  transition:opacity 2s ease, filter 2.5s ease;
+  opacity:0.3; filter:brightness(0.25);
+  transition:opacity 1.8s ease, filter 2s ease;
+}
+#loading-text-img.dim {
+  opacity:0.5; filter:brightness(0.4) drop-shadow(0 0 8px rgba(74,200,255,.2));
 }
 #loading-text-img.lit {
-  opacity:1; filter:brightness(1.2) drop-shadow(0 0 25px rgba(74,200,255,.7));
+  opacity:1; filter:brightness(1.3) drop-shadow(0 0 30px rgba(74,200,255,.8));
 }
 #loading-zia {
   position:relative; z-index:2; width:min(320px,55vw); height:auto;
-  margin-top:20px; opacity:0.35;
-  filter:drop-shadow(0 0 20px rgba(74,200,255,.3));
-  transition:opacity 2s ease, filter 2s ease;
+  margin-top:20px; opacity:0.15;
+  filter:drop-shadow(0 0 10px rgba(74,200,255,.2)) brightness(0.4);
+  transition:opacity .15s ease, filter .15s ease;
 }
-#loading-zia.surging {
-  opacity:0.55; filter:drop-shadow(0 0 50px rgba(74,200,255,.7)) brightness(1.3);
+#loading-zia.flicker {
+  animation:ziaFlicker .12s steps(2) infinite;
 }
-#loading-zia.peak {
-  opacity:0.7; filter:drop-shadow(0 0 70px rgba(74,200,255,.9)) brightness(1.5);
+@keyframes ziaFlicker {
+  0%  {opacity:0.12; filter:drop-shadow(0 0 8px rgba(74,200,255,.15)) brightness(0.3);}
+  50% {opacity:0.45; filter:drop-shadow(0 0 30px rgba(74,200,255,.5)) brightness(0.9);}
+  100%{opacity:0.18; filter:drop-shadow(0 0 12px rgba(74,200,255,.2)) brightness(0.4);}
+}
+#loading-zia.full {
+  animation:none;
+  opacity:0.8; filter:drop-shadow(0 0 60px rgba(74,200,255,.9)) brightness(1.4);
+  transition:opacity 1.2s ease, filter 1.2s ease;
 }
 #loading-pct {
   position:relative; z-index:2; margin-top:20px;
@@ -599,9 +609,8 @@ function saveSettings() {
 })();
 
 /* ══════════════════════════════════════════════
-   ZIA PARTICLE REACTOR — Loading Screen v2
-   4k GPU particles, GLSL shaders, controlled bloom
-   Cinematic: reactor → burst → slow orbital attract → spread ignite → fade
+   ZIA PARTICLE REACTOR v3 — Flow State
+   8k GPU particles, continuous motion, no pauses
    ══════════════════════════════════════════════ */
 (function(){
   var screen = document.getElementById('loading-screen');
@@ -614,15 +623,8 @@ function saveSettings() {
   var gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
   if(!gl){ screen.classList.add('done'); return; }
 
-  var PARTICLE_COUNT = 4096;
+  var PARTICLE_COUNT = 8192;
   var DURATION = 10.5;
-  /* Timeline:
-     0.0–2.5   Phase 0  Reactor core swirl (builds energy)
-     2.5–4.5   Phase 1  Cardinal burst out 4 rays
-     4.5–7.5   Phase 2  Slow orbital attract toward text (3s graceful arc)
-     7.5–9.5   Phase 3  Spread & settle around text, ignite text
-     9.5–10.5  Phase 4  Particles gently dissipate, screen fades
-  */
   var dpr = Math.min(window.devicePixelRatio, 2);
 
   function resize(){
@@ -640,7 +642,7 @@ function saveSettings() {
     gl.shaderSource(s, src);
     gl.compileShader(s);
     if(!gl.getShaderParameter(s, gl.COMPILE_STATUS)){
-      console.error(gl.getShaderInfoLog(s)); return null;
+      console.error('GLSL:', gl.getShaderInfoLog(s)); return null;
     }
     return s;
   }
@@ -652,11 +654,10 @@ function saveSettings() {
     return p;
   }
 
-  /* ── VERTEX SHADER ── */
+  /* ── VERTEX SHADER — continuous flow, no discrete phases ── */
   var vertSrc = `
 attribute vec2 aSeed;
 uniform float uTime;
-uniform float uPhase;
 uniform vec2 uRes;
 uniform vec2 uZiaCenter;
 uniform vec2 uZiaSize;
@@ -667,6 +668,8 @@ varying float vHeat;
 float hash(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
 float hash2(vec2 p){ return fract(sin(dot(p,vec2(269.5,183.3)))*43758.5453); }
 
+/* smooth ramps — no hard cuts */
+float saturate(float x){ return clamp(x, 0.0, 1.0); }
 float easeOut(float t){ float t1=1.0-t; return 1.0-t1*t1*t1; }
 float easeInOut(float t){ return t<0.5 ? 4.0*t*t*t : 1.0-pow(-2.0*t+2.0,3.0)/2.0; }
 
@@ -675,152 +678,108 @@ void main(){
   float seed = aSeed.y;
   float angle0 = seed * 6.2832;
 
-  /* Zia circle radius = ~40% of element, in normalized screen coords */
+  /* Zia geometry */
   float ziaR = uZiaSize.x * 0.20;
   float radius0 = hash(vec2(id,seed)) * ziaR;
 
-  /* cardinal direction (0=top 1=right 2=bottom 3=left)
-     In screen coords: Y+ = down, so top = (0,-1) */
   int card = int(mod(id, 4.0));
   vec2 cardDir = vec2(0.0, -1.0);
   if(card==1) cardDir = vec2(1.0, 0.0);
   if(card==2) cardDir = vec2(0.0, 1.0);
   if(card==3) cardDir = vec2(-1.0, 0.0);
 
-  /* ray tip distance from center (in screen-normalized units)
-     Zia top ray is taller (~48% of element height from center)
-     Side rays ~45% of width, bottom ~40% of height */
   float rayLen = uZiaSize.x * 0.48;
   if(card==0) rayLen = uZiaSize.y * 0.50;
   if(card==2) rayLen = uZiaSize.y * 0.42;
 
   float t = uTime;
-  float stagger = hash(vec2(id*3.7, seed*2.1)) * 0.5;
-  float stagger2 = hash2(vec2(id*1.9, seed*5.3)) * 0.6;
 
-  vec2 pos = uZiaCenter;
-  float heat = 0.0;
-  float life = 1.0;
+  /* per-particle stagger — spreads motion across time, kills pauses */
+  float stag = hash(vec2(id*3.7, seed*2.1)) * 0.6;
+  float stag2 = hash2(vec2(id*1.9, seed*5.3)) * 0.8;
 
-  /* ─── PHASE 0: reactor swirl clamped to Zia circle (0–2.5s) ─── */
-  if(uPhase < 1.0){
-    float p0 = min(t / 2.5, 1.0);
-    float swirl = angle0 + t * (1.5 + seed * 2.5);
-    float pulse = 0.7 + 0.3 * sin(t * 3.0 + id * 0.01);
-    float r = radius0 * (0.2 + 0.8 * p0) * pulse;
-    pos += vec2(cos(swirl), sin(swirl)) * r;
-    heat = 0.3 + 0.7 * p0 * (0.5 + 0.5 * sin(t * 5.0 + id));
-    life = smoothstep(0.0, 0.4, p0);
-  }
+  /* ── CONTINUOUS BLEND WEIGHTS ──
+     Each behavior fades in/out smoothly — particles are ALWAYS moving.
+     wSwirl:  1→0  over 1.5–3.5s (per particle stagger)
+     wBurst:  0→1→0 ramps up 2.0–3.0, holds, ramps down 4.0–5.5
+     wAttract: 0→1 ramps 4.0–7.0 (slow graceful arc)
+     wSettle: 0→1 ramps 6.5–9.0
+     wFade:   0→1 ramps 9.0–10.5 */
+  float wSwirl   = 1.0 - saturate((t - 1.5 - stag*0.8) / 1.5);
+  float wBurst   = saturate((t - 2.0 - stag*0.4) / 0.8) * (1.0 - saturate((t - 4.5 - stag*0.3) / 1.2));
+  float wAttract = saturate((t - 4.0 - stag2*0.6) / 2.5);
+  float wSettle  = saturate((t - 6.5 - stag2*0.4) / 2.0);
+  float wFade    = saturate((t - 9.0) / 1.5);
 
-  /* ─── PHASE 1: cardinal burst through ray tips (2.5–4.5s) ─── */
-  if(uPhase >= 1.0 && uPhase < 2.0){
-    float rawP = (t - 2.5 - stagger * 0.3) / 1.8;
-    float p1 = clamp(rawP, 0.0, 1.0);
-    float eased = easeOut(p1);
-    /* spread within the ray width */
-    float perpSpread = (hash(vec2(id*1.3, seed*4.1)) - 0.5) * 0.03;
-    vec2 perp = vec2(-cardDir.y, cardDir.x);
-    vec2 dir = cardDir + perp * perpSpread;
-    /* travel from circle edge to ray tip, then overshoot slightly */
-    float overshoot = 1.0 + hash(vec2(id*2.2,seed*1.7)) * 0.3;
-    float dist = eased * rayLen * overshoot;
-    pos = uZiaCenter + dir * dist;
-    /* micro-swirl at endpoints */
-    float endSwirl = angle0 + t * 0.5;
-    pos += vec2(cos(endSwirl), sin(endSwirl)) * 0.005 * (1.0 - eased * 0.5);
-    heat = 1.0 - eased * 0.2;
-    life = 1.0;
-  }
+  /* normalize so weights don't exceed 1 */
+  float wTotal = max(wSwirl + wBurst + wAttract, 0.001);
 
-  /* ─── PHASE 2: slow orbital attract UPWARD to text (4.5–7.5s) ─── */
-  if(uPhase >= 2.0 && uPhase < 3.0){
-    float rawP = (t - 4.5 - stagger2 * 0.8) / 2.5;
-    float p2 = clamp(rawP, 0.0, 1.0);
-    float eased = easeInOut(p2);
+  /* ── SWIRL position (reactor core) ── */
+  float swirl = angle0 + t * (1.8 + seed * 2.5);
+  float pulse = 0.7 + 0.3 * sin(t * 3.5 + id * 0.01);
+  float fadeIn = saturate(t / 1.0);
+  float r = radius0 * (0.15 + 0.85 * saturate(t/2.0)) * pulse;
+  vec2 posSwirl = uZiaCenter + vec2(cos(swirl), sin(swirl)) * r;
 
-    /* start = where burst ended */
-    float overshoot = 1.0 + hash(vec2(id*2.2,seed*1.7)) * 0.3;
-    float perpSpread = (hash(vec2(id*1.3, seed*4.1)) - 0.5) * 0.03;
-    vec2 perp = vec2(-cardDir.y, cardDir.x);
-    vec2 burstEnd = uZiaCenter + (cardDir + perp * perpSpread) * rayLen * overshoot;
+  /* ── BURST position (cardinal rays) ── */
+  float burstP = easeOut(saturate((t - 2.0 - stag*0.4) / 1.5));
+  float perpSpread = (hash(vec2(id*1.3, seed*4.1)) - 0.5) * 0.04;
+  vec2 perp = vec2(-cardDir.y, cardDir.x);
+  vec2 burstDir = cardDir + perp * perpSpread;
+  float overshoot = 1.0 + hash(vec2(id*2.2,seed*1.7)) * 0.25;
+  vec2 posBurst = uZiaCenter + burstDir * burstP * rayLen * overshoot;
+  /* keep micro-swirl alive during burst */
+  float microSwirl = angle0 + t * 0.6;
+  posBurst += vec2(cos(microSwirl), sin(microSwirl)) * 0.004 * (1.0 - burstP * 0.6);
 
-    /* target = spread along text width (text is ABOVE zia) */
-    float textSpreadX = (hash(vec2(id*2.9, seed)) - 0.5) * 0.28;
-    float textSpreadY = (hash2(vec2(id, seed*3.1)) - 0.5) * 0.03;
-    vec2 textTarget = uTextCenter + vec2(textSpreadX, textSpreadY);
+  /* ── ATTRACT position (bezier arc toward text) ── */
+  float attractP = easeInOut(saturate((t - 4.0 - stag2*0.6) / 3.0));
+  vec2 burstEnd = uZiaCenter + burstDir * rayLen * overshoot;
+  float textSpreadX = (hash(vec2(id*2.9, seed)) - 0.5) * 0.30;
+  float textSpreadY = (hash2(vec2(id, seed*3.1)) - 0.5) * 0.04;
+  vec2 textTarget = uTextCenter + vec2(textSpreadX, textSpreadY);
+  /* bezier midpoint with arc */
+  vec2 mid = (burstEnd + textTarget) * 0.5;
+  vec2 diff = textTarget - burstEnd;
+  vec2 arcPerp = vec2(-diff.y, diff.x);
+  float arcSign = (mod(id, 2.0) < 1.0) ? 1.0 : -1.0;
+  float arcStr = 0.05 + hash(vec2(id*4.4, seed*2.8)) * 0.10;
+  mid += arcPerp * arcSign * arcStr;
+  vec2 ab = mix(burstEnd, mid, attractP);
+  vec2 bc = mix(mid, textTarget, attractP);
+  vec2 posAttract = mix(ab, bc, attractP);
+  /* gentle orbit while traveling */
+  float orbAng = t * (0.7 + seed * 0.4) + id;
+  float orbR = 0.010 * (1.0 - attractP);
+  posAttract += vec2(cos(orbAng), sin(orbAng)) * orbR;
 
-    /* bezier arc — midpoint offset creates graceful curve */
-    vec2 mid = (burstEnd + textTarget) * 0.5;
-    vec2 diff = textTarget - burstEnd;
-    vec2 arcPerp = vec2(-diff.y, diff.x);
-    float arcSign = (mod(id, 2.0) < 1.0) ? 1.0 : -1.0;
-    float arcStrength = 0.06 + hash(vec2(id*4.4, seed*2.8)) * 0.10;
-    mid += arcPerp * arcSign * arcStrength;
+  /* ── BLEND all positions continuously ── */
+  vec2 pos = (posSwirl * wSwirl + posBurst * wBurst + posAttract * wAttract) / wTotal;
 
-    vec2 ab = mix(burstEnd, mid, eased);
-    vec2 bc = mix(mid, textTarget, eased);
-    pos = mix(ab, bc, eased);
+  /* ── SETTLE breathing at text ── */
+  float breathe = sin(t * 1.5 + id * 0.1) * 0.004 * (1.0 - wSettle * 0.8);
+  float breatheY = cos(t * 1.2 + seed * 6.0) * 0.003 * (1.0 - wSettle * 0.8);
+  pos = mix(pos, textTarget + vec2(breathe, breatheY), wSettle * wAttract);
 
-    /* gentle orbit while traveling */
-    float orbitAngle = t * (0.8 + seed * 0.5) + id;
-    float orbitR = 0.012 * (1.0 - eased);
-    pos += vec2(cos(orbitAngle), sin(orbitAngle)) * orbitR;
+  /* ── FADE: embers rise upward ── */
+  float isEmber = step(0.65, hash(vec2(id*6.6, seed)));
+  float emberUp = isEmber * wFade * 0.06;
+  float emberDrift = isEmber * sin(t*0.8 + id) * wFade * 0.03;
+  pos += vec2(emberDrift, -emberUp);
 
-    heat = 0.6 + 0.4 * eased;
-    life = 1.0;
-  }
+  /* ── heat & life (continuous) ── */
+  float heat = 0.3 * fadeIn + 0.4 * wBurst + 0.3 * wAttract + 0.2 * wSettle;
+  heat = clamp(heat, 0.0, 1.0);
+  float life = fadeIn * (1.0 - wFade * (0.4 + isEmber * 0.6));
 
-  /* ─── PHASE 3: spread settle + ignite text (7.5–9.5s) ─── */
-  if(uPhase >= 3.0 && uPhase < 4.0){
-    float rawP = (t - 7.5) / 2.0;
-    float p3 = clamp(rawP, 0.0, 1.0);
-
-    float textSpreadX = (hash(vec2(id*2.9, seed)) - 0.5) * 0.28;
-    float textSpreadY = (hash2(vec2(id, seed*3.1)) - 0.5) * 0.03;
-    vec2 settled = uTextCenter + vec2(textSpreadX, textSpreadY);
-
-    /* gentle breathing */
-    float breathe = sin(t * 1.5 + id * 0.1) * 0.005 * (1.0 - p3 * 0.7);
-    float breatheY = cos(t * 1.2 + seed * 6.0) * 0.003 * (1.0 - p3 * 0.7);
-    pos = settled + vec2(breathe, breatheY);
-
-    /* embers rise upward (negative Y = up on screen) */
-    float isEmber = step(0.7, hash(vec2(id*6.6, seed)));
-    float emberRise = isEmber * p3 * 0.06;
-    float emberDrift = isEmber * sin(t + id) * p3 * 0.03;
-    pos += vec2(emberDrift, -emberRise);
-
-    heat = 1.0 - p3 * 0.15;
-    life = 1.0 - isEmber * p3 * 0.6;
-  }
-
-  /* ─── PHASE 4: gentle dissipate upward (9.5–10.5s) ─── */
-  if(uPhase >= 4.0){
-    float rawP = (t - 9.5) / 1.0;
-    float p4 = clamp(rawP, 0.0, 1.0);
-
-    float textSpreadX = (hash(vec2(id*2.9, seed)) - 0.5) * 0.28;
-    float textSpreadY = (hash2(vec2(id, seed*3.1)) - 0.5) * 0.03;
-    vec2 settled = uTextCenter + vec2(textSpreadX, textSpreadY);
-
-    /* float upward and outward */
-    float driftAngle = hash(vec2(id*3.3, seed*7.7)) * 6.2832;
-    float driftR = p4 * 0.05 * (0.5 + hash(vec2(id, seed*2.2)));
-    pos = settled + vec2(cos(driftAngle) * driftR, -abs(sin(driftAngle)) * driftR - p4 * 0.03);
-
-    heat = 0.8 * (1.0 - p4);
-    life = 1.0 - easeInOut(p4);
-  }
-
-  /* NDC — flip Y so screen-down maps to GL-down */
+  /* NDC — flip Y */
   float aspect = uRes.x / uRes.y;
   vec2 ndc;
   ndc.x = (pos.x - 0.5) * 2.0 / aspect;
   ndc.y = (0.5 - pos.y) * 2.0;
 
   gl_Position = vec4(ndc, 0.0, 1.0);
-  gl_PointSize = (2.5 + heat * 5.5) * (uRes.y / 800.0);
+  gl_PointSize = (2.0 + heat * 5.0) * (uRes.y / 800.0);
   vLife = life;
   vHeat = heat;
 }`;
@@ -836,19 +795,16 @@ void main(){
   float d = length(c);
   if(d > 0.5) discard;
 
-  /* soft glow falloff */
   float core = smoothstep(0.5, 0.05, d);
   float glow = smoothstep(0.5, 0.0, d);
   float alpha = core * vLife;
 
-  /* teal → white-blue heat ramp */
   vec3 coolColor = vec3(0.12, 0.55, 0.85);
   vec3 hotColor  = vec3(0.6, 0.92, 1.0);
   vec3 coreColor = vec3(1.0, 1.0, 1.0);
   vec3 col = mix(coolColor, hotColor, vHeat);
   col = mix(col, coreColor, smoothstep(0.25, 0.0, d) * vHeat * 0.8);
 
-  /* additive bloom halo */
   alpha += glow * 0.25 * vHeat * vLife;
 
   gl_FragColor = vec4(col * alpha, alpha);
@@ -870,7 +826,6 @@ void main(){
   gl.vertexAttribPointer(aSeed, 2, gl.FLOAT, false, 0, 0);
 
   var uTime = gl.getUniformLocation(prog, 'uTime');
-  var uPhase = gl.getUniformLocation(prog, 'uPhase');
   var uRes = gl.getUniformLocation(prog, 'uRes');
   var uZiaCenter = gl.getUniformLocation(prog, 'uZiaCenter');
   var uZiaSize = gl.getUniformLocation(prog, 'uZiaSize');
@@ -890,26 +845,26 @@ void main(){
             r.height / window.innerHeight];
   }
 
-  /* ── percentage curve — synced to animation feel ── */
+  /* ── percentage — smooth eased curve synced to visual feel ── */
   function calcPct(t){
-    /* Phase-aware percentage so it feels intentional:
-       0-2.5s  → 0-15%   (slow buildup, reactor charging)
-       2.5-4.5 → 15-40%  (burst, visible progress)
-       4.5-7.5 → 40-75%  (long attract, steady climb)
-       7.5-9.5 → 75-95%  (ignition, anticipation)
-       9.5-10.5→ 95-100% (final) */
-    if(t<2.5)  return (t/2.5)*15;
-    if(t<4.5)  return 15+((t-2.5)/2.0)*25;
-    if(t<7.5)  return 40+((t-4.5)/3.0)*35;
+    if(t<1.5)  return (t/1.5)*8;
+    if(t<3.0)  return 8+((t-1.5)/1.5)*17;
+    if(t<5.0)  return 25+((t-3.0)/2.0)*25;
+    if(t<7.5)  return 50+((t-5.0)/2.5)*25;
     if(t<9.5)  return 75+((t-7.5)/2.0)*20;
     return 95+((t-9.5)/1.0)*5;
   }
 
   var startTime = performance.now();
   var done = false;
+  var textDim = false;
   var textLit = false;
-  var ziaSurging = false;
-  var ziaPeak = false;
+  var ziaFlicker = false;
+  var ziaFull = false;
+
+  /* start zia flickering immediately */
+  zia.classList.add('flicker');
+  ziaFlicker = true;
 
   function tick(){
     if(done) return;
@@ -919,21 +874,22 @@ void main(){
     var pct = Math.min(Math.round(calcPct(elapsed)), 100);
     pctEl.textContent = pct + '%';
 
-    /* determine phase */
-    var phase = 0;
-    if(elapsed >= 2.5) phase = 1;
-    if(elapsed >= 4.5) phase = 2;
-    if(elapsed >= 7.5) phase = 3;
-    if(elapsed >= 9.5) phase = 4;
-
-    /* zia glow transitions */
-    if(elapsed >= 1.5 && !ziaSurging){ zia.classList.add('surging'); ziaSurging=true; }
-    if(elapsed >= 2.5 && !ziaPeak){ zia.classList.add('peak'); ziaPeak=true; }
-
-    /* text ignition — starts during phase 3 settling */
-    if(elapsed >= 8.0 && !textLit){
+    /* text shows dim early (1.5s), lights up at 6.5s */
+    if(elapsed >= 1.5 && !textDim){
+      textImg.classList.add('dim');
+      textDim = true;
+    }
+    if(elapsed >= 6.5 && !textLit){
+      textImg.classList.remove('dim');
       textImg.classList.add('lit');
       textLit = true;
+    }
+
+    /* zia: flicker at start → full brightness when burst spreads (2.5s) */
+    if(elapsed >= 2.5 && !ziaFull){
+      zia.classList.remove('flicker');
+      zia.classList.add('full');
+      ziaFull = true;
     }
 
     gl.clearColor(0, 0, 0, 0);
@@ -944,7 +900,6 @@ void main(){
     var tc = getCenter(textImg);
 
     gl.uniform1f(uTime, elapsed);
-    gl.uniform1f(uPhase, phase);
     gl.uniform2f(uRes, canvas.width, canvas.height);
     gl.uniform2f(uZiaCenter, zc[0], zc[1]);
     gl.uniform2f(uZiaSize, zs[0], zs[1]);
