@@ -89,6 +89,16 @@ body {
   #loading-zia { width:55vw; max-width:none; margin-top:12px; }
   #loading-pct { font-size:1.4rem; margin-top:12px; }
 }
+.load-bg {
+  position:absolute; inset:0; z-index:0;
+  background-size:cover; background-position:center; background-repeat:no-repeat;
+  transition:opacity 2s ease;
+}
+.load-bg-hidden { opacity:0; }
+.load-bg-tint {
+  position:absolute; inset:0; z-index:0;
+  background:rgba(2,4,8,.75);
+}
 #loading-noise {
   position:absolute; inset:0; z-index:3; pointer-events:none;
   background:repeating-linear-gradient(transparent 0,rgba(255,255,255,.02) 2px,transparent 3px);
@@ -250,6 +260,9 @@ tr:hover td { background:rgba(74,144,226,.04); }
 
 <!-- LOADING SCREEN -->
 <div id="loading-screen">
+  <div class="load-bg" id="load-bg-a"></div>
+  <div class="load-bg load-bg-hidden" id="load-bg-b"></div>
+  <div class="load-bg-tint"></div>
   <canvas id="loading-canvas"></canvas>
   <img id="loading-text-img" src="New Assets/Loading_Text.png" alt=""/>
   <img id="loading-zia" src="New Assets/Loading_Zia.png" alt=""/>
@@ -596,13 +609,7 @@ function saveSettings() {
     'New Assets/AdminBG (1).png',
     'New Assets/AdminBG (2).png',
     'New Assets/AdminBG (3).png',
-    'New Assets/AdminBG (4).png',
-    'New Assets/CholaStand.png',
-    'New Assets/Chola_lean.png',
-    'New Assets/Chola_on_HOOD.png',
-    'New Assets/CholaNM.png',
-    'New Assets/CholaSTIT.png',
-    'New Assets/Chola80s.png'
+    'New Assets/AdminBG (4).png'
   ];
   imgs.forEach(function(s){ var i=new Image(); i.src=s; });
   var a = document.getElementById('admin-bg-a');
@@ -617,6 +624,33 @@ function saveSettings() {
     front.style.backgroundImage = 'url("'+imgs[idx]+'")';
     front.classList.remove('hidden');
     back.classList.add('hidden');
+  }, 5000);
+})();
+
+/* ── Loading Screen BG Slideshow ── */
+(function(){
+  var photos = [
+    'New Assets/CholaStand.png',
+    'New Assets/Chola_lean.png',
+    'New Assets/Chola_on_HOOD.png',
+    'New Assets/CholaNM.png',
+    'New Assets/CholaSTIT.png',
+    'New Assets/Chola80s.png'
+  ];
+  photos.forEach(function(s){ var i=new Image(); i.src=s; });
+  var a = document.getElementById('load-bg-a');
+  var b = document.getElementById('load-bg-b');
+  if(!a||!b) return;
+  var idx = 0;
+  a.style.backgroundImage = 'url("'+photos[0]+'")';
+  a.classList.remove('load-bg-hidden');
+  setInterval(function(){
+    idx = (idx + 1) % photos.length;
+    var front = a.classList.contains('load-bg-hidden') ? a : b;
+    var back  = a.classList.contains('load-bg-hidden') ? b : a;
+    front.style.backgroundImage = 'url("'+photos[idx]+'")';
+    front.classList.remove('load-bg-hidden');
+    back.classList.add('load-bg-hidden');
   }, 5000);
 })();
 
